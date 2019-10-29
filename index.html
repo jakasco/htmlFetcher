@@ -35,7 +35,7 @@
         }
 
         function fetchData() {
-            fetch('')
+            fetch('http://localhost/wp2/')
                 .then(function (response) {
                     return response.text()
                 })
@@ -51,7 +51,7 @@
                     div.innerHTML = html;
 
                     let lineBreaksToElements = html.replace(/(\S+\s*){1,2}/g, "$&\n");
-                    console.log("Li ", lineBreaksToElements);
+                    console.log("LI ", lineBreaksToElements);
                     div2.textContent = lineBreaksToElements;
                     findBodyWord(html);
                 })
