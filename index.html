@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Testing</title>
+</head>
+
+<body>
+    <button onclick="fetchData()">fetch</button>
+    <button onclick="getLineBreaks()">fetch</button>
+    <div id="divi" style="height: 50vh; width: 50%; background-color: grey; float: left;"></div>
+    <textarea id="divi2" style="height: 50vh; width: 40%; border: 1px solid black;
+    float: left; overflow: scroll; font-size: 17px;"></textarea>
+
+    <script>
+
+        const div = document.querySelector("#divi");
+        const div2 = document.querySelector("#divi2");
+
+        function findBodyWord(htmlContent) {
+
+            let first = htmlContent.search("<body>");
+            let last = htmlContent.search("</body>");
+
+            console.log("first: " + first + " | last: " + last);
+        }
+
+        function getLineBreaks() {
+            let enteredText = div2.value;
+
+            let numberOfLineBreaks = (enteredText.match(/\n/g) || []).length;
+            let characterCount = enteredText.length + numberOfLineBreaks;
+
+            alert('Number of breaks:  ' + numberOfLineBreaks);
+        }
+
+        function fetchData() {
+            fetch('')
+                .then(function (response) {
+                    return response.text()
+                })
+                .then(function (html) {
+                    let parser = new DOMParser();
+
+                    let doc = parser.parseFromString(html, "text/html");
+
+                    let docArticle = doc.querySelector('article').innerHTML;
+
+                    console.log("HTML", html);
+                    console.log("--------------------------------------------------");
+                    div.innerHTML = html;
+
+                    let lineBreaksToElements = html.replace(/(\S+\s*){1,2}/g, "$&\n");
+                    console.log("LI ", lineBreaksToElements);
+                    div2.textContent = lineBreaksToElements;
+                    findBodyWord(html);
+                })
+                .catch(function (e) {
+                    console.log(e);
+                });
+        }
+    </script>
+
+</body>
+
+</html>
