@@ -3,11 +3,13 @@
 
 <head>
     <title>Testing</title>
+    <script src="jquery-3.4.1.js"></script>
 </head>
 
 <body>
     <button onclick="fetchData()">fetch</button>
-    <button onclick="getLineBreaks()">fetch</button>
+    <button onclick="getLineBreaks()">alert</button>
+    <button onclick="jqueryTest()">clear</button>
     <div id="divi" style="height: 50vh; width: 50%; background-color: grey; float: left;"></div>
     <textarea id="divi2" style="height: 50vh; width: 40%; border: 1px solid black;
     float: left; overflow: scroll; font-size: 17px;"></textarea>
@@ -16,7 +18,7 @@
 
         const div = document.querySelector("#divi");
         const div2 = document.querySelector("#divi2");
-
+        
         function findBodyWord(htmlContent) {
 
             let first = htmlContent.search("<body>");
@@ -34,6 +36,10 @@
             alert('Number of breaks:  ' + numberOfLineBreaks);
         }
 
+        function jqueryTest() {
+            $('#divi2:contains("<body>")').html().replace('<body>', '<body><div id="mainContainer">');
+        }
+
         function fetchData() {
             fetch('http://localhost/wp2/')
                 .then(function (response) {
@@ -48,7 +54,7 @@
 
                     console.log("HTML", html);
                     console.log("--------------------------------------------------");
-                    div.innerHTML = html;
+                    div.innerHTML = html; //divin sisään wp content
 
                     let lineBreaksToElements = html.replace(/(\S+\s*){1,2}/g, "$&\n");
                     console.log("LI ", lineBreaksToElements);
