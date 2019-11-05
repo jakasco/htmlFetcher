@@ -3,21 +3,105 @@
 
 <head>
     <title>Testing</title>
-    <script src="jquery-3.4.1.js"></script>
+   <!-- <script src="jquery-3.4.1.js"></script>-->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <style>
+   body,html{width:100%;height:100%;padding:0;margin:0;}
+.clearfix:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+#main{
+   background-color: BurlyWood;
+   float: right;
+   height:200px;
+    width: 75%;
+    display: none;
+}
+#main2{
+   background-color: BurlyWood;
+   height: 200px;
+    width: 100%;
+    float: right;
+    display: none;
+}
+#sidebar{
+   background-color: IndianRed;
+   width:25%;
+   float: left;
+   height:200px;
+ /*  overflow: scroll; */
+}
+
+#dragbar{
+   background-color:black;
+   height:100%;
+   float: right;
+   width: 3px;
+   cursor: col-resize;
+   z-index:9999;
+}
+#dragbar2{
+    background-color: rgb(90, 74, 74);
+    width: 100%;
+    height: 5px;
+    cursor: col-resize;
+    z-index: 9999;
+    margin-top: 180px;
+}
+#tempBar{
+    width:3px;
+    background-color:#000;
+    opacity:0.5;
+    position:absolute;
+    cursor: col-resize;
+    z-index:999}
+
+    #fetchatti {
+        overflow: scroll;
+    }
+   </style>
 </head>
 
 <body>
-    <button onclick="fetchData()">fetch</button>
+  <button onclick="fetchData()">fetch</button>
     <button onclick="getLineBreaks()">alert</button>
     <button onclick="jqueryTest()">clear</button>
-    <div id="divi" style="height: 50vh; width: 50%; background-color: grey; float: left;"></div>
+ <!--     <div id="divi" style="height: 50vh; width: 50%; background-color: grey; float: left;">
+	<div id="fetchatti">
+	</div>
+	</div>
     <textarea id="divi2" style="height: 50vh; width: 40%; border: 1px solid black;
-    float: left; overflow: scroll; font-size: 17px;"></textarea>
+    float: left; overflow: scroll; font-size: 17px; display:none;"></textarea> --><!-- DIsplay none-->
+    <div id="console">Width</div>
+    <div id="console2">Height</div>
+<div class="clearfix">
+    <div id="sidebar">
+         <span id="position"></span>
+         
+        <div id="dragbar"></div>
+        
+        
+        <div id="fetchatti"></div>
+        <div id="dragbar2"></div>
+    </div>
+    <div id="main">
+        main
+    </div>
+    <div id="main2">
+        main2
+    </div>
+    </div>
+   
+
 
     <script>
 
         const div = document.querySelector("#divi");
         const div2 = document.querySelector("#divi2");
+		const div3 = document.querySelector("#fetchatti");
+        
         
         function findBodyWord(htmlContent) {
 
@@ -41,7 +125,7 @@
         }
 
         function fetchData() {
-            fetch('http://localhost/wp2/')
+            fetch('')
                 .then(function (response) {
                     return response.text()
                 })
@@ -54,7 +138,7 @@
 
                     console.log("HTML", html);
                     console.log("--------------------------------------------------");
-                    div.innerHTML = html; //divin sisään wp content
+                    div3.innerHTML = html; //divin sisään wp content
 
                     let lineBreaksToElements = html.replace(/(\S+\s*){1,2}/g, "$&\n");
                     console.log("LI ", lineBreaksToElements);
@@ -65,8 +149,85 @@
                     console.log(e);
                 });
         }
+
+        console.log("Fetchatti height: ",   $("#sidebar").height());
+        
+ ////////////////////// X akseli
+        let i = 0;
+        let dragging = false;
+   $('#dragbar').mousedown(function(e){
+       e.preventDefault();
+       console.log("Drag X");
+       dragging = true;
+       let main = $('#main');
+       let tempBar = $('<div>',
+                        {id:'tempBar',
+                         css: {
+                                height: main.outerHeight(),
+                                top: main.offset().top,
+                                left: main.offset().left
+                               }
+                        }).appendTo('body');
+       
+        $(document).mousemove(function(e){
+            tempBar.css("left",e.pageX+2);
+       });
+       
+    });
+
+   $(document).mouseup(function(e){
+       if (dragging) 
+       {
+          let percentage = (e.pageX / window.innerWidth) * 100;
+           let mainPercentage = 100-percentage;
+           
+           $('#console').text("Width:" + percentage + "%");
+           
+           $('#sidebar').css("width",percentage + "%");
+           $('#main').css("width",mainPercentage + "%");
+           $('#tempBar').remove();
+           $(document).unbind('mousemove');
+           dragging = false;
+       }
+    });
+
+////////////////////// Y akseli
+
+let dragging2 = false;
+   $('#dragbar2').mousedown(function(e){
+       e.preventDefault();
+       console.log("Drag Y");
+       dragging2 = true;
+       let main = $('#main');
+       let tempBar = $('<div>',
+                        {id:'tempBar',
+                         css: {
+                                height: main.outerHeight(),
+                                top: main.offset().top,
+                                left: main.offset().left
+                               }
+                        }).appendTo('body');
+       
+        $(document).mousemove(function(e){
+            tempBar.css("top",e.pageY+2);
+       }); 
+    });
+
+   $(document).mouseup(function(e){
+       if (dragging2) 
+       {
+        let percentage = (e.pageY / window.innerHeight) * 100;
+           let mainPercentage = 100-percentage;
+          // height:calc(100% – (desired amount in px) ) //Prosentit pixeleiksi
+
+           $('#console2').text("Height:" +e.pageY);
+           $('#dragbar2').css("margin-top",e.pageY+0.1);
+           $('#sidebar').css("height",e.pageY);
+           $('#tempBar').remove();
+           $(document).unbind('mousemove');
+           dragging2 = false;
+       }
+    });
     </script>
-
 </body>
-
 </html>
