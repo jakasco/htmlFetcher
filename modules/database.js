@@ -80,7 +80,7 @@ const cryptausTest = (data, connection, callback) => {
         callback();
       },
   );
-};
+};//
 
 const PalautaFrontendiin2 = (data, connection, callback) => {
 
