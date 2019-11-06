@@ -41,7 +41,15 @@ function getSecondPart(str) {
     return str.split('{')[1];
 }
 // use the function:
+function vaihaCss(csss,n) {
+    console.log("VAIHDA CSS ",n);
+    const page = document.querySelector("#page");
+    page.style = csss;
+  console.log("page.style ",page.style );
+    /*
 
+    */
+}
 
 function fetchMediaQuery() {
 
@@ -61,21 +69,43 @@ function fetchMediaQuery() {
                 const regex = /^(?=.*media).../
                // const str = text;
 
-                var n = text.search("(min-width:600px)");
+                // var n = text.search("(min-width:600px)");
                 //console.log("N ",n);
-                let m = text.match(regex);
+               // let re = '/\({[^)]+}\)/';
+               let re = '/\(min\)/';
+                let m = text.match("@media");
+                var res = text.split("@media");
+            //    console.log(res);
+                for(let i=0; i<res.length; i++) {
 
-                console.log("SECONDPART: ",getSecondPart("(min-width:600px)")); // UUSIN
+                    var res2 = res[i].split(")");
+
+                    $("#ulList2").append(`<li>
+                ${res[i]}
+                    </li></br>`);
+                    let csss = res[i].substr(18,res[i].length);
+             //       console.log("css ",csss);
+                    
+              //      console.log(res[i].length);
+                    $("#mediaNapit").append(`<button onclick='vaihaCss("${csss}",${i})'>
+                    nappi ${res2[0]}
+                        </button></br>`);
+                }
+            //    console.log("index: ",text.indexOf(62471));
+           //     console.log("m: ",m);
+           //     console.log("SECONDPART: ",getSecondPart("(min-width:600px)")); // UUSIN
 
                 if (m) {
                     m.forEach((match, groupIndex) => {
                         console.log(`Found match in ${li.textContent}, group ${groupIndex}: ${match}`);
-                        var str = match;
-                        var afterComma = str.substr(str.indexOf(",") + 1); // Contains 24 //
-                        console.log(afterComma);
+                        let m = match.match(/{[\w\d]+}/g);
+                 //       console.log("m2 ",m);
+                     //   var str = match;
+                     //   var afterComma = str.substr(str.indexOf(",") + 1); // Contains 24 //
+                     //   console.log(afterComma);
                     });
                 }else{
-                    console.log("No media query");
+             //       console.log("No media query");
                 }
 
             }).catch(err => {
@@ -159,7 +189,7 @@ function jqueryTest() {
 }
 
 function fetchData() {
-    fetch('http://localhost/wordpress/')
+    fetch('http://localhost/wp2/')
         .then(function (response) {
             return response.text()
         })
