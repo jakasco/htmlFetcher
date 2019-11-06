@@ -12,38 +12,93 @@ function findWord() {
 }
 
 $("textarea").on('keyup', function() {
-    //  let arrayOfCssLinksPositionInTextArea = [];
-      //let search = false;
-      // var wrongWords = new Array("asd", "I", "won't");
-  
-     // console.log(div2.value.search("asd"));
   
      // const regex = /((?:https?:|www\.)[^\s]+)/g;
       const regex = /((?:https?:|www\.)[^\s]+)/g;
       const str = $(this).val();
   
       let m = str.match(regex);
-  
-      if (m) {
-          m.forEach((match, groupIndex) => {
-              console.log(`Found match, group ${groupIndex}: ${match}`);
-            //  let li = document.createElement("li");
-            //  li.textContent = match;
-           //   ul.appendChild(li);
-           //<li><a href="/user/messages"><span class="tab">${match}</span></a></li>
-           $("#ulList").append(`<li>
-           <p>
-           <strong>- </strong>
-           </p>
-           <a href='${match}' target='_blank'>
-           ${match}
-           </a>
-           </li>`);
-          });
-      }else{
-          console.log("Not found any words");
-      }
+
+    if (m) {
+        m.forEach((match, groupIndex) => {
+        //    console.log(`Found match, group ${groupIndex}: ${match}`);
+            const regex2 = /((?:css)[^\s]+)/g;
+            const str2 = match;
+
+            if(match.match(regex2)){
+           //     console.log("Css ",match);
+                $("#ulList").append(`<li>
+                    <a href='${match}' target='_blank'>
+                    ${match}
+                    </a>
+                    </li>`);
+            }
+        });
+    }
   }).keyup(); // trigger event for demo
+
+function getSecondPart(str) {
+    return str.split('{')[1];
+}
+// use the function:
+
+
+function fetchMediaQuery() {
+
+    let ulPituus = document.querySelectorAll("#ulList li").length;
+    for(let i=0; i<ulPituus; i++){
+        let li = document.querySelectorAll("#ulList li")[i];
+        if(i !== 2){
+      //  console.log(li.textContent);
+        try {
+            fetch(li.textContent).then((response) => {
+                return response.text();
+            }).then((text) => {
+
+           //     console.log(text);
+
+              //  const regex = /((?:screen)[^\s]+)/g;
+                const regex = /^(?=.*media).../
+               // const str = text;
+
+                var n = text.search("(min-width:600px)");
+                //console.log("N ",n);
+                let m = text.match(regex);
+
+                console.log("SECONDPART: ",getSecondPart("(min-width:600px)")); // UUSIN
+
+                if (m) {
+                    m.forEach((match, groupIndex) => {
+                        console.log(`Found match in ${li.textContent}, group ${groupIndex}: ${match}`);
+                        var str = match;
+                        var afterComma = str.substr(str.indexOf(",") + 1); // Contains 24 //
+                        console.log(afterComma);
+                    });
+                }else{
+                    console.log("No media query");
+                }
+
+            }).catch(err => {
+                console.log("Ei voi fetchaa");
+            });
+        }catch(e) {
+            console.log("Error ",e);
+        }
+        }
+    }
+/*
+   // const regex = /((?:https?:|www\.)[^\s]+)/g;
+    const regex = /((?:@media)[^\s]+)/g;
+    const str = $("#ulList").val();
+
+    let m = str.match(regex);
+
+    if (m) {
+        m.forEach((match, groupIndex) => {
+               console.log(`Found match, group ${groupIndex}: ${match}`);
+        });
+    }*/
+}
 
 function findWord4() {
     $("textarea").on('keyup', function() {
@@ -81,19 +136,6 @@ function findWord3() {
     console.log('The index of the 2nd "' + searchTerm + '" is ' + paragraph.indexOf(searchTerm, (indexOfFirst + 1)));
 }
 
-function findWord2() {
-    str = div2.textContent;
-    word = inputEtsi.value;
-    console.log("Word: " + word);
-    //    console.log("str: ",str);
-    //str = "Visit W3Schools!"; 
-    n = str.search(word);
-    console.log("n: ", n);
-    // return RegExp('\\b'+ word +'\\b').test(str)
-    // return str.split(' ').some(function(w){return w === word})
-    console.log(str.split(' ').some(item => word.includes(item)));
-}
-
 
 function findBodyWord(htmlContent) {
 
@@ -117,7 +159,7 @@ function jqueryTest() {
 }
 
 function fetchData() {
-    fetch('http://localhost/wp2/')
+    fetch('http://localhost/wordpress/')
         .then(function (response) {
             return response.text()
         })
