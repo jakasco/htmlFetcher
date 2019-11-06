@@ -11,6 +11,7 @@
     content: '';
     display: table;
     clear: both;
+   
 }
 #main{
    background-color: BurlyWood;
@@ -31,7 +32,8 @@
    width:25%;
    float: left;
    height:200px;
- /*  overflow: scroll; */
+   overflow: scroll;  
+   border: solid 1px black;
 }
 
 #dragbar{
@@ -56,33 +58,40 @@
     opacity:0.5;
     position:absolute;
     cursor: col-resize;
-    z-index:999}
+    z-index:999
+    }
 
     #fetchatti {
+     /*   height: 200px; */
         overflow: scroll;
     }
    </style>
 </head>
 
 <body>
+    <input id="etsiSana" placeholder="Etsi sana...."></input>
   <button onclick="fetchData()">fetch</button>
-    <button onclick="getLineBreaks()">alert</button>
+  <button onclick="findWord()">Etsi sana</button>
+   <!--   <button onclick="getLineBreaks()">alert</button>
     <button onclick="jqueryTest()">clear</button>
- <!--     <div id="divi" style="height: 50vh; width: 50%; background-color: grey; float: left;">
+    <div id="divi" style="height: 50vh; width: 50%; background-color: grey; float: left;">
 	<div id="fetchatti">
 	</div>
-	</div>
+	</div>-->
     <textarea id="divi2" style="height: 50vh; width: 40%; border: 1px solid black;
-    float: left; overflow: scroll; font-size: 17px; display:none;"></textarea> --><!-- DIsplay none-->
+    float: left; overflow: scroll; font-size: 17px; "></textarea> <!-- DIsplay none-->
+<div><ul style="height: 50vh; width: 100%; border: 1px solid black;
+    float: left; overflow: scroll; font-size: 17px;" id="ulList">
+    
+</ul></div>   
+
     <div id="console">Width</div>
     <div id="console2">Height</div>
 <div class="clearfix">
     <div id="sidebar">
-         <span id="position"></span>
+        <span id="position"></span>
          
         <div id="dragbar"></div>
-        
-        
         <div id="fetchatti"></div>
         <div id="dragbar2"></div>
     </div>
@@ -97,60 +106,6 @@
 
 
     <script>
-
-        const div = document.querySelector("#divi");
-        const div2 = document.querySelector("#divi2");
-		const div3 = document.querySelector("#fetchatti");
-        
-        
-        function findBodyWord(htmlContent) {
-
-            let first = htmlContent.search("<body>");
-            let last = htmlContent.search("</body>");
-
-            console.log("first: " + first + " | last: " + last);
-        }
-
-        function getLineBreaks() {
-            let enteredText = div2.value;
-
-            let numberOfLineBreaks = (enteredText.match(/\n/g) || []).length;
-            let characterCount = enteredText.length + numberOfLineBreaks;
-
-            alert('Number of breaks:  ' + numberOfLineBreaks);
-        }
-
-        function jqueryTest() {
-            $('#divi2:contains("<body>")').html().replace('<body>', '<body><div id="mainContainer">');
-        }
-
-        function fetchData() {
-            fetch('')
-                .then(function (response) {
-                    return response.text()
-                })
-                .then(function (html) {
-                    let parser = new DOMParser();
-
-                    let doc = parser.parseFromString(html, "text/html");
-
-                    let docArticle = doc.querySelector('article').innerHTML;
-
-                    console.log("HTML", html);
-                    console.log("--------------------------------------------------");
-                    div3.innerHTML = html; //divin sisään wp content
-
-                    let lineBreaksToElements = html.replace(/(\S+\s*){1,2}/g, "$&\n");
-                    console.log("LI ", lineBreaksToElements);
-                    div2.textContent = lineBreaksToElements;
-                    findBodyWord(html);
-                })
-                .catch(function (e) {
-                    console.log(e);
-                });
-        }
-
-        console.log("Fetchatti height: ",   $("#sidebar").height());
         
  ////////////////////// X akseli
         let i = 0;
@@ -181,7 +136,7 @@
           let percentage = (e.pageX / window.innerWidth) * 100;
            let mainPercentage = 100-percentage;
            
-           $('#console').text("Width:" + percentage + "%");
+           $('#console').text("Width: " + percentage + "%");
            
            $('#sidebar').css("width",percentage + "%");
            $('#main').css("width",mainPercentage + "%");
@@ -220,8 +175,9 @@ let dragging2 = false;
            let mainPercentage = 100-percentage;
           // height:calc(100% – (desired amount in px) ) //Prosentit pixeleiksi
 
-           $('#console2').text("Height:" +e.pageY);
+           $('#console2').text("Height: " +e.pageY);
            $('#dragbar2').css("margin-top",e.pageY+0.1);
+        //   $('#fetchatti').css("height",e.pageY);
            $('#sidebar').css("height",e.pageY);
            $('#tempBar').remove();
            $(document).unbind('mousemove');
@@ -229,5 +185,6 @@ let dragging2 = false;
        }
     });
     </script>
+    <script src="js/fetchSourceCode.js"></script>
 </body>
 </html>
