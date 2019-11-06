@@ -14,5 +14,12 @@ CREATE TABLE testaus2
   PRIMARY KEY (kuva_id)
 );
 
+drop table if exists testaus3;
+CREATE TABLE testaus3
+(
+  kayttaja VARCHAR(100),
+  test VARCHAR(100)
+);
+
 INSERT INTO testaus VALUE ("test 1", "test 2");
 INSERT INTO testaus2 VALUE (1, "test 2","asdsad");

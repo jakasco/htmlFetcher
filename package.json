@@ -10,6 +10,7 @@
   "author": "ILE",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
     "dotenv": "^6.1.0",
     "exif": "^0.6.0",
