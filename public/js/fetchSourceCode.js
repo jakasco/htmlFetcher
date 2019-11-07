@@ -3,6 +3,7 @@ const div = document.querySelector("#divi");
 const div2 = document.querySelector("#divi2");
 const div3 = document.querySelector("#fetchatti");
 const div4 = document.querySelector("#htmlTeksti");
+const div5 = document.querySelector("#divi5");
 const errorConsole = document.querySelector("#console3");
 const inputEtsi = document.querySelector("#etsiSana");
 const ul = document.querySelector("#ulList");
@@ -52,6 +53,11 @@ function vaihaCss(csss,n) {
     */
 }
 
+function vaihdaAlkuperainenMediaQuery(css) {
+//  console.log("vaihdaAlkuperainenMediaQuery: ",css)
+ window.document.body.style += css;
+}
+
 function fetchMediaQuery() {
 
     let ulPituus = document.querySelectorAll("#ulList li").length;
@@ -76,37 +82,48 @@ function fetchMediaQuery() {
                let re = '/\(min\)/';
                 let m = text.match("@media");
                 var res = text.split("@media");
+               
+             //   var res22 = text.split("(max-width");
             //    console.log(res);
-                for(let i=0; i<res.length; i++) {
+            var vaihdaWidth = text.replace("max-width:", "min-width");
+            vaihdaAlkuperainenMediaQuery(vaihdaWidth);
+        //    for(let i=0; i<res22.length; i++) {
 
+             //   var res2 = res[i].split(")");
+
+              //  console.log("MAX-WIDTH: ",res22[i]);
+        //    }
+
+
+                for(let i=0; i<res.length; i++) {
+                  //    let e =  res[7].split("(max-width");
+                  let e = res[7].substring(2, 5);
+                    console.log("CONSOLE LOG:",e
+                       // res[7].replace(/(:\s*)[^\\]+\\/, '$1')
+                      )
+                  //  console.log(res[7]);
                     var res2 = res[i].split(")");
 
                     $("#ulList2").append(`<li>
                 ${res[i]}
                     </li></br>`);
-                    let csss = res[i].substr(18,res[i].length);
-             //       console.log("css ",csss);
-                    
+                  //  let csss = res[i].substr(18,res[i].length);  ALKAA MAX WIDTH
+                  let csss = res[i].substr(0,res[i].length);  
+                  //  console.log("css ",csss);
+              //      console.log("css ",res[i]);
+ /////////////////////////                   div5.textContent += res[2];
+ //////////////////////////////////////                   div5.textContent += "</br>";
               //      console.log(res[i].length);
                     $("#mediaNapit").append(`<button onclick='vaihaCss("${csss}",${i})'>
-                    nappi ${res2[0]}
+                    ${i}nappi ${res2[0].substr(0,30)}
                         </button></br>`);
                 }
-            //    console.log("index: ",text.indexOf(62471));
-           //     console.log("m: ",m);
-           //     console.log("SECONDPART: ",getSecondPart("(min-width:600px)")); // UUSIN
 
                 if (m) {
                     m.forEach((match, groupIndex) => {
                         console.log(`Found match in ${li.textContent}, group ${groupIndex}: ${match}`);
                         let m = match.match(/{[\w\d]+}/g);
-                 //       console.log("m2 ",m);
-                     //   var str = match;
-                     //   var afterComma = str.substr(str.indexOf(",") + 1); // Contains 24 //
-                     //   console.log(afterComma);
                     });
-                }else{
-             //       console.log("No media query");
                 }
 
             }).catch(err => {
@@ -117,18 +134,6 @@ function fetchMediaQuery() {
         }
         }
     }
-/*
-   // const regex = /((?:https?:|www\.)[^\s]+)/g;
-    const regex = /((?:@media)[^\s]+)/g;
-    const str = $("#ulList").val();
-
-    let m = str.match(regex);
-
-    if (m) {
-        m.forEach((match, groupIndex) => {
-               console.log(`Found match, group ${groupIndex}: ${match}`);
-        });
-    }*/
 }
 
 function findWord4() {
@@ -190,7 +195,8 @@ function jqueryTest() {
 }
 
 function fetchData() {
-    fetch('http://localhost/w2/')
+    console.log("fetch data");
+    fetch('http://localhost/wp2/')
         .then(function (response) {
             return response.text()
         })

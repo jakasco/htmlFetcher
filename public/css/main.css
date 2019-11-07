@@ -259,3 +259,7 @@ label{
 
 
 }
+
+@media screen and (max-width: 1152px) {
+    body { background-color: red; }
+  }
