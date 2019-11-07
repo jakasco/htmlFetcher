@@ -73,8 +73,20 @@
   <button onclick="fetchData()">fetch</button>
   <button onclick="findWord()">Etsi sana</button>
     <button onclick="fetchMediaQuery()">fetchMediaQuery</button>
-    <div id="console">Width</div>
-    <div id="console2">Height</div>
+    <div>
+        <button id="Galaxy">Galaxy S5</button>
+        <button id="Pixel2">Pixel 2</button>
+        <button id="Pixel2XL">Pixel 2 XL</button>
+        <button id="Iphone5">Iphone 5/SE</button>
+        <button id="Iphone6">Iphone 6/7/8</button>
+        <button id="Iphone6Plus">Iphone 6/7/8 Plus</button>
+        <button id="IphoneX">Iphone X</button>
+        <button id="Ipad">Ipad</button>
+        <button id="IpadPro">Ipad Pro</button>
+    </div>
+    <div id="console">Width:</div>
+    <div id="console2">Height:</div>
+    <div id="console3">Error Console</div>
 <div class="clearfix">
     <div id="sidebar">
         <span id="position"></span>
@@ -90,6 +102,18 @@
         main2
     </div>
     </div>
+
+    <textarea id="divi2" style="height: 30vh; width: 40%; border: 1px solid black;
+    float: left; overflow: scroll; font-size: 17px; "></textarea> <!-- DIsplay none-->
+<div><ul style="height: 30vh; width: 100%; border: 1px solid black;
+    float: left; overflow: scroll; font-size: 17px;" id="ulList">
+</ul></div>   
+<div><ul style="height: 30vh; width: 100%; border: 1px solid black;
+    float: left; overflow: scroll; font-size: 17px;" id="ulList2">
+</ul></div>   
+
+
+
     <div id="mediaNapit">
 
     </div>
@@ -99,14 +123,7 @@
 	<div id="fetchatti">
 	</div>
 	</div>-->
-    <textarea id="divi2" style="height: 30vh; width: 40%; border: 1px solid black;
-    float: left; overflow: scroll; font-size: 17px; "></textarea> <!-- DIsplay none-->
-<div><ul style="height: 30vh; width: 100%; border: 1px solid black;
-    float: left; overflow: scroll; font-size: 17px;" id="ulList">
-</ul></div>   
-<div><ul style="height: 30vh; width: 100%; border: 1px solid black;
-    float: left; overflow: scroll; font-size: 17px;" id="ulList2">
-</ul></div>   
+
 <!--
     <div id="console">Width</div>
     <div id="console2">Height</div>
@@ -158,10 +175,14 @@
        {
           let percentage = (e.pageX / window.innerWidth) * 100;
            let mainPercentage = 100-percentage;
+
            
-           $('#console').text("Width: " + percentage + "%");
            
+         //  $('#console').text("Width: " +  parseInt(percentage) + "%");
+       
            $('#sidebar').css("width",percentage + "%");
+           let pixels =  parseInt($('#sidebar').width());
+           $('#console').text("Width: " +pixels+"px  |  "+  parseInt(percentage) + "%");
            $('#main').css("width",mainPercentage + "%");
            $('#tempBar').remove();
            $(document).unbind('mousemove');
@@ -196,9 +217,8 @@ let dragging2 = false;
        {
         let percentage = (e.pageY / window.innerHeight) * 100;
            let mainPercentage = 100-percentage;
-          // height:calc(100% – (desired amount in px) ) //Prosentit pixeleiksi
 
-           $('#console2').text("Height: " +e.pageY);
+           $('#console2').text("Height: " +e.pageY+"px");
            $('#dragbar2').css("margin-top",e.pageY+0.1);
         //   $('#fetchatti').css("height",e.pageY);
            $('#sidebar').css("height",e.pageY);
@@ -209,5 +229,6 @@ let dragging2 = false;
     });
     </script>
     <script src="js/fetchSourceCode.js"></script>
+    <script src="js/deviceSizes.js"></script>
 </body>
 </html>

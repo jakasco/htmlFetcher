@@ -3,6 +3,7 @@ const div = document.querySelector("#divi");
 const div2 = document.querySelector("#divi2");
 const div3 = document.querySelector("#fetchatti");
 const div4 = document.querySelector("#htmlTeksti");
+const errorConsole = document.querySelector("#console3");
 const inputEtsi = document.querySelector("#etsiSana");
 const ul = document.querySelector("#ulList");
 
@@ -189,7 +190,7 @@ function jqueryTest() {
 }
 
 function fetchData() {
-    fetch('http://localhost/wp2/')
+    fetch('http://localhost/w2/')
         .then(function (response) {
             return response.text()
         })
@@ -211,6 +212,9 @@ function fetchData() {
         })
         .catch(function (e) {
             console.log(e);
+            errorConsole.innerHTML = "<strong>Error Message:</strong> Wrong URL on localhost or XAMPP is not On";
+            $("#console3").css("background-color","red");
+            $("#console3").css("width","40%");
         });
 }
 
