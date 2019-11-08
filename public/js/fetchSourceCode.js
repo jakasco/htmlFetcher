@@ -13,7 +13,7 @@ function findWord() {
     console.log("Etsitty sana ", etsittySana);
 }
 
-$("textarea").on('keyup', function() {
+$("textarea").on('keyup', function() { //etsi kaikki css tiedostot lähdekoodista
   
      // const regex = /((?:https?:|www\.)[^\s]+)/g;
       const regex = /((?:https?:|www\.)[^\s]+)/g;
@@ -54,8 +54,8 @@ function vaihaCss(csss,n) {
 }
 
 function vaihdaAlkuperainenMediaQuery(css) {
-//  console.log("vaihdaAlkuperainenMediaQuery: ",css)
- window.document.body.style += css;
+ // console.log("vaihdaAlkuperainenMediaQuery: ",css)
+ //window.document.body.style += css;
 }
 
 function fetchMediaQuery() {
@@ -63,7 +63,7 @@ function fetchMediaQuery() {
     let ulPituus = document.querySelectorAll("#ulList li").length;
     for(let i=0; i<ulPituus; i++){
         let li = document.querySelectorAll("#ulList li")[i];
-        if(i !== 2){
+        if(i !== 2){ //Googlen css tulee cors 
       //  console.log(li.textContent);
         try {
             fetch(li.textContent).then((response) => {
@@ -85,7 +85,7 @@ function fetchMediaQuery() {
                
              //   var res22 = text.split("(max-width");
             //    console.log(res);
-            var vaihdaWidth = text.replace("max-width:", "min-width");
+            var vaihdaWidth = text.replace('@media', '#container[data-size="small"]');
             vaihdaAlkuperainenMediaQuery(vaihdaWidth);
         //    for(let i=0; i<res22.length; i++) {
 
@@ -103,7 +103,12 @@ function fetchMediaQuery() {
                       )
                   //  console.log(res[7]);
                     var res2 = res[i].split(")");
-
+                    
+              ////      res2[0] = '#container[data-size="small"] {'; //MUUTA MEDIA QUERY TÄHÄN
+                   
+              //      let newCss = res2[0]+res2[1];
+              let newCss = res2[1];
+                    console.log("newCss",newCss);
                     $("#ulList2").append(`<li>
                 ${res[i]}
                     </li></br>`);
@@ -134,6 +139,58 @@ function fetchMediaQuery() {
         }
         }
     }
+}
+
+function poistaCSS() {
+    let html = div3.innerHTML;
+    var ret = html.replace('http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4','POISTETTU CSS'); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+    div3.innerHTML = ret; //divin sisään wp content
+    console.log(div3.innerHTML);
+}
+
+function laitaTakaisinCSS() {
+
+    
+        var str = div3.innerHTML; 
+        console.log(str.includes("<link"));
+        var splitInHeadTag = str.split("<link");
+        var splitInHeadTag2 = splitInHeadTag[0].split(">");
+        console.log(splitInHeadTag[0].toString());  // TULOSTAA: <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1">
+        console.log(splitInHeadTag[1].toString());
+        console.log(splitInHeadTag);
+        let pituus = splitInHeadTag.length;
+        console.log("Pituus: "+pituus);
+        //Laita <link> tagi takaisin
+        let linkTag = "<link ";
+        for (let i=0; i<pituus; i++) {
+            splitInHeadTag[i] = linkTag.concat(splitInHeadTag[i]); //Laita <link tagi takaisin
+        }
+
+        //LAITA TAKAISIN ENNEN METATIETOJEN LOPPUA: splitInHeadTag[pituus-2]
+        let newCSSLink = '<link rel="stylesheet" id="twentyseventeen-style-css" href="http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4" type="text/css" media="all"></link>';
+        let tempLastString = splitInHeadTag[pituus-1]; //ota väliaikainen viimeinen arraysta
+        splitInHeadTag[pituus-1] = newCSSLink; //laita sen tilalle uusi css linkki
+        splitInHeadTag.push(tempLastString); //laajenna arrayta ja laita väliaikinen viimeiseksi uudestaan
+
+        let newHTML = splitInHeadTag.join(' '); //Tee ararysta uusi HTML 
+
+        div3.innerHTML = newHTML;
+/*
+        console.log(splitInHeadTag[pituus-1].toString()); //VIImeinen kohta mihin loppuu meta tiedot
+        console.log(splitInHeadTag2[0].toString());
+        console.log(splitInHeadTag2[1].toString());
+        var n = str.search("<link");
+    console.log("<link "+n);
+    String.prototype.splice = function(idx, rem, str) {
+        return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
+    };
+
+    */
+  //  document.body.innerHTML = result; // "foo bar baz"
+
+  //  let html = div3.innerHTML;
+//    var ret = html.replace('http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4',''); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+   // div3.innerHTML = ret; //divin sisään wp content
 }
 
 function findWord4() {
@@ -209,9 +266,11 @@ function fetchData() {
 
         //    console.log("HTML", html);
             console.log("--------------------------------------------------");
-            div3.innerHTML = html; //divin sisään wp content
-
-            let lineBreaksToElements = html.replace(/(\S+\s*){1,2}/g, "$&\n");
+            var ret = html.replace('http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4',''); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+           // div3.innerHTML = ret; //divin sisään wp content
+           div3.innerHTML = html; //divin sisään wp content
+         //   console.log("Ret ",ret);
+            let lineBreaksToElements = ret.replace(/(\S+\s*){1,2}/g, "$&\n");
          //   console.log("LI ", lineBreaksToElements);
             div2.textContent = lineBreaksToElements;
             findBodyWord(html);

@@ -3,9 +3,56 @@
 
 <head>
     <title>Testing</title>
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <link href="css/style.css" rel="stylesheet"> -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link href="css/style.css" rel="stylesheet"> 
   <style>
+      
+/*   
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+/*article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}*/
+
+
   body {
     background-color: #6d418e;
     margin: 0;
@@ -94,7 +141,7 @@
   }
   
   #container[data-size="small"] .big_block h1:after {
-      font-size: 12px;
+      font-size: 48px;
   }
   
   /*
@@ -328,13 +375,17 @@
        /*   height: 200px; */
           overflow: scroll;
       }
+  /*    #container[data-size="small"] #fetchatti h1:after {
+      font-size: 36px !important;
+  }
+  #container[data-size="small"] #fetchatti:after {
+      font-size: 14px;
+  }
+ 
+  #container[data-size="small"] h1 {
+          font-size: 10px;
+      } */
   
-  #container[data-size="small"] #fetchatti {
-      font-size: 25px;
-  }
-  #container[data-size="small"] #fetchatti h1:after {
-      font-size: 12px !important;
-  }
   </style>
 </head>
 
@@ -344,7 +395,7 @@
 <div style="position: relative;">
     <div id="container" data-sizes='{"small":{"maxWidth": 400}, "medium":{"minWidth": 400}, "large":{"minWidth": 700}}'>
         <div   class="big_block" style="background-color: #424242">
-            <div id="fetchatti">asd <h1>H1</h1> </div> 
+            <div id="fetchatti"  >asd <h1>H1</h1> </div> 
         </div>
         <div class="block" style="background-color: #eaeaea"><p>p</p></div>
         <div class="block" style="background-color: #30e2a0"><h1>h1</h1></div>
@@ -369,10 +420,12 @@
         <input type="text" id="width_input" placeholder="200">
         <button id="button">Change Width</button>
         <br>
-        <button id="reset">Reset</button>
+        <button id="reset">Reset</button>laitaTakaisinCSS
         <button onclick="fetchData()">fetch</button>
 <button onclick="findWord()">Etsi sana</button>
   <button onclick="fetchMediaQuery()">fetchMediaQuery</button>
+  <button onclick="poistaCSS()">Poista CSS</button>
+  <button onclick="laitaTakaisinCSS()">laitaTakaisinCSS</button>  
     </div>
     
 </div>
@@ -491,6 +544,10 @@ document.getElementById('reset').addEventListener('click', function (e) {
  
 
 })(this);
+
+$(document).ready(function(){
+   $('meta[name="viewport"]').prop('content', 'width=30em');
+});
 </script>
  <script src="js/fetchSourceCode.js"></script>
 <!-- <script src="js/deviceSizes.js"></script> -->
