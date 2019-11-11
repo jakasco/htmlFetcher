@@ -10,8 +10,8 @@ const device9 = document.querySelector("#IpadPro");
 
 function resizeForDeviceSize(width,height) {
     console.log("Width: ",width," height ",height);
-     $('#sidebar').css("width",width);
-     $('#sidebar').css("height",height);
+     $('#fetchatti').css("width",width); //Vanha on #sidebar
+     $('#fetchatti').css("height",height);
      $('#console').text("Width: " +width+"px");
      $('#console2').text("Height: " +height+"px");
 }

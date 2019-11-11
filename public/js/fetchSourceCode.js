@@ -8,6 +8,8 @@ const errorConsole = document.querySelector("#console3");
 const inputEtsi = document.querySelector("#etsiSana");
 const ul = document.querySelector("#ulList");
 
+const cssTallennusInput = document.querySelector("#input2");
+
 function findWord() {
     let etsittySana = findWord4();
     console.log("Etsitty sana ", etsittySana);
@@ -150,7 +152,7 @@ function poistaCSS() {
    // http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg
    div3.innerHTML = ret; //divin sisään wp content
    console.log(div3.innerHTML);
-
+   cssTallennusInput.value = ret;
    /* KUVAN POISTO
     fetch('http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg')
     .then(function (response) {
