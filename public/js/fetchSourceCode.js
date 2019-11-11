@@ -153,21 +153,7 @@ function poistaCSS() {
    div3.innerHTML = ret; //divin sisään wp content
   // console.log(div3.innerHTML);
    cssTallennusInput.value = ret;
-   /* KUVAN POISTO
-    fetch('http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg')
-    .then(function (response) {
-        console.log("response:",response);
-        return response.text()
-    })
-    .then(function (kuva) {
-        console.log("Kuva");
-        div3.innerHTML = ret; //divin sisään wp content
-    console.log(div3.innerHTML);
-    }).catch()(function (e) {
-             console.log("Error Poista CSS");
-              div3.innerHTML = ret; //divin sisään wp content
-               console.log(div3.innerHTML);
-    });*/
+
 }
 
 function laitaTakaisinCSS() {

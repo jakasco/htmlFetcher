@@ -23,8 +23,20 @@ const connect = () => {
     return connection;
   };
 
-
+  
 const select = (data, connection, callback) => {
+  // simple query
+  connection.execute(
+      'SELECT * FROM cssTiedostot where width <= '+data.Width+' and height <= '+data.Height,
+      (err, results, fields) => {
+        console.log(err);
+        
+        callback(results);
+      },
+  );
+};
+
+const selectScreenSize = (data, connection, callback) => {
   // simple query
   connection.execute(
       'SELECT CSS_Tiedosto, Width, Height FROM cssTiedostot where nimi = "css1"',
@@ -58,5 +70,6 @@ const insertUser = (data, connection, callback) => {
 module.exports = {
   connect: connect,
   select: select,
+  selectScreenSize: selectScreenSize,
   insertUser: insertUser,
 };

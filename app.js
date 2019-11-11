@@ -37,6 +37,14 @@ const PalautaFrontendiin = (data, req, next) => {
   });
 };
 
+const findScreenSize = (data, req, next) => {
+  database.selectScreenSize(data, connection, (results) => {
+  //  console.log("Result palauyta frontend: ",results);
+    req.custom = results;
+    next();
+  });
+};
+
 
 app.post('/asd',  (req, res, next) => {
   //console.log("req.body: ",req.body);
@@ -60,5 +68,20 @@ app.use('/asd',  (req, res, next) => {
  // console.log("req.custom: ",req.custom);
 res.send(req.custom);
 });
+
+app.post('/checkScreenSize',  (req, res, next) => {
+  //console.log("req.body: ",req.body);
+ const data = {
+    Width: req.body.width,
+    Height: req.body.height
+  };
+  findScreenSize(data, req, next)
+});
+app.use('/checkScreenSize',  (req, res, next) => {
+  // console.log("req.custom: ",req.custom);
+ res.send(req.custom);
+ });
+
+app.post
 
 app.listen(8000); //normal http traffic
