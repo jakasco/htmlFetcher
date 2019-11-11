@@ -147,11 +147,11 @@ function poistaCSS() {
     console.log("Poista CSS");
 
     let html = div3.innerHTML;
-    console.log(div3.innerHTML);
-    var ret = html.replace('http://localhost/wp/wp-content/themes/twentyseventeen/style.css?ver=5.0.7','POISTETTU CSS'); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+   // console.log(div3.innerHTML);
+    var ret = html.replace('http://localhost/wp/wp-content/themes/twentyseventeen/style.css?ver=5.0.7','css/test.css'); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
    // http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg
    div3.innerHTML = ret; //divin sisään wp content
-   console.log(div3.innerHTML);
+  // console.log(div3.innerHTML);
    cssTallennusInput.value = ret;
    /* KUVAN POISTO
     fetch('http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg')

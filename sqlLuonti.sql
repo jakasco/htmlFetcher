@@ -27,6 +27,8 @@ CREATE TABLE cssTiedostot
 (
   nimi VARCHAR(100),
   CSS_Tiedosto TEXT,
+  Width INT,
+  Height INT,
   Max_width INT,
   Min_width INT,
   Max_Height INT,
@@ -35,6 +37,6 @@ CREATE TABLE cssTiedostot
 
 ALTER TABLE `cssTiedostot` MODIFY `CSS_Tiedosto` LONGTEXT
 
-INSERT INTO cssTiedostot VALUE ("testi", "joku pitkä tiedosto",10,10,10,10);
+INSERT INTO cssTiedostot VALUE ("testi", "joku pitkä tiedosto",10,10,10,10,10,10);
 INSERT INTO testaus VALUE ("test 1", "test 2");
 INSERT INTO testaus2 VALUE (1, "test 2","asdsad");

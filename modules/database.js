@@ -24,12 +24,13 @@ const connect = () => {
   };
 
 
-const select = (connection, callback) => {
+const select = (data, connection, callback) => {
   // simple query
-  connection.query(
-      'SELECT * FROM kuvat;',
+  connection.execute(
+      'SELECT CSS_Tiedosto, Width, Height FROM cssTiedostot where nimi = "css1"',
       (err, results, fields) => {
         console.log(err);
+        
         callback(results);
       },
   );
@@ -37,12 +38,12 @@ const select = (connection, callback) => {
 
 
 const insertUser = (data, connection, callback) => {
-  console.log("Insert user", data)
+ // console.log("Insert user", data)
   connection.execute(
-      'INSERT INTO cssTiedostot (nimi, CSS_Tiedosto, Max_width, Min_width, Max_Height, Min_Height) VALUES (?, ?, ?, ?, ?, ?);',
+      'INSERT INTO cssTiedostot (nimi, CSS_Tiedosto, Width, Height, Max_width, Min_width, Max_Height, Min_Height) VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
       data,
       (err, results, fields) => {
-        console.log(results); // results contains rows returned by server
+      //  console.log(results); // results contains rows returned by server
         console.log(err);
         callback();
       },
