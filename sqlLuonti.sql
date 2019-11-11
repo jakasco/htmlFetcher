@@ -1,54 +1,34 @@
-drop table if exists kuvat;
-CREATE TABLE kuvat
+drop table if exists testaus;
+CREATE TABLE testaus
+(
+  kayttaja VARCHAR(30),
+  test VARCHAR(30)
+);
+
+drop table if exists testaus2;
+CREATE TABLE testaus2
 (
   kuva_id INT NOT NULL,
-  kayttaja_nimi VARCHAR(30),
   URL VARCHAR(50),
   kuva_teksti VARCHAR(50),
-  views INT,
-  tykkaa INT,
-  eitykkaa INT,
-  tag VARCHAR(40),
-  reported INT,
-  upload_time VARCHAR(40),
   PRIMARY KEY (kuva_id)
 );
 
-drop table if exists kayttaja;
-CREATE TABLE kayttaja
+drop table if exists testaus3;
+CREATE TABLE testaus3
 (
-  kayttaja_id INT NOT NULL,
-  kayttaja_nimi VARCHAR(50) NOT NULL,
-  sahkoposti VARCHAR(50),
-  salasana VARCHAR(30) NOT NULL,
-  logged_in INT(10),
-  ip VARCHAR(40),
-  last_login ip VARCHAR(40),
-  PRIMARY KEY (kayttaja_id)
+  kayttaja VARCHAR(100),
+  test VARCHAR(100)
 );
 
-drop table if exists views;
-CREATE TABLE views
+
+drop table if exists cssTiedostot;
+CREATE TABLE cssTiedostot
 (
-  kuva_id INT NOT NULL,
-  kayttaja_id INT,
-  ei_kirjautunut_kayttaja INT
+  nimi VARCHAR(100),
+  CSS_Tiedosto TEXT
 );
 
-drop table if exists kommentit;
-CREATE TABLE kommentit
-(
-  kuva_id INT NOT NULL,
-  kayttaja_nimi VARCHAR(30),
-  kommentti VARCHAR(100),
-  reported INT
-);
-
-drop table if exists tykkaykset;
-CREATE TABLE tykkaykset
-(
-  kuva_id INT NOT NULL,
-  kayttaja_nimi VARCHAR(30),
-  tykkaa INT,
-  ala_tykkaa INT
-);
+ALTER TABLE `cssTiedostot` MODIFY `CSS_Tiedosto` LONGTEXT
+INSERT INTO testaus VALUE ("test 1", "test 2");
+INSERT INTO testaus2 VALUE (1, "test 2","asdsad");

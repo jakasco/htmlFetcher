@@ -142,10 +142,30 @@ function fetchMediaQuery() {
 }
 
 function poistaCSS() {
+    console.log("Poista CSS");
+
     let html = div3.innerHTML;
-    var ret = html.replace('http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4','POISTETTU CSS'); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
-    div3.innerHTML = ret; //divin sisään wp content
     console.log(div3.innerHTML);
+    var ret = html.replace('http://localhost/wp/wp-content/themes/twentyseventeen/style.css?ver=5.0.7','POISTETTU CSS'); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+   // http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg
+   div3.innerHTML = ret; //divin sisään wp content
+   console.log(div3.innerHTML);
+
+   /* KUVAN POISTO
+    fetch('http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg')
+    .then(function (response) {
+        console.log("response:",response);
+        return response.text()
+    })
+    .then(function (kuva) {
+        console.log("Kuva");
+        div3.innerHTML = ret; //divin sisään wp content
+    console.log(div3.innerHTML);
+    }).catch()(function (e) {
+             console.log("Error Poista CSS");
+              div3.innerHTML = ret; //divin sisään wp content
+               console.log(div3.innerHTML);
+    });*/
 }
 
 function laitaTakaisinCSS() {
@@ -167,7 +187,7 @@ function laitaTakaisinCSS() {
         }
 
         //LAITA TAKAISIN ENNEN METATIETOJEN LOPPUA: splitInHeadTag[pituus-2]
-        let newCSSLink = '<link rel="stylesheet" id="twentyseventeen-style-css" href="http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4" type="text/css" media="all"></link>';
+        let newCSSLink = '<link rel="stylesheet" id="twentyseventeen-style-css" href="css/test.css" type="text/css" media="all"></link>';
         let tempLastString = splitInHeadTag[pituus-1]; //ota väliaikainen viimeinen arraysta
         splitInHeadTag[pituus-1] = newCSSLink; //laita sen tilalle uusi css linkki
         splitInHeadTag.push(tempLastString); //laajenna arrayta ja laita väliaikinen viimeiseksi uudestaan
@@ -253,8 +273,9 @@ function jqueryTest() {
 
 function fetchData() {
     console.log("fetch data");
-    fetch('http://localhost/wp2/')
+    fetch('http://localhost/wp/')
         .then(function (response) {
+            
             return response.text()
         })
         .then(function (html) {
@@ -266,20 +287,22 @@ function fetchData() {
 
         //    console.log("HTML", html);
             console.log("--------------------------------------------------");
-            var ret = html.replace('http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4',''); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+    
            // div3.innerHTML = ret; //divin sisään wp content
            div3.innerHTML = html; //divin sisään wp content
          //   console.log("Ret ",ret);
-            let lineBreaksToElements = ret.replace(/(\S+\s*){1,2}/g, "$&\n");
+            let lineBreaksToElements = html.replace(/(\S+\s*){1,2}/g, "$&\n"); //VAIHDA TÄHÄN ret
          //   console.log("LI ", lineBreaksToElements);
             div2.textContent = lineBreaksToElements;
+        //    console.log("div2.textContent = lineBreaksToElements:",lineBreaksToElements);
             findBodyWord(html);
+
         })
         .catch(function (e) {
             console.log(e);
-            errorConsole.innerHTML = "<strong>Error Message:</strong> Wrong URL on localhost or XAMPP is not On";
+            errorConsole.innerHTML = "<strong>Error Message:</strong> Wrong URL on localhost or XAMPP is not On. Check .htaccess rules";
             $("#console3").css("background-color","red");
-            $("#console3").css("width","40%");
+            $("#console3").css("width","45%");
         });
 }
 
