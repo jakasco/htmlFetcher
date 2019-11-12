@@ -64,7 +64,7 @@ const lahetaLomake3 = (evt) => {
 
 		 addEditingToolToElement($("#fetchatti div").children()[i],tempArr,i);
 		 
-		 let twoDimensionalArray = [[$("#fetchatti div").children()[i]], [true], [true], [null]];
+		 let twoDimensionalArray = [[$("#fetchatti div").children()[i]], [true], [true], [null], [true], [false]];
 
          fullArr.push(twoDimensionalArray);
      }
@@ -90,12 +90,12 @@ const lahetaLomake3 = (evt) => {
 
 		fullArr[num][3][0] = $('.'+className).css('backgroundColor');
 	//	console.log("fullArr[num][3][0] ",fullArr[num][3][0]);
-
+		let idElementille = "id"+num;
 
 		if(fullArr[num][1][0] == true){
 			
         ulList3.innerHTML += `<li>
-       <button onclick="changeColor('${className}',${num}),null"> ${className} </button>
+       <button onclick="changeColor('${className}',${num}),null"> ${className} <a id=${idElementille} style="color: green; font-weight: bold;"><a> </button>
 			</li></br>`;
 			fullArr[num][1][0] = false; //Laita false ettei tätä lista kasva joka klikkauksella
 	//		console.log("TRUE!!",fullArr[num][1][0]);
@@ -110,32 +110,62 @@ const lahetaLomake3 = (evt) => {
     
   }
 
-
-
-
-
   function changeColorFromPanel() {
-//	console.log("changeColorFromPanel");
-
-//	console.log(colorPicker.value);
 	let newColor = "#"+colorPicker.value;
 	return newColor;
 }
 
   function changeColor(className,num,color) {
 	  console.log("COLOR :",color);
-	//  console.log("Change ",fullArr[num][2][0]);
+
 	activeElement[0] = fullArr[num][0][0];
 	activeElement[1] = num;
-//	console.log("ACTIVE ELEMENT: ",activeElement);
-//	
-//	console.log(fullArr[num][3][0]);
+
+	
+
+	
+
 		if(fullArr[num][2][0] == true){
+
+			
+			
+
 			let newColor = changeColorFromPanel();
 	  $('.'+className).css("background-color",newColor);
 
 	  for(let i=0; i<fullArr.length; i++){
 		//	console.log(fullArr[i][2][0]);
+		try{ /////////////////////////////////////////////////ACTIVE TEKSTI
+		let idElementille = document.querySelector("#id"+i);
+		if(activeElement[0] == fullArr[i][0][0]){
+			console.log("fullArr[i][4][0]",fullArr[i][4][0]);
+			if(fullArr[i][4][0] == true){
+			idElementille.text = "  ACTIVE ";
+			fullArr[i][4][0] = false;
+
+			let className2 = $(fullArr[i][0][0]).attr('class');
+	
+			//console.log("className2 ",className2);
+			try{
+			//	console.log("Väri : ",fullArr[i][3][0]);
+			 $('.'+className2).css("background-color",fullArr[i][3][0]);
+			}catch(e){
+				console.log("Errori")
+			}
+
+
+			}else{
+				idElementille.text = "  No Active ";
+				fullArr[i][4][0] = true;
+			}
+		}else{
+			idElementille.text = "";
+		}
+	}catch(e){
+		console.log("Error ",e);
+	} 
+
+
 			if(fullArr[i][2][0] == false){
 				let className2 = $(fullArr[i][0][0]).attr('class');
 	
@@ -153,6 +183,9 @@ const lahetaLomake3 = (evt) => {
 
 	  //käydään koko fullArr läpi
 	}else{
+
+		
+
 		fullArr[num][2][0] = true;
 	console.log("Muuta väri defultiksi");
 		console.log("fullArr[num][3][0]",fullArr[num][3][0]);
@@ -185,87 +218,16 @@ function vaihdaVariElementtiin(color) {
 }
 
 function ResetAllColors() {
+	for(let i=0; i<fullArr.length; i++){
+
+			if(fullArr[i][4][0] == true){
+				let className2 = $(fullArr[i][0][0]).attr('class');
 	
+				try{
+				 $('.'+className2).css("background-color",fullArr[i][3][0]);
+				}catch(e){
+					console.log("Errori")
+				}
+			}
+		}
 }
-/*
-(function(global, undefined){
-
-	function widthChanged(elem) {
-		return elem.offsetWidth !== parseInt(elem.dataset.width);
-	}
-
-	function inRange(width, range) {
-		let min = range.minWidth || 0;
-		let max = range.maxWidth || Infinity;
-		return width >= min && width <= max;
-	}
-
-	function isNumber(n) {
-		return !isNaN(parseFloat(n)) && isFinite(n);
-	}
-
-	global.ElementMediaQuery = function(element, sizes) {
-
-		if(arguments.length < 2) {
-			throw('ElementMediaQuery expects 2 parameters ' + arguments.length + ' supplied.')
-		}
-		if(!(element instanceof Element)) {
-			throw('The first argument for ElementMediaQuery must be a dom object');
-		}
-		if(typeof sizes !== "object") {
-			throw('The second argument for ElementMediaQuery must be an object');
-		}
-
-		var $emqObj = this;
-		$emqObj.element = element;
-		$emqObj.sizes = sizes;
-
-		element.dataset.width = element.offsetWidth;
-		$emqObj.updateSize();
-
-		var onWidthChange = new Event('onWidthChange');
-
-		window.onresize = function(event) {
-			if(widthChanged(element)) { 
-				element.dataset.width = element.offsetWidth;
-			}
-		};
-		var observer = new MutationObserver(function(mutations) {
-		  	mutations.forEach(function(mutation) {
-		  		if(widthChanged(element)) element.dataset.width = element.offsetWidth;
-			    if(mutation.type === 'attributes' && mutation.attributeName === 'data-width') {		
-			    	$emqObj.updateSize() 	
-			    	element.dispatchEvent(onWidthChange);				    	
-			    }
-		 	});    
-		});
-		 			 
-		observer.observe(element, { attributes: true, childList: true, characterData: true, subtree: true });
-
-	}
-
-	ElementMediaQuery.prototype.updateSize = function() {
-		var range_flag = 0;
-    	for (var size in this.sizes) {
-			if(inRange(this.element.offsetWidth, this.sizes[size])) {
-				this.element.dataset.size = size;
-				range_flag = 1;
-			}
-		}
-		if(!range_flag) this.element.dataset.size = '';
-	}
-
-	var allElements = document.querySelectorAll('[data-sizes]');
-
-	for (var element of allElements) {
-		new ElementMediaQuery(element, JSON.parse(element.dataset.sizes));
-	}
-
-})(this);
-
-var el = new ElementMediaQuery(document.getElementById('container'), {small: {minWidth:200, maxWidth: 600}, medium: {minWidth:600, maxWidth: 800}});
-
-
-document.getElementById('container').addEventListener('onWidthChange', function (e) { 
-    console.log('Width Changed')
-}, false);*/
