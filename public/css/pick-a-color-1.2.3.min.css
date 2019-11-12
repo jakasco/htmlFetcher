@@ -4,7 +4,7 @@
 .pick-a-color-markup .pick-a-color{padding:5px}@media screen and (max-width:991px){.pick-a-color-markup .pick-a-color{width:100%;font-size:18px;padding:9px;min-width:222px;height:47px}}
 .pick-a-color-markup .input-group-btn .color-dropdown{padding:6px 5px}.pick-a-color-markup .input-group-btn .color-dropdown.no-hex{border-bottom-left-radius:4px;border-top-left-radius:4px;}
 .pick-a-color-markup .input-group-btn .color-dropdown:focus{background-color:#fff}
-.pick-a-color-markup .input-group-btn {float:left; margin-left: 30%; position: absolute;}
+.pick-a-color-markup .input-group-btn {float:left; /*margin-left: 30%; position: absolute;*/}
 @media screen and (max-width:991px){.pick-a-color-markup .input-group-btn .color-dropdown{height:47px}}
 .pick-a-color-markup .color-preview{border:1px solid #ccc;border-radius:4px;-webkit-box-shadow:inset 0 0 2px 2px rgba(0,0,0,0.075);box-shadow:inset 0 0 2px 2px rgba(0,0,0,0.075);height:1.429em;width:1.429em;display:inline-block;cursor:pointer;margin-right:5px}.pick-a-color-markup .color-preview.current-color{margin-bottom:-5px}
 @media screen and (max-width:991px){.pick-a-color-markup .color-preview{height:1.875em;width:1.875em}}

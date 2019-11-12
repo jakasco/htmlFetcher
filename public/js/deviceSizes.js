@@ -12,6 +12,8 @@ const colorPicker = document.querySelector("#colorPicker");
 
 const ulList3 = document.querySelector("#ulList3");
 
+let activeElement = [[null],[null]];
+
 function resizeForDeviceSize(width,height) {
     console.log("Width: ",width," height ",height);
      $('#fetchatti').css("width",width); //Vanha on #sidebar
@@ -93,7 +95,7 @@ const lahetaLomake3 = (evt) => {
 		if(fullArr[num][1][0] == true){
 			
         ulList3.innerHTML += `<li>
-       <button onclick="changeColor('${className}',${num})"> ${className} </button>
+       <button onclick="changeColor('${className}',${num}),null"> ${className} </button>
 			</li></br>`;
 			fullArr[num][1][0] = false; //Laita false ettei tätä lista kasva joka klikkauksella
 	//		console.log("TRUE!!",fullArr[num][1][0]);
@@ -108,18 +110,26 @@ const lahetaLomake3 = (evt) => {
     
   }
 
+
+
+
+
   function changeColorFromPanel() {
-	console.log("changeColorFromPanel");
-	console.log(colorPicker.value);
+//	console.log("changeColorFromPanel");
+
+//	console.log(colorPicker.value);
 	let newColor = "#"+colorPicker.value;
 	return newColor;
 }
 
-  function changeColor(className,num) {
+  function changeColor(className,num,color) {
+	  console.log("COLOR :",color);
 	//  console.log("Change ",fullArr[num][2][0]);
-
-	
-	console.log(fullArr[num][3][0]);
+	activeElement[0] = fullArr[num][0][0];
+	activeElement[1] = num;
+//	console.log("ACTIVE ELEMENT: ",activeElement);
+//	
+//	console.log(fullArr[num][3][0]);
 		if(fullArr[num][2][0] == true){
 			let newColor = changeColorFromPanel();
 	  $('.'+className).css("background-color",newColor);
@@ -163,6 +173,21 @@ const lahetaLomake3 = (evt) => {
 	return color;
 }
 
+function vaihdaVariElementtiin(color) {
+	console.log("activeElement: ",activeElement);
+	console.log("color: ",color);
+	try{
+	changeColor(activeElement[0],activeElement[1],color);
+	}catch(e){
+		console.log("ERROR");
+	}
+	
+}
+
+function ResetAllColors() {
+	
+}
+/*
 (function(global, undefined){
 
 	function widthChanged(elem) {
@@ -243,4 +268,4 @@ var el = new ElementMediaQuery(document.getElementById('container'), {small: {mi
 
 document.getElementById('container').addEventListener('onWidthChange', function (e) { 
     console.log('Width Changed')
-}, false);
+}, false);*/
