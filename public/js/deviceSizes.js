@@ -8,6 +8,8 @@ const device7 = document.querySelector("#IphoneX");
 const device8 = document.querySelector("#Ipad");
 const device9 = document.querySelector("#IpadPro");
 
+const colorPicker = document.querySelector("#colorPicker");
+
 const ulList3 = document.querySelector("#ulList3");
 
 function resizeForDeviceSize(width,height) {
@@ -106,52 +108,49 @@ const lahetaLomake3 = (evt) => {
     
   }
 
+  function changeColorFromPanel() {
+	console.log("changeColorFromPanel");
+	console.log(colorPicker.value);
+	let newColor = "#"+colorPicker.value;
+	return newColor;
+}
+
   function changeColor(className,num) {
 	//  console.log("Change ",fullArr[num][2][0]);
-	  
-	
-	
 
+	
 	console.log(fullArr[num][3][0]);
 		if(fullArr[num][2][0] == true){
-	  $('.'+className).css("background-color","red");
+			let newColor = changeColorFromPanel();
+	  $('.'+className).css("background-color",newColor);
+
+	  for(let i=0; i<fullArr.length; i++){
+		//	console.log(fullArr[i][2][0]);
+			if(fullArr[i][2][0] == false){
+				let className2 = $(fullArr[i][0][0]).attr('class');
+	
+				//console.log("className2 ",className2);
+				try{
+				//	console.log("Väri : ",fullArr[i][3][0]);
+				 $('.'+className2).css("background-color",fullArr[i][3][0]);
+				}catch(e){
+					console.log("Errori")
+				}
+			}
+		}
+
 	  fullArr[num][2][0] = false;
 
 	  //käydään koko fullArr läpi
-	  for(let i=0; i<fullArr.length; i++){
-	//	console.log(fullArr[i][2][0]);
-		if(fullArr[i][2][0] == false){
-			console.log("yksi vain");
-		}else{
-			let n = 0;
-			let className2 = $(fullArr[i][0][0]).attr('class');
-
-			let otherClass = fullArr[i][0][0];
-
-			//console.log("className2 ",className2);
-			try{
-				n++;
-			//	console.log("N: ",n);
-			//	console.log("Väri : ",fullArr[i][3][0]);
-			 $('.'+className2).css("background-color",fullArr[i][3][0]);
-			}catch(e){
-				console.log("Errori")
-			}
-		}
-	}
-
-
 	}else{
 		fullArr[num][2][0] = true;
-		console.log("ulList sisältö ",ulList3.innerHTML);
-		console.log("ulList pituus ",fullArr[num]);
-		console.log("ulList pituus ",fullArr[num].length);
-
-	
+	console.log("Muuta väri defultiksi");
 		console.log("fullArr[num][3][0]",fullArr[num][3][0]);
 		$('.'+className).css("background-color",fullArr[num][3][0]);
 	}  
   }
+
+
 
   function hexc(colorval) {
     var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
