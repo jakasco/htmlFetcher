@@ -21,7 +21,7 @@ const lahetaLomake = (evt) => {
       },
     };
  //   for(let i=1; i<asetukset.body i++){ //0 on pitkä css tiedosto
-   console.log("asetuksetbody",asetukset.body);
+   console.log("asetuksetbody",asetukset.body.width);
   //  }
     fetch('/asd', asetukset).then((response) => {
       return response.json();

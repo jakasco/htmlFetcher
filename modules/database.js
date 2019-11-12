@@ -25,9 +25,10 @@ const connect = () => {
 
   
 const select = (data, connection, callback) => {
-  // simple query
+  console.log("Data: ", data);
+  console.log('SELECT * FROM cssTiedostot where width = '+data[0]+' and height = '+data[1]+';');
   connection.execute(
-      'SELECT * FROM cssTiedostot where width <= '+data.Width+' and height <= '+data.Height,
+      'SELECT * FROM cssTiedostot where width = '+data[0]+' and height = '+data[1]+';',
       (err, results, fields) => {
         console.log(err);
         

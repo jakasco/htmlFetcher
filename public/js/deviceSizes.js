@@ -8,6 +8,8 @@ const device7 = document.querySelector("#IphoneX");
 const device8 = document.querySelector("#Ipad");
 const device9 = document.querySelector("#IpadPro");
 
+const ulList3 = document.querySelector("#ulList3");
+
 function resizeForDeviceSize(width,height) {
     console.log("Width: ",width," height ",height);
      $('#fetchatti').css("width",width); //Vanha on #sidebar
@@ -48,7 +50,7 @@ const lahetaLomake3 = (evt) => {
     fetch('/checkScreenSize', asetukset).then((response) => {
       return response.json();
     }).then((json) => {
-     console.log("json frontend: ",json); //CSS TIEDOSTO
+   //  console.log("json frontend: ",json); //CSS TIEDOSTO
       const fetchatti = document.querySelector("#fetchatti");
      fetchatti.innerHTML = json[0].CSS_Tiedosto;
     // console.log($( "#fetchatti div" ).children().length);
@@ -56,48 +58,190 @@ const lahetaLomake3 = (evt) => {
     
      for (let i=0; i<$( "#fetchatti div" ).children().length; i++ ) {
 
-         addEditingToolToElement($("#fetchatti div").children()[i],tempArr,i);
-         fullArr.push($("#fetchatti div").children()[i]);
+		 addEditingToolToElement($("#fetchatti div").children()[i],tempArr,i);
+		 
+		 let twoDimensionalArray = [[$("#fetchatti div").children()[i]], [true], [true], [null]];
+
+         fullArr.push(twoDimensionalArray);
      }
-     console.log(fullArr);
-  //  $("#fetchatti").css("width",json[0].Width + "px");
-   // $("#fetchatti").css("height",json[0].Height + "px");
     });
   };
 
   function addEditingToolToElement(element,arr,num) {
    // $(element).css("pointer-events","none"); //ei voi klikata, $("#ElementName").css("pointer-events","auto"); voi klikata
    // element.addEventListener("onclick",function() { changeColor();
-    //});
-    /*
-    $("#ulList2").append(`<li>
-    ${res[i]}
-        </li></br>`);
-        */
-  //  console.log("element: ",element);
-    
-    $(element).click(function(e) {
-        arr.push(element);
-        let className = $(element).attr('class');
-       // console.log("element: ",element);
-        console.log("clicked: ",element);    
-        console.log("tempArr: ",arr);
+	//});
+	let className2 = $(element).attr('class');
+	//console.log("fullArr[num][3][0] ",fullArr[num]);
+	//fullArr[num][3][0] = $('.'+className2).css('backgroundColor');
 
-        $("#ulList3").append(`<li>
+	//let backgroundColorDefault = hexc(fullArr[num][3][0]); // muuta hex
+	 
+  // console.log("backgroundColorDefault: ",backgroundColorDefault);
+	$(element).click(function(e) { //KUN painetaan Elementtiä
+		
+        arr.push(element);
+		let className = $(element).attr('class');
+	//	console.log("Classname = ",className);
+
+		fullArr[num][3][0] = $('.'+className).css('backgroundColor');
+	//	console.log("fullArr[num][3][0] ",fullArr[num][3][0]);
+
+
+		if(fullArr[num][1][0] == true){
+			
+        ulList3.innerHTML += `<li>
        <button onclick="changeColor('${className}',${num})"> ${className} </button>
-            </li></br>`);
-    });
+			</li></br>`;
+			fullArr[num][1][0] = false; //Laita false ettei tätä lista kasva joka klikkauksella
+	//		console.log("TRUE!!",fullArr[num][1][0]);
+		}else{
+			
+			ulList3.innerHTML = "";
+			fullArr[num][1][0] = true; //Palauta true jos tätä painetaan uudestaan sulkemisen jälkeen
+	//		console.log("FALSE!!", fullArr[num][1][0]);
+		}
+	});
+	
     
   }
 
   function changeColor(className,num) {
-      console.log("Change ",className,num);
-      fullArr[num] = true;
-      if(fullArr[num] == true){
-      $('.'+className).css("background-color","red");
-      fullArr[num] = false;
-      }else{
-        $('.'+className).css("background-color","grey");
-      }
-     
+	//  console.log("Change ",fullArr[num][2][0]);
+	  
+	
+	
+
+	console.log(fullArr[num][3][0]);
+		if(fullArr[num][2][0] == true){
+	  $('.'+className).css("background-color","red");
+	  fullArr[num][2][0] = false;
+
+	  //käydään koko fullArr läpi
+	  for(let i=0; i<fullArr.length; i++){
+	//	console.log(fullArr[i][2][0]);
+		if(fullArr[i][2][0] == false){
+			console.log("yksi vain");
+		}else{
+			let n = 0;
+			let className2 = $(fullArr[i][0][0]).attr('class');
+
+			let otherClass = fullArr[i][0][0];
+
+			//console.log("className2 ",className2);
+			try{
+				n++;
+			//	console.log("N: ",n);
+			//	console.log("Väri : ",fullArr[i][3][0]);
+			 $('.'+className2).css("background-color",fullArr[i][3][0]);
+			}catch(e){
+				console.log("Errori")
+			}
+		}
+	}
+
+
+	}else{
+		fullArr[num][2][0] = true;
+		console.log("ulList sisältö ",ulList3.innerHTML);
+		console.log("ulList pituus ",fullArr[num]);
+		console.log("ulList pituus ",fullArr[num].length);
+
+	
+		console.log("fullArr[num][3][0]",fullArr[num][3][0]);
+		$('.'+className).css("background-color",fullArr[num][3][0]);
+	}  
   }
+
+  function hexc(colorval) {
+    var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+    delete(parts[0]);
+    for (var i = 1; i <= 3; ++i) {
+        parts[i] = parseInt(parts[i]).toString(16);
+        if (parts[i].length == 1) parts[i] = '0' + parts[i];
+    }
+	color = '#' + parts.join('');
+	return color;
+}
+
+(function(global, undefined){
+
+	function widthChanged(elem) {
+		return elem.offsetWidth !== parseInt(elem.dataset.width);
+	}
+
+	function inRange(width, range) {
+		let min = range.minWidth || 0;
+		let max = range.maxWidth || Infinity;
+		return width >= min && width <= max;
+	}
+
+	function isNumber(n) {
+		return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+
+	global.ElementMediaQuery = function(element, sizes) {
+
+		if(arguments.length < 2) {
+			throw('ElementMediaQuery expects 2 parameters ' + arguments.length + ' supplied.')
+		}
+		if(!(element instanceof Element)) {
+			throw('The first argument for ElementMediaQuery must be a dom object');
+		}
+		if(typeof sizes !== "object") {
+			throw('The second argument for ElementMediaQuery must be an object');
+		}
+
+		var $emqObj = this;
+		$emqObj.element = element;
+		$emqObj.sizes = sizes;
+
+		element.dataset.width = element.offsetWidth;
+		$emqObj.updateSize();
+
+		var onWidthChange = new Event('onWidthChange');
+
+		window.onresize = function(event) {
+			if(widthChanged(element)) { 
+				element.dataset.width = element.offsetWidth;
+			}
+		};
+		var observer = new MutationObserver(function(mutations) {
+		  	mutations.forEach(function(mutation) {
+		  		if(widthChanged(element)) element.dataset.width = element.offsetWidth;
+			    if(mutation.type === 'attributes' && mutation.attributeName === 'data-width') {		
+			    	$emqObj.updateSize() 	
+			    	element.dispatchEvent(onWidthChange);				    	
+			    }
+		 	});    
+		});
+		 			 
+		observer.observe(element, { attributes: true, childList: true, characterData: true, subtree: true });
+
+	}
+
+	ElementMediaQuery.prototype.updateSize = function() {
+		var range_flag = 0;
+    	for (var size in this.sizes) {
+			if(inRange(this.element.offsetWidth, this.sizes[size])) {
+				this.element.dataset.size = size;
+				range_flag = 1;
+			}
+		}
+		if(!range_flag) this.element.dataset.size = '';
+	}
+
+	var allElements = document.querySelectorAll('[data-sizes]');
+
+	for (var element of allElements) {
+		new ElementMediaQuery(element, JSON.parse(element.dataset.sizes));
+	}
+
+})(this);
+
+var el = new ElementMediaQuery(document.getElementById('container'), {small: {minWidth:200, maxWidth: 600}, medium: {minWidth:600, maxWidth: 800}});
+
+
+document.getElementById('container').addEventListener('onWidthChange', function (e) { 
+    console.log('Width Changed')
+}, false);

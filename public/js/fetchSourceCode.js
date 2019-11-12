@@ -148,7 +148,7 @@ function poistaCSS() {
 
     let html = div3.innerHTML;
    // console.log(div3.innerHTML);
-    var ret = html.replace('http://localhost/wp/wp-content/themes/twentyseventeen/style.css?ver=5.0.7','css/test.css'); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+    var ret = html.replace('http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4','css/test.css'); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
    // http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg
    div3.innerHTML = ret; //divin sisään wp content
   // console.log(div3.innerHTML);
@@ -158,7 +158,6 @@ function poistaCSS() {
 
 function laitaTakaisinCSS() {
 
-    
         var str = div3.innerHTML; 
         console.log(str.includes("<link"));
         var splitInHeadTag = str.split("<link");
@@ -261,7 +260,7 @@ function jqueryTest() {
 
 function fetchData() {
     console.log("fetch data");
-    fetch('http://localhost/wp/')
+    fetch('http://localhost/wp2/')
         .then(function (response) {
             
             return response.text()
