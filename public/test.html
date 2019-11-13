@@ -1,179 +1,184 @@
 <!DOCTYPE html>
 <html>
 
-<head>	
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="x-ua-compatible" content="IE=10">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/pick-a-color-1.2.3.min.css">
     <title>Testing</title>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-   <script src="js/jquery-3.4.1.js"></script>
-   <!-- <link rel="stylesheet" href="css/bootstrap-3.0.0.min.css"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="js/jquery-3.4.1.js"></script>
+    <!-- <link rel="stylesheet" href="css/bootstrap-3.0.0.min.css"> -->
 
-  <link href="css/style.css" rel="stylesheet"> 
-  <style>
-      
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #6d418e;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
 
-  body {
-    background-color: #6d418e;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  
-  html {
-    height: 100%;
-  }
-  
-  #custom_width {
-    margin-top: 40px;
-    text-align: center;
-  }
-  
-  #custom_width input {
-    border: none;
-    height: 40px;
-    width: 85px;
-    padding: 8px;
-    box-sizing: border-box;
-    font-size: 18px;
-    border-radius: 3px;
-    vertical-align: middle;
-  }
-  
-  #custom_width button#button {
-    border: none;
-    background-color: #f13379;
-    height: 40px;
-    color: #fff;
-    box-sizing: border-box;
-    vertical-align: middle;
-    border-radius: 2px;
-    padding: 0 15px;
-    cursor: pointer;
-  }
-  
-  #custom_width button#reset {
-    border: none;
-    background-color: transparent;
-    color: #fff;
-    margin-top: 15px;
-    cursor: pointer;
-  }
-  
-  #container {
-    overflow: hidden;
-    max-width: 500px;
-    width: 100%;
-    margin: auto;
-  }
-  
-  @media screen and (min-width: 700px) {
-    #container {
-      max-width: 700px;
-    }
-  }
-  
-  #container[data-size="small"] .block {
-    width: 100%;
-  }
-  
-  #container .big_block {
-    width: 100%;
-    padding: 40px;
-    text-align: center;
-    color: #fff;
-    font-family: arial;
-    box-sizing: border-box;
-  }
-  
-  #container[data-size="large"] .big_block:after {
-    content: 'My Width is 700px or larger.';
-  }
-  
-  #container[data-size="medium"] .big_block:after {
-    content: 'My Width is between 400px and 700px';
-  }
-  
-  #container[data-size="small"] .big_block:after {
-    content: 'My Width is less than 400px';
-  }
-  
-  #container[data-size="small"] .big_block h1:after {
-      font-size: 48px;
-  }
-  
+        html {
+            height: 100%;
+        }
 
-  #container .block {
-    width: 50%;
-    float: left;
-    height: 100px;
-  }
-  .clearfix:after {
-      content: '';
-      display: table;
-      clear: both;
-     
-  }
-  #main{
-     background-color: BurlyWood;
-     float: right;
-     height:200px;
-      width: 75%;
-      display: none;
-  }
-  #main2{
-     background-color: BurlyWood;
-     height: 200px;
-      width: 100%;
-      float: right;
-      display: none;
-  }
-  #sidebar{
-     background-color: IndianRed;
-     width:320px;
-     float: left;
-     height:568px;
-     overflow: scroll;  
-     border: solid 1px black;
-  }
-  
-  #dragbar{
-     background-color:black;
-     height:100%;
-     float: right;
-     width: 3px;
-     cursor: col-resize;
-     z-index:9999;
-  }
-  #dragbar2{
-      background-color: rgb(90, 74, 74);
-      width: 100%;
-      height: 5px;
-      cursor: col-resize;
-      z-index: 9999;
-      margin-top: 180px;
-  }
-  #tempBar{
-      width:3px;
-      background-color:#000;
-      opacity:0.5;
-      position:absolute;
-      cursor: col-resize;
-      z-index:999
-      }
-  
-  
-      #fetchatti {
-         height: 200px; 
-         width: 200px;
-         background-color: mediumturquoise;
-          overflow: scroll;
-      }
-  /*    #container[data-size="small"] #fetchatti h1:after {
+        #custom_width {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        #custom_width input {
+            border: none;
+            height: 40px;
+            width: 85px;
+            padding: 8px;
+            box-sizing: border-box;
+            font-size: 18px;
+            border-radius: 3px;
+            vertical-align: middle;
+        }
+
+        #custom_width button#button {
+            border: none;
+            background-color: #f13379;
+            height: 40px;
+            color: #fff;
+            box-sizing: border-box;
+            vertical-align: middle;
+            border-radius: 2px;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+
+        #custom_width button#reset {
+            border: none;
+            background-color: transparent;
+            color: #fff;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        #container {
+            overflow: hidden;
+            max-width: 500px;
+            width: 100%;
+            margin: auto;
+        }
+
+        @media screen and (min-width: 700px) {
+            #container {
+                max-width: 700px;
+            }
+        }
+
+        #container[data-size="small"] .block {
+            width: 100%;
+        }
+
+        #container .big_block {
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+            color: #fff;
+            font-family: arial;
+            box-sizing: border-box;
+        }
+
+        #container[data-size="large"] .big_block:after {
+            content: 'My Width is 700px or larger.';
+        }
+
+        #container[data-size="medium"] .big_block:after {
+            content: 'My Width is between 400px and 700px';
+        }
+
+        #container[data-size="small"] .big_block:after {
+            content: 'My Width is less than 400px';
+        }
+
+        #container[data-size="small"] .big_block h1:after {
+            font-size: 48px;
+        }
+
+
+        #container .block {
+            width: 50%;
+            float: left;
+            height: 100px;
+        }
+
+        .clearfix:after {
+            content: '';
+            display: table;
+            clear: both;
+
+        }
+
+        #main {
+            background-color: BurlyWood;
+            float: right;
+            height: 200px;
+            width: 75%;
+            display: none;
+        }
+
+        #main2 {
+            background-color: BurlyWood;
+            height: 200px;
+            width: 100%;
+            float: right;
+            display: none;
+        }
+
+        #sidebar {
+            background-color: IndianRed;
+            width: 320px;
+            float: left;
+            height: 568px;
+            overflow: scroll;
+            border: solid 1px black;
+        }
+
+        #dragbar {
+            background-color: black;
+            height: 100%;
+            float: right;
+            width: 3px;
+            cursor: col-resize;
+            z-index: 9999;
+        }
+
+        #dragbar2 {
+            background-color: rgb(90, 74, 74);
+            width: 100%;
+            height: 5px;
+            cursor: col-resize;
+            z-index: 9999;
+            margin-top: 180px;
+        }
+
+        #tempBar {
+            width: 3px;
+            background-color: #000;
+            opacity: 0.5;
+            position: absolute;
+            cursor: col-resize;
+            z-index: 999
+        }
+
+
+        #fetchatti {
+            height: 200px;
+            width: 200px;
+            background-color: mediumturquoise;
+            overflow: scroll;
+        }
+
+        /*    #container[data-size="small"] #fetchatti h1:after {
       font-size: 36px !important;
   }
   #container[data-size="small"] #fetchatti:after {
@@ -183,42 +188,123 @@
   #container[data-size="small"] h1 {
           font-size: 10px;
       } */
-  
-  </style>
+    </style>
 </head>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <!-- <script src="js/tinycolor-0.9.14.min.js"></script> -->
 <script src="js/pick-a-color-1.2.3.min.js"></script>
-<body>
-     <!--   <div class="pick-a-color" >-->
-                <input type="text"  style="width: 40%; padding-left: 200px;" name="font-color" id="colorPicker" class="pick-a-color form-control">
-        
-     <!--btn btn-default color-dropdown dropdown-toggle  .... input-group-btn   </div>-->
-<!--"top: 50%;position: relative;transform: translateY(-50%);-->
-<div id="tyylittely" style="background-color: grey">
-    <h1>Customize:</h1>
-   
-    <ul id="ulList3">
 
-    </ul>
-<button onclick="ResetAllColors()">Reset Colors</button>
-</div>
-<div style="position: relative;">
-    <div id="container" data-sizes='{"small":{"maxWidth": 400}, "medium":{"minWidth": 400}, "large":{"minWidth": 700}}'>
-        <div   class="big_block" style="background-color: #424242">
-            <div id="fetchatti"  >qwe <h1>H1</h1> </div> 
-            
-           
+<body>
+    <!--   <div class="pick-a-color" >-->
+    
+
+    <!--btn btn-default color-dropdown dropdown-toggle  .... input-group-btn   </div>-->
+    <!--"top: 50%;position: relative;transform: translateY(-50%);-->
+    <div id="Navigation" style="width: 100%; height: 10vh; background-color: grey;">
+        <div id="navButtons">
+        <button id="naytaNapit" style="background-color:cornsilk;">Devices</button>
+        <button id="naytaNapit" style="background-color:cornsilk;">Source Code</button>
+        <button id="naytaNapit" style="background-color:cornsilk;">CSS Files</button>
+        <button id="naytaNapit" style="background-color:cornsilk;">CSS Files</button>
         </div>
-       
-        <div class="block" style="background-color: #eaeaea; display: none;"><p>p</p></div>
-        <div class="block" style="background-color: #30e2a0; display: none;"><h1>h1</h1></div>
-       <div class="clearfix">
+        <div>
+            <button id="Galaxy">Galaxy S5</button>
+            <button id="Pixel2">Pixel 2</button>
+            <button id="Pixel2XL">Pixel 2 XL</button>
+            <button id="Iphone5">Iphone 5/SE</button>
+            <button id="Iphone6">Iphone 6/7/8</button>
+            <button id="Iphone6Plus">Iphone 6/7/8 Plus</button>
+            <button id="IphoneX">Iphone X</button>
+            <button id="Ipad">Ipad</button>
+            <button id="IpadPro">Ipad Pro</button>
+        </div>
+        <div>
+        <textarea id="divi2" style="height: 30vh; width: 40%; border: 1px solid black;
+        float: left; overflow: scroll; font-size: 17px; "></textarea> </div><!-- DIsplay none-->
+
+        <div>
+            <textarea id="divi5" style="height: 30vh; width: 40%; border: 1px solid black;
+        float: left; overflow: scroll; font-size: 17px; "></textarea>
+</div>
+
+<div>
+    <ul style="height: 30vh; width: 100%; border: 1px solid black;
+float: left; overflow: scroll; font-size: 17px;" id="ulList">
+    </ul>
+</div>
+<div>
+    <ul style="height: 30vh; width: 100%; border: 1px solid black;
+float: left; overflow: scroll; font-size: 17px;" id="ulList2">
+    </ul>
+</div>
+
+
+
+
+<div id="custom_width">
+    <input type="text" id="width_input" placeholder="200">
+    <button id="button">Change Width</button>
+    
+    <button id="reset">Reset</button>laitaTakaisinCSS
+    <button onclick="fetchData()">fetch</button>
+
+    <input id="etsiSana" placeholder="Etsi sana...."></input>
+    <button onclick="findWord()">Etsi sana</button>
+    <button onclick="fetchMediaQuery()">fetchMediaQuery</button>
+    <button onclick="poistaCSS()">Poista CSS</button>
+    <button onclick="laitaTakaisinCSS()">laitaTakaisinCSS</button>
+   
+    <form method="POST" action="/asd" id="asd">
+        <input type="text" name="user" id="input2"><br>
+        <button type="submit" form="asd" value="Submit">Save to Database</button>
+    </form>
+
+</div>
+
+
+
+<div id="mediaNapit">
+
+</div>
+
+
+<input type="text" style="width: 40%; padding-left: 200px;" name="font-color" id="colorPicker"
+        class="pick-a-color form-control">
+    <div id="tyylittely" style="background-color: grey">
+        <h1 id="CustomizeTitle">Customize:</h1>
+
+        <ul id="ulList3">
+
+        </ul>
+        <button id="resetColorsButton" onclick="ResetAllColors()">Reset Colors</button>
+    </div>
+</div> <!--Navigaatio loppuu-->
+
+
+
+    <div style="position: relative; position: absolute;
+    margin-top: 300px;"> <!-- POSITION RELATIVE ALKUPERÄINEN-->
+        <div id="container"
+            data-sizes='{"small":{"maxWidth": 400}, "medium":{"minWidth": 400}, "large":{"minWidth": 700}}'>
+            <div class="big_block" style="background-color: #424242">
+                <div id="fetchatti">qwe <h1>H1</h1>
+                </div>
+
+
+            </div>
+
+            <div class="block" style="background-color: #eaeaea; display: none;">
+                <p>p</p>
+            </div>
+            <div class="block" style="background-color: #30e2a0; display: none;">
+                <h1>h1</h1>
+            </div>
+            <div class="clearfix">
                 <div id="sidebar" style="display:none;  ">
                     <span id="position"></span>
-                     
+
                     <div id="dragbar"></div>
-                   <!-- <div id="fetchatti"></div>-->
+                    <!-- <div id="fetchatti"></div>-->
                     <div id="dragbar2"></div>
                 </div>
                 <div id="main">
@@ -227,161 +313,118 @@
                 <div id="main2">
                     main2
                 </div>
-                </div>
-    </div>
+            </div>
+        </div>
 
-    <div id="custom_width">
-        <input type="text" id="width_input" placeholder="200">
-        <button id="button">Change Width</button>
-        <br>
-        <button id="reset">Reset</button>laitaTakaisinCSS
-        <button onclick="fetchData()">fetch</button>
-<button onclick="findWord()">Etsi sana</button>
-  <button onclick="fetchMediaQuery()">fetchMediaQuery</button>
-  <button onclick="poistaCSS()">Poista CSS</button>
-  <button onclick="laitaTakaisinCSS()">laitaTakaisinCSS</button>  
-  <div>
-    <button id="Galaxy">Galaxy S5</button>
-    <button id="Pixel2">Pixel 2</button>
-    <button id="Pixel2XL">Pixel 2 XL</button>
-    <button id="Iphone5">Iphone 5/SE</button>
-    <button id="Iphone6">Iphone 6/7/8</button>
-    <button id="Iphone6Plus">Iphone 6/7/8 Plus</button>
-    <button id="IphoneX">Iphone X</button>
-    <button id="Ipad">Ipad</button>
-    <button id="IpadPro">Ipad Pro</button>
-</div>
-<form  method="POST" action="/asd" id="asd">
-    <input type="text"  name="user" id="input2"><br>
-    <button type="submit" form="asd" value="Submit" >Save to Database</button>
-</form>
+     
 
     </div>
-    
-</div>
-<input id="etsiSana" placeholder="Etsi sana...."></input>
+  
 
-<textarea id="divi2" style="height: 30vh; width: 40%; border: 1px solid black;
-float: left; overflow: scroll; font-size: 17px; "></textarea> <!-- DIsplay none-->
-<textarea id="divi5" style="height: 30vh; width: 40%; border: 1px solid black;
-float: left; overflow: scroll; font-size: 17px; "></textarea> 
-<div><ul style="height: 30vh; width: 100%; border: 1px solid black;
-float: left; overflow: scroll; font-size: 17px;" id="ulList">
-</ul></div>   
-<div><ul style="height: 30vh; width: 100%; border: 1px solid black;
-float: left; overflow: scroll; font-size: 17px;" id="ulList2">
-</ul></div>   
+    <script>
+        (function (global, undefined) {
 
-
-
-<div id="mediaNapit">
-
-</div>
-
-<script>
-(function(global, undefined){
-
-function widthChanged(elem) {
-    return elem.offsetWidth !== parseInt(elem.dataset.width);
-}
-
-function inRange(width, range) {
-    let min = range.minWidth || 0;
-    let max = range.maxWidth || Infinity;
-    return width >= min && width <= max;
-}
-
-function isNumber(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-global.ElementMediaQuery = function(element, sizes) {
-
-    if(arguments.length < 2) {
-        throw('ElementMediaQuery expects 2 parameters ' + arguments.length + ' supplied.')
-    }
-    if(!(element instanceof Element)) {
-        throw('The first argument for ElementMediaQuery must be a dom object');
-    }
-    if(typeof sizes !== "object") {
-        throw('The second argument for ElementMediaQuery must be an object');
-    }
-
-    var $emqObj = this;
-    $emqObj.element = element;
-    $emqObj.sizes = sizes;
-
-    element.dataset.width = element.offsetWidth;
-    $emqObj.updateSize();
-
-    var onWidthChange = new Event('onWidthChange');
-
-    window.onresize = function(event) {
-        if(widthChanged(element)) { 
-            element.dataset.width = element.offsetWidth;
-        }
-    };
-    var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if(widthChanged(element)) element.dataset.width = element.offsetWidth;
-            if(mutation.type === 'attributes' && mutation.attributeName === 'data-width') {     
-                $emqObj.updateSize()    
-                element.dispatchEvent(onWidthChange);                       
+            function widthChanged(elem) {
+                return elem.offsetWidth !== parseInt(elem.dataset.width);
             }
-        });    
-    });
-                 
-    observer.observe(element, { attributes: true, childList: true, characterData: true, subtree: true });
 
-}
+            function inRange(width, range) {
+                let min = range.minWidth || 0;
+                let max = range.maxWidth || Infinity;
+                return width >= min && width <= max;
+            }
 
-ElementMediaQuery.prototype.updateSize = function() {
-    var range_flag = 0;
-    for (var size in this.sizes) {
-        if(inRange(this.element.offsetWidth, this.sizes[size])) {
-            this.element.dataset.size = size;
-            range_flag = 1;
-        }
-    }
-    if(!range_flag) this.element.dataset.size = '';
-}
+            function isNumber(n) {
+                return !isNaN(parseFloat(n)) && isFinite(n);
+            }
 
-// var el = new ElementMediaQuery(document.getElementById('container'), {small: {minWidth:200, maxWidth: 600}, medium: {minWidth:600, maxWidth: 800}});
+            global.ElementMediaQuery = function (element, sizes) {
 
-document.getElementById('container').addEventListener('onWidthChange', function (e) { 
-    console.log('Width Changed')
-}, false);
+                if (arguments.length < 2) {
+                    throw ('ElementMediaQuery expects 2 parameters ' + arguments.length + ' supplied.')
+                }
+                if (!(element instanceof Element)) {
+                    throw ('The first argument for ElementMediaQuery must be a dom object');
+                }
+                if (typeof sizes !== "object") {
+                    throw ('The second argument for ElementMediaQuery must be an object');
+                }
 
-var allElements = document.querySelectorAll('[data-sizes]');
+                var $emqObj = this;
+                $emqObj.element = element;
+                $emqObj.sizes = sizes;
 
-for (var element of allElements) {
-    new ElementMediaQuery(element, JSON.parse(element.dataset.sizes));
-}
+                element.dataset.width = element.offsetWidth;
+                $emqObj.updateSize();
+
+                var onWidthChange = new Event('onWidthChange');
+
+                window.onresize = function (event) {
+                    if (widthChanged(element)) {
+                        element.dataset.width = element.offsetWidth;
+                    }
+                };
+                var observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                        if (widthChanged(element)) element.dataset.width = element.offsetWidth;
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'data-width') {
+                            $emqObj.updateSize()
+                            element.dispatchEvent(onWidthChange);
+                        }
+                    });
+                });
+
+                observer.observe(element, { attributes: true, childList: true, characterData: true, subtree: true });
+
+            }
+
+            ElementMediaQuery.prototype.updateSize = function () {
+                var range_flag = 0;
+                for (var size in this.sizes) {
+                    if (inRange(this.element.offsetWidth, this.sizes[size])) {
+                        this.element.dataset.size = size;
+                        range_flag = 1;
+                    }
+                }
+                if (!range_flag) this.element.dataset.size = '';
+            }
+
+            // var el = new ElementMediaQuery(document.getElementById('container'), {small: {minWidth:200, maxWidth: 600}, medium: {minWidth:600, maxWidth: 800}});
+
+            document.getElementById('container').addEventListener('onWidthChange', function (e) {
+                console.log('Width Changed')
+            }, false);
+
+            var allElements = document.querySelectorAll('[data-sizes]');
+
+            for (var element of allElements) {
+                new ElementMediaQuery(element, JSON.parse(element.dataset.sizes));
+            }
 
 
-document.getElementById('button').addEventListener('click', function (e) { 
-    var w = parseInt(document.getElementById('width_input').value);
-    if(isNumber(w)) {
-        document.getElementById('container').setAttribute("style","max-width:" + w + "px");
-    }
-}, false);
+            document.getElementById('button').addEventListener('click', function (e) {
+                var w = parseInt(document.getElementById('width_input').value);
+                if (isNumber(w)) {
+                    document.getElementById('container').setAttribute("style", "max-width:" + w + "px");
+                }
+            }, false);
 
-document.getElementById('reset').addEventListener('click', function (e) { 
-    document.getElementById('container').setAttribute("style","");
-    document.getElementById('width_input').value = '';
-}, false);
-
- 
-
-})(this);
-
-$(document).ready(function(){
-   $('meta[name="viewport"]').prop('content', 'width=30em');
-});
-</script>
+            document.getElementById('reset').addEventListener('click', function (e) {
+                document.getElementById('container').setAttribute("style", "");
+                document.getElementById('width_input').value = '';
+            }, false);
 
 
-<!-- 
+
+        })(this);
+
+        $(document).ready(function () {
+            $('meta[name="viewport"]').prop('content', 'width=30em');
+        });
+    </script>
+
+
+    <!-- 
 <script src="js/pick-a-color-1.2.3.min.js"></script>
 <script src="js/pick-a-color.js"></script>
 
@@ -393,51 +436,66 @@ $(document).ready(function(){
 
     });
 -->
-</script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-        <script src="js/fetchSourceCode.js"></script>
-        <script src="js/deviceSizes.js"></script> 
-        <script src="js/sendToDatabase.js"></script>
-        <script src="js/tinycolor-0.9.14.min.js"></script>
-        <script src="js/pick-a-color-1.2.3.min.js"></script>
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="js/fetchSourceCode.js"></script>
+    <script src="js/deviceSizes.js"></script>
+    <script src="js/sendToDatabase.js"></script>
+    <script src="js/tinycolor-0.9.14.min.js"></script>
+    <script src="js/pick-a-color-1.2.3.min.js"></script>
+
+    <script type="text/javascript">
         
-                <script type="text/javascript">
-        
-                    $(document).ready(function () {
-                 //   $(".input-group-btn open").css("display","none"); //PIILOTA TOINEN NAPPI OIKEALLA
-                      $(".pick-a-color").pickAColor();
-                        
-                      
-                    });
-
-                    $("#colorPicker").on("input", function() {
-                     alert("Change1");
-                        });
+        $(document).ready(function () {
+            //   $(".input-group-btn open").css("display","none"); //PIILOTA TOINEN NAPPI OIKEALLA
+            $(".pick-a-color").pickAColor();
 
 
-         
-                        $("#colorPicker").each(function() {
-   var elem = $(this);
+        });
 
-   // Save current value of element
-   elem.data('oldVal', elem.val());
+        $(document).ready(function () {
+            $("#font-color").hide(); //piilota väri palettu
+            $("#resetColorsButton").hide();
+            $("#tyylittely").hide();
+        });
 
-   // Look for changes in the value
-   elem.bind("propertychange change click keyup input paste", function(event){
-      // If value has changed...
-     // alert("CHANGE" +elem.val());
-     vaihdaVariElementtiin(elem.val());
-      if (elem.data('oldVal') != elem.val()) {
-       // Updated stored value
-       elem.data('oldVal', elem.val());
+        //näytä/piilota väri paletti aina kun elementtiä klikataan
+        $('#ulList3').on('DOMSubtreeModified', function (event) {
+            if($('#ulList3 li').length >= 1){
+             $("#font-color").show();
+             $("#resetColorsButton").show();
+             $("#tyylittely").show();
+        }else{
+            $("#tyylittely").hide();
+            $("#font-color").hide();
+            $("#resetColorsButton").hide();
+        }
+        });
 
-       // Do action
 
-     }
-   });
- });
+        $("#colorPicker").each(function () {
+            var elem = $(this);
 
-                </script>
-              
+            // Save current value of element
+            elem.data('oldVal', elem.val());
+
+            // Look for changes in the value
+            elem.bind("propertychange change click keyup input paste", function (event) {
+                // If value has changed...
+                // alert("CHANGE" +elem.val());
+                vaihdaVariElementtiin(elem.val());
+                if (elem.data('oldVal') != elem.val()) {
+                    // Updated stored value
+                    elem.data('oldVal', elem.val());
+
+                    // Do action
+
+                }
+            });
+        });
+
+    </script>
+
 </body>
+
 </html>

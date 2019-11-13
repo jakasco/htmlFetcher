@@ -16,11 +16,11 @@ function findWord() {
 }
 
 $("textarea").on('keyup', function() { //etsi kaikki css tiedostot lähdekoodista
-  
+
      // const regex = /((?:https?:|www\.)[^\s]+)/g;
       const regex = /((?:https?:|www\.)[^\s]+)/g;
       const str = $(this).val();
-  
+
       let m = str.match(regex);
 
     if (m) {
@@ -65,7 +65,7 @@ function fetchMediaQuery() {
     let ulPituus = document.querySelectorAll("#ulList li").length;
     for(let i=0; i<ulPituus; i++){
         let li = document.querySelectorAll("#ulList li")[i];
-        if(i !== 2){ //Googlen css tulee cors 
+        if(i !== 2){ //Googlen css tulee cors
       //  console.log(li.textContent);
         try {
             fetch(li.textContent).then((response) => {
@@ -84,7 +84,7 @@ function fetchMediaQuery() {
                let re = '/\(min\)/';
                 let m = text.match("@media");
                 var res = text.split("@media");
-               
+
              //   var res22 = text.split("(max-width");
             //    console.log(res);
             var vaihdaWidth = text.replace('@media', '#container[data-size="small"]');
@@ -105,9 +105,9 @@ function fetchMediaQuery() {
                       )
                   //  console.log(res[7]);
                     var res2 = res[i].split(")");
-                    
+
               ////      res2[0] = '#container[data-size="small"] {'; //MUUTA MEDIA QUERY TÄHÄN
-                   
+
               //      let newCss = res2[0]+res2[1];
               let newCss = res2[1];
                     console.log("newCss",newCss);
@@ -115,7 +115,7 @@ function fetchMediaQuery() {
                 ${res[i]}
                     </li></br>`);
                   //  let csss = res[i].substr(18,res[i].length);  ALKAA MAX WIDTH
-                  let csss = res[i].substr(0,res[i].length);  
+                  let csss = res[i].substr(0,res[i].length);
                   //  console.log("css ",csss);
               //      console.log("css ",res[i]);
  /////////////////////////                   div5.textContent += res[2];
@@ -158,7 +158,7 @@ function poistaCSS() {
 
 function laitaTakaisinCSS() {
 
-        var str = div3.innerHTML; 
+        var str = div3.innerHTML;
         console.log(str.includes("<link"));
         var splitInHeadTag = str.split("<link");
         var splitInHeadTag2 = splitInHeadTag[0].split(">");
@@ -179,7 +179,7 @@ function laitaTakaisinCSS() {
         splitInHeadTag[pituus-1] = newCSSLink; //laita sen tilalle uusi css linkki
         splitInHeadTag.push(tempLastString); //laajenna arrayta ja laita väliaikinen viimeiseksi uudestaan
 
-        let newHTML = splitInHeadTag.join(' '); //Tee ararysta uusi HTML 
+        let newHTML = splitInHeadTag.join(' '); //Tee ararysta uusi HTML
 
         div3.innerHTML = newHTML;
 /*
@@ -274,7 +274,7 @@ function fetchData() {
 
         //    console.log("HTML", html);
             console.log("--------------------------------------------------");
-    
+
            // div3.innerHTML = ret; //divin sisään wp content
            div3.innerHTML = html; //divin sisään wp content
          //   console.log("Ret ",ret);
@@ -294,4 +294,3 @@ function fetchData() {
 }
 
 console.log("Fetchatti height: ", $("#sidebar").height());
-
