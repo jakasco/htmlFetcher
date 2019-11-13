@@ -98,12 +98,12 @@ h3{
 
 
 body{
-    background-image: linear-gradient(#0F2027, #203A43, #2C5364);
+  /*  background-image: linear-gradient(#0F2027, #203A43, #2C5364);
 
     color: white;
     font-family: Arial;
     margin: 0px;
-
+*/
 }
 
 
@@ -260,4 +260,49 @@ label{
 
 }
 
+#Navigation {
+    background-image: linear-gradient(khaki, #f2ff6c, #f7ff77);
+}
 
+.buttonsInNavigation {
+    background-color: #352d2d !important;
+    border: solid 2px #584d4d !important;
+    color: #c1bbbb !important;
+    border-radius: 3px !important;
+    width: 100px !important;
+    text-align: center !important;
+    font-weight: 800;
+    line-height: 1;
+    padding: 1em 2em;
+    text-shadow: none;
+    height: 5em;    
+    font-size: 13px !important;
+    font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif !important;
+}
+
+#console3 {
+    border: solid 1px black;
+    width: 45%;
+    color: green;
+    background-color: khaki;
+    margin-left: 30%;
+}
+
+#custom_width {
+    border: solid 1px black;
+    background-color: khaki;
+    display: flex;
+    justify-content: center;
+}
+
+#CustomizeTitle {
+    color:black;
+} 
+
+#console {
+
+}
+
+#console2 {
+
+}

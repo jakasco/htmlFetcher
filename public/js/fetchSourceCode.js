@@ -14,7 +14,7 @@ function findWord() {
     let etsittySana = findWord4();
     console.log("Etsitty sana ", etsittySana);
 }
-
+function getCSSfiles(){
 $("textarea").on('keyup', function() { //etsi kaikki css tiedostot lähdekoodista
 
      // const regex = /((?:https?:|www\.)[^\s]+)/g;
@@ -40,7 +40,7 @@ $("textarea").on('keyup', function() { //etsi kaikki css tiedostot lähdekoodist
         });
     }
   }).keyup(); // trigger event for demo
-
+}
 function getSecondPart(str) {
     return str.split('{')[1];
 }
@@ -283,13 +283,13 @@ function fetchData() {
             div2.textContent = lineBreaksToElements;
         //    console.log("div2.textContent = lineBreaksToElements:",lineBreaksToElements);
             findBodyWord(html);
-
+            $("#console3").css("background-color","white");
         })
         .catch(function (e) {
             console.log(e);
             errorConsole.innerHTML = "<strong>Error Message:</strong> Wrong URL on localhost or XAMPP is not On. Check .htaccess rules";
             $("#console3").css("background-color","red");
-            $("#console3").css("width","45%");
+           // $("#console3").css("width","45%");
         });
 }
 

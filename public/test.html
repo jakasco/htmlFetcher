@@ -6,6 +6,8 @@
     <meta http-equiv="x-ua-compatible" content="IE=10">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/pick-a-color-1.2.3.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    
     <title>Testing</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="js/jquery-3.4.1.js"></script>
@@ -14,12 +16,12 @@
     <link href="css/style.css" rel="stylesheet">
     <style>
         body {
-            background-color: whitesmoke;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            padding-left: 15px;
-            padding-right: 15px;
+            background-color: whitesmoke !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100% !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
         }
 
         html {
@@ -174,7 +176,7 @@
         #fetchatti {
             height: 200px;
             width: 200px;
-            background-color:#5f7574;
+            background-color: whitesmoke;
             overflow: scroll;
         }
 
@@ -200,41 +202,47 @@
 
     <!--btn btn-default color-dropdown dropdown-toggle  .... input-group-btn   </div>-->
     <!--"top: 50%;position: relative;transform: translateY(-50%);-->
-    <div id="Navigation" style="width: 100%; height: 10vh; background-color: grey;">
-        <div id="navButtons">
-        <button id="naytaNapit" onclick="hideShowElement(1)" style="background-color:cornsilk;">Devices</button>
-        <button id="naytaNapit" onclick="hideShowElement(2)" style="background-color:cornsilk;">Source Code</button>
-        <button id="naytaNapit" onclick="hideShowElement(3)" style="background-color:cornsilk;">CSS Files</button>
-        <button id="naytaNapit" onclick="hideShowElement(4)" style="background-color:cornsilk;">CSS Files</button>
+    <div id="Navigation" style="width: 100%; height: 14vh; background-color: grey;">
+        <div id="navButtons"  style="display: flex;
+        justify-content: center; height: 100px;" >
+        <button id="naytaNapit" onclick="hideShowElement(1)"  class="buttonsInNavigation">Devices</button>
+        <button id="naytaNapit" onclick="hideShowElement(2)"  class="buttonsInNavigation">Show Source Code</button>
+      <!--  <button id="naytaNapit" onclick="hideShowElement(3)"  class="buttonsInNavigation">CSS Files</button> -->
+        <button id="naytaNapit" onclick="hideShowElement(4)"  class="buttonsInNavigation">CSS Files</button>
+
+        <button id="naytaNapit" class="buttonsInNavigation" onclick="hideShowElement(5)" style="background-color:cornsilk;">Show Media Queries</button>
+        <button id="naytaNapit" onclick="hideShowElement(6)" class="buttonsInNavigation">Fetch Souce Code</button>
+        <button id="naytaNapit" onclick="hideShowElement(7)" class="buttonsInNavigation">Error Log</button>
+        </div>
+        <div style="background-color: khaki; display: flex;
+        justify-content: center;">
+            <button class="buttonsInNavigation" id="Galaxy">Galaxy S5</button>
+            <button class="buttonsInNavigation" id="Pixel2">Pixel 2</button>
+            <button  class="buttonsInNavigation" id="Pixel2XL">Pixel 2 XL</button>
+            <button  class="buttonsInNavigation" id="Iphone5">Iphone 5/SE</button>
+            <button  class="buttonsInNavigation" id="Iphone6">Iphone 6/7/8</button>
+            <button  class="buttonsInNavigation" id="Iphone6Plus">Iphone 6/7/8 Plus</button>
+            <button class="buttonsInNavigation" id="IphoneX">Iphone X</button>
+            <button  class="buttonsInNavigation" id="Ipad">Ipad</button>
+            <button class="buttonsInNavigation"  id="IpadPro">Ipad Pro</button>
         </div>
         <div>
-            <button id="Galaxy">Galaxy S5</button>
-            <button id="Pixel2">Pixel 2</button>
-            <button id="Pixel2XL">Pixel 2 XL</button>
-            <button id="Iphone5">Iphone 5/SE</button>
-            <button id="Iphone6">Iphone 6/7/8</button>
-            <button id="Iphone6Plus">Iphone 6/7/8 Plus</button>
-            <button id="IphoneX">Iphone X</button>
-            <button id="Ipad">Ipad</button>
-            <button id="IpadPro">Ipad Pro</button>
-        </div>
-        <div>
-        <textarea id="divi2" style="height: 30vh; width: 40%; border: 1px solid black;
-        float: left; overflow: scroll; font-size: 17px; "></textarea> </div><!-- DIsplay none-->
+        <textarea id="divi2" style="height: 30vh; width: 50%; border: 1px solid black;
+        float: left; overflow: scroll; font-size: 17px; background-color: khaki; "></textarea> </div><!-- Display none-->
 
         <div>
-            <textarea id="divi5" style="height: 30vh; width: 40%; border: 1px solid black;
-        float: left; overflow: scroll; font-size: 17px; "></textarea>
+            <textarea id="divi5" style="height: 30vh; width: 50%; border: 1px solid black;
+        float: left; overflow: scroll; font-size: 17px; background-color: khaki;"></textarea>
 </div>
 
 <div>
-    <ul style="height: 30vh; width: 100%; border: 1px solid black;
-float: left; overflow: scroll; font-size: 17px;" id="ulList">
+    <ul style="height: 30vh; width: 50%; border: 1px solid black;
+float: left; overflow: scroll; font-size: 17px; background-color: khaki;" id="ulList">
     </ul>
 </div>
 <div>
-    <ul style="height: 30vh; width: 100%; border: 1px solid black;
-float: left; overflow: scroll; font-size: 17px;" id="ulList2">
+    <ul style="height: 30vh; width: 50%; border: 1px solid black;
+float: left; overflow: scroll; font-size: 17px; background-color: khaki;" id="ulList2">
     </ul>
 </div>
 
@@ -242,26 +250,27 @@ float: left; overflow: scroll; font-size: 17px;" id="ulList2">
 
 
 <div id="custom_width">
-    <input type="text" id="width_input" placeholder="200">
-    <button id="button">Change Width</button>
+    <input type="text" id="width_input" placeholder="200"  style="display:none;"> 
+    <button id="button" style="display:none; background-color: #352d2d;border: solid 2px #584d4d;color: #c1bbbb;border-radius: 3px;width: 100px;text-align: center;">Change Width</button>
 
     
-    <button id="reset">Reset</button>laitaTakaisinCSS
-    <button onclick="fetchData()">fetch</button>
+    <button id="reset" style="display:none;">Reset</button>
+    <button onclick="fetchData()" class="buttonsInNavigation">Fetch Source Code</button>
 
-    <input id="etsiSana" placeholder="Etsi sana...."></input>
-    <button onclick="findWord()">Etsi sana</button>
-    <button onclick="fetchMediaQuery()">fetchMediaQuery</button>
-    <button onclick="poistaCSS()">Poista CSS</button>
-    <button onclick="laitaTakaisinCSS()">laitaTakaisinCSS</button>
+    <input id="etsiSana"  style="display:none;" placeholder="Etsi sana...."></input>
+    <button onclick="findWord()" style="display:none; background-color: #352d2d;border: solid 2px #584d4d;color: #c1bbbb;border-radius: 3px;width: 100px;text-align: center;">Etsi sana</button>
+    <button onclick="fetchMediaQuery()" class="buttonsInNavigation">Fetch MediaQueries</button>
+    <button onclick="poistaCSS()" class="buttonsInNavigation">Remove Current CSS</button>
+    <button onclick="getCSSfiles()" class="buttonsInNavigation">Fetch CSS Files</button>
+    <button onclick="laitaTakaisinCSS()" class="buttonsInNavigation">Add modified CSS</button>
    
     <form method="POST" action="/asd" id="asd">
-        <input type="text" name="user" id="input2"><br>
-        <button type="submit" form="asd" value="Submit">Save to Database</button>
+        <input type="hidden" name="user" id="input2">
+        <button type="submit" form="asd" value="Submit" class="buttonsInNavigation">Save to Database</button>
     </form>
 
 </div>
-
+<div id="console3"><strong>No Errors</strong></div>
 
 
 <div id="mediaNapit">
@@ -271,8 +280,8 @@ float: left; overflow: scroll; font-size: 17px;" id="ulList2">
 
 <input type="text" style="width: 40%; padding-left: 200px;" name="font-color" id="colorPicker"
         class="pick-a-color form-control">
-    <div id="tyylittely" style="background-color: grey">
-        <h1 id="CustomizeTitle">Customize:</h1>
+    <div id="tyylittely" style="background-color: khaki; color:black">
+        <h1 id="CustomizeTitle" >Customize:</h1>
 
         <ul id="ulList3">
 
@@ -283,11 +292,14 @@ float: left; overflow: scroll; font-size: 17px;" id="ulList2">
 
 
 
-    <div style="position: relative; position: absolute;
-    margin-top: 300px;"> <!-- POSITION RELATIVE ALKUPERÄINEN-->
+    <div style="margin-top: 200px;"> <!-- POSITION RELATIVE ALKUPERÄINEN-->
+    
         <div id="container"
             data-sizes='{"small":{"maxWidth": 400}, "medium":{"minWidth": 400}, "large":{"minWidth": 700}}'>
+           
             <div class="big_block" style="background-color: #424242">
+                <div id="console">Width:</div>
+                <div id="console2">Height:</div>
                 <div id="fetchatti">
                 </div>
 
