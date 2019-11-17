@@ -8,6 +8,8 @@ const device7 = document.querySelector("#IphoneX");
 const device8 = document.querySelector("#Ipad");
 const device9 = document.querySelector("#IpadPro");
 
+const testiSQL = document.querySelector("#testiSql");
+
 const colorPicker = document.querySelector("#colorPicker");
 
 const ulList3 = document.querySelector("#ulList3");
@@ -31,6 +33,8 @@ device6.addEventListener("click",function(e) { resizeForDeviceSize(414,736); lah
 device7.addEventListener("click",function(e) { resizeForDeviceSize(375,812); lahetaLomake3(e); } );
 device8.addEventListener("click",function(e) { resizeForDeviceSize(768,1024); lahetaLomake3(e); } );
 device9.addEventListener("click",function(e) { resizeForDeviceSize(1024,1366); lahetaLomake3(e); } );
+
+testiSQL.addEventListener("click",function(e) { lahetaLomake4(e); } );
 
 let fullArr = [];
 

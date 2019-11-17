@@ -49,6 +49,19 @@ const selectScreenSize = (data, connection, callback) => {
   );
 };
 
+const insertIntoMediaQueryTable = (data, connection, callback) => {
+   connection.execute(
+       'INSERT INTO mediaQuerySaannot (MediaQuery_Saanto, Max_width, Min_width, Max_Height, Min_Height) VALUES (?, ?, ?, ?, ?);',
+       data,
+       (err, results, fields) => {
+       //  console.log(results); // results contains rows returned by server
+         console.log(err);
+         callback();
+       },
+   );
+   console.log("sql done");
+ };
+
 
 const insertUser = (data, connection, callback) => {
  // console.log("Insert user", data)
@@ -73,4 +86,5 @@ module.exports = {
   select: select,
   selectScreenSize: selectScreenSize,
   insertUser: insertUser,
+  insertIntoMediaQueryTable:insertIntoMediaQueryTable,
 };
