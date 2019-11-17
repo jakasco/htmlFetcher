@@ -71,6 +71,29 @@ const lahetaLomake3 = (evt) => {
     });
   };
 
+  const lahetaLomake4 = (evt) => {
+
+    evt.preventDefault();
+    console.log("lähetä lomake 4()");
+    const fd = {};
+    fd.width = $("#fetchatti").width(); //Myöhemmin, databaseen menee inttinä + "px";
+    fd.height= $("#fetchatti").height(); // + "px";
+    const asetukset = {
+      method: 'post',
+      body: JSON.stringify(fd),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    };
+
+    fetch('/checkScreenSize2', asetukset).then((response) => {
+      return response.json();
+    }).then((json) => {
+   console.log("json frontend lomake4: ",json);
+    });
+  };
+
+
   function addEditingToolToElement(element,arr,num) {
    // $(element).css("pointer-events","none"); //ei voi klikata, $("#ElementName").css("pointer-events","auto"); voi klikata
    // element.addEventListener("onclick",function() { changeColor();

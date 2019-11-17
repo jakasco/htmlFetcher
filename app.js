@@ -1,7 +1,7 @@
 'use strict';
 require('dotenv').config();
 const express = require('express');
-// const fs      = require('fs');
+ const fs      = require('fs');
 // const https   = require('https');
 
 const database = require('./modules/database');
@@ -69,6 +69,13 @@ app.use('/asd',  (req, res, next) => {
 res.send(req.custom);
 });
 
+app.post('/checkScreenSize2',  (req, res, next) => {
+  console.log("req.body 2: ",req.body);
+  console.log("req.body 2: ",req.body.width);
+  //const data = [req.body.width,req.body.height]; 
+  res.send(req.body);
+});
+
 app.post('/checkScreenSize',  (req, res, next) => {
   console.log("req.body: ",req.body);
   console.log("req.body: ",req.body.width);
@@ -77,7 +84,17 @@ app.post('/checkScreenSize',  (req, res, next) => {
   PalautaFrontendiin(data, req, next);
 });
 app.use('/checkScreenSize',  (req, res, next) => {
-  // console.log("req.custom: ",req.custom);
+  
+  fs.open('./public/css/mynewfile2.css', 'w', function (err, file) { //Tallenna uusi CSS File 
+    if (err) throw err;
+    console.log('Saved!');
+  });
+
+  fs.appendFile('./public/css/mynewfile2.css', 'body {color:blue}', function (err) { //Lisää CSS tiedoston sisään
+    if (err) throw err;
+    console.log('Saved!');
+  });
+
  res.send(req.custom);
  });
 

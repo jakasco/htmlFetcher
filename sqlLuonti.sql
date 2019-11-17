@@ -35,7 +35,21 @@ CREATE TABLE cssTiedostot
   Min_Height INT
 );
 
+
+drop table if exists mediaQuerySaannot;
+
+CREATE TABLE mediaQuerySaannot
+(
+    Id int NOT NULL AUTO_INCREMENT,
+    CSS_Saanto TEXT,
+    Max_width INT,
+    Min_width INT,
+    Max_Height INT,
+    Min_Height INT
+);
+
 ALTER TABLE `cssTiedostot` MODIFY `CSS_Tiedosto` LONGTEXT
+ALTER TABLE `mediaQuerySaannot` MODIFY `MediaQuery_Saanto` LONGTEXT
 
 INSERT INTO cssTiedostot VALUE ("testi", "joku pitkä tiedosto",10,10,10,10,10,10);
 INSERT INTO testaus VALUE ("test 1", "test 2");

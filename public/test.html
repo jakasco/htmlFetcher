@@ -209,10 +209,10 @@
         <button id="naytaNapit" onclick="hideShowElement(2)"  class="buttonsInNavigation">Show Source Code</button>
       <!--  <button id="naytaNapit" onclick="hideShowElement(3)"  class="buttonsInNavigation">CSS Files</button> -->
         <button id="naytaNapit" onclick="hideShowElement(4)"  class="buttonsInNavigation">CSS Files</button>
-
         <button id="naytaNapit" class="buttonsInNavigation" onclick="hideShowElement(5)" style="background-color:cornsilk;">Show Media Queries</button>
         <button id="naytaNapit" onclick="hideShowElement(6)" class="buttonsInNavigation">Fetch Souce Code</button>
         <button id="naytaNapit" onclick="hideShowElement(7)" class="buttonsInNavigation">Error Log</button>
+        <button id="naytaNapit" onclick="lahetaLomake4()" class="buttonsInNavigation">Testi Sql Tallennus</button>
         </div>
         <div style="background-color: khaki; display: flex;
         justify-content: center;">
@@ -227,20 +227,27 @@
             <button class="buttonsInNavigation"  id="IpadPro">Ipad Pro</button>
         </div>
         <div>
+                <h2 style="color:#352d2d">Source Code</h2>
+                <button onclick="getCSSfiles()" class="buttonsInNavigation">Fetch CSS Files</button>
         <textarea id="divi2" style="height: 30vh; width: 50%; border: 1px solid black;
-        float: left; overflow: scroll; font-size: 17px; background-color: khaki; "></textarea> </div><!-- Display none-->
+        float: left; overflow: scroll; font-size: 17px; background-color: khaki; "></textarea> </div><!-- Source Code-->
 
-        <div>
+      <div>
+        
             <textarea id="divi5" style="height: 30vh; width: 50%; border: 1px solid black;
         float: left; overflow: scroll; font-size: 17px; background-color: khaki;"></textarea>
 </div>
 
-<div>
+<div> 
+   <!-- CSS LIST--><h2 style="color:#352d2d">List Of CSS Files</h2>  
+   <button onclick="fetchMediaQuery()" class="buttonsInNavigation">Fetch MediaQueries</button>
     <ul style="height: 30vh; width: 50%; border: 1px solid black;
 float: left; overflow: scroll; font-size: 17px; background-color: khaki;" id="ulList">
     </ul>
 </div>
-<div>
+<div> 
+     <!-- MEdia Queries-->
+     <h2 style="color:#352d2d">List Of MediaQueries</h2>
     <ul style="height: 30vh; width: 50%; border: 1px solid black;
 float: left; overflow: scroll; font-size: 17px; background-color: khaki;" id="ulList2">
     </ul>
@@ -253,7 +260,6 @@ float: left; overflow: scroll; font-size: 17px; background-color: khaki;" id="ul
     <input type="text" id="width_input" placeholder="200"  style="display:none;"> 
     <button id="button" style="display:none; background-color: #352d2d;border: solid 2px #584d4d;color: #c1bbbb;border-radius: 3px;width: 100px;text-align: center;">Change Width</button>
 
-    
     <button id="reset" style="display:none;">Reset</button>
     <button onclick="fetchData()" class="buttonsInNavigation">Fetch Source Code</button>
 

@@ -60,6 +60,12 @@ function vaihdaAlkuperainenMediaQuery(css) {
  //window.document.body.style += css;
 }
 
+function DetectContainerWidth() {
+    let containerWidth = $("fetchatti").width();
+    console.log("ContainerWidth: "+containerWidth);
+    return containerWidth;
+}
+
 function fetchMediaQuery() {
 
     let ulPituus = document.querySelectorAll("#ulList li").length;
@@ -72,30 +78,15 @@ function fetchMediaQuery() {
                 return response.text();
             }).then((text) => {
 
-           //     console.log(text);
-
-              //  const regex = /((?:screen)[^\s]+)/g;
-                const regex = /^(?=.*media).../
-               // const str = text;
-
-                // var n = text.search("(min-width:600px)");
-                //console.log("N ",n);
-               // let re = '/\({[^)]+}\)/';
-               let re = '/\(min\)/';
                 let m = text.match("@media");
-                var res = text.split("@media");
+                var res = text.split("@media"); //Array Kaikista CSS Tiedostoista
 
-             //   var res22 = text.split("(max-width");
-            //    console.log(res);
+
+                console.log(res);
             var vaihdaWidth = text.replace('@media', '#container[data-size="small"]');
             vaihdaAlkuperainenMediaQuery(vaihdaWidth);
-        //    for(let i=0; i<res22.length; i++) {
 
-             //   var res2 = res[i].split(")");
-
-              //  console.log("MAX-WIDTH: ",res22[i]);
-        //    }
-
+           let currentWidth = DetectContainerWidth();
 
                 for(let i=0; i<res.length; i++) {
                   //    let e =  res[7].split("(max-width");
@@ -110,7 +101,7 @@ function fetchMediaQuery() {
 
               //      let newCss = res2[0]+res2[1];
               let newCss = res2[1];
-                    console.log("newCss",newCss);
+                  //  console.log("newCss",newCss);
                     $("#ulList2").append(`<li>
                 ${res[i]}
                     </li></br>`);
@@ -260,7 +251,7 @@ function jqueryTest() {
 
 function fetchData() {
     console.log("fetch data");
-    fetch('http://localhost/wp2/')
+    fetch('http://localhost/wp/')
         .then(function (response) {
             
             return response.text()
@@ -291,6 +282,10 @@ function fetchData() {
             $("#console3").css("background-color","red");
            // $("#console3").css("width","45%");
         });
+}
+
+function doWholeLoop() {
+    
 }
 
 console.log("Fetchatti height: ", $("#sidebar").height());
