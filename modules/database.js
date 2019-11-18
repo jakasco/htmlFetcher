@@ -50,6 +50,7 @@ const selectScreenSize = (data, connection, callback) => {
 };
 
 const insertIntoMediaQueryTable = (data, connection, callback) => {
+  console.log("DATA: ",data);
    connection.execute(
        'INSERT INTO mediaQuerySaannot (MediaQuery_Saanto, Max_width, Min_width, Max_Height, Min_Height) VALUES (?, ?, ?, ?, ?);',
        data,

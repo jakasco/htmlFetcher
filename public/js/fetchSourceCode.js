@@ -68,13 +68,14 @@ function DetectContainerWidth() {
     return containerWidth;
 }
 
+let mediaQueryArrayminW = [];
+let mediaQueryArraymaxW = [];
+let mediaQueryArrayminH = [];
+let mediaQueryArraymaxH = [];
+
 function fetchMediaQuery() {
 
     let ArrayOfAllMediaQueries = []; //2d array kaikista mediaqueryista
-    let mediaQueryArrayminW = [];
-    let mediaQueryArraymaxW = [];
-    let mediaQueryArrayminH = [];
-    letmediaQueryArraymaxH = [];
 
     let ulPituus = document.querySelectorAll("#ulList li").length;
     for (let i = 0; i < ulPituus; i++) {
@@ -125,22 +126,10 @@ function fetchMediaQuery() {
                     console.log("ArrayOfAllMediaQueries: ",ArrayOfAllMediaQueries);
 
                   
-                }).then(x => {
+                }).then(() => {
                     for(let i=0; i<ArrayOfAllMediaQueries.length; i++){
                         for(let j=0; j<ArrayOfAllMediaQueries[i].length; j++){
                             let MediaQuery = ArrayOfAllMediaQueries[i][j];
-                        /*
-                           let minW = MediaQuery.split("min-width:");
-                           let maxW = MediaQuery.split("(max-width:");
-                           let minH = MediaQuery.split("(min-height:");
-                           let maxH = MediaQuery.split("(min-height:");
-
-                          if(MediaQuery.includes("min-width:") == true){
-                            mediaQueryArrayminW.push(minW);
-                           }else if(MediaQuery.includes("max-width:") == true){
-                            mediaQueryArraymaxW.push(maxW);
-                           }
-                           */
 
                            let m1 = MediaQuery.match("min-width");
                            let m2 = MediaQuery.match("max-width");
@@ -149,38 +138,75 @@ function fetchMediaQuery() {
                            try{
                            if (m1) {
                             m1.forEach((match, groupIndex) => {
-                       //         console.log(`Found match in ${MediaQuery}, group ${groupIndex}: ${match}`);
-                                
+
                                 let tempString = MediaQuery.split("("+match+": ");
-                           //     console.log("tempString: ",tempString);
-                         //  let mq = MediaQuery.split(new RegExp('\\({.*}\\)'));
-                        //   console.log(mq);
                         let mq1 = MediaQuery.indexOf(":");
                         let mq2 = MediaQuery.indexOf(")");
                         
                         let str1 = MediaQuery.substr(0,mq2); //(min-width:600px
                         let str2 = str1.substr(mq1+1,mq2); //600px
-                        let Temp = [match,str2];
+
+                        let str3 = MediaQuery.substr(mq2+1,MediaQuery.lenght); //MediaQuery
+                        
+                        let Temp = [match,str2,str3];
 
                                 mediaQueryArrayminW.push(Temp);
+
+
+                               // lahetaLomake5(e,Temp); //Lähetä tietokantaan
                             });
                         }
                         if (m2) {
                             m2.forEach((match, groupIndex) => {
-                                let Temp = [match,MediaQuery]
+                                let mq1 = MediaQuery.indexOf(":");
+                                let mq2 = MediaQuery.indexOf(")");
+                                
+                                let str1 = MediaQuery.substr(0,mq2); //(min-width:600px
+                                let str2 = str1.substr(mq1+1,mq2); //600px
+
+                                let str3 = MediaQuery.substr(mq2+1,MediaQuery.lenght); //MediaQuery
+                        
+                                let Temp = [match,str2,str3];
+
                              mediaQueryArraymaxW.push(Temp);   
+
+                            // lahetaLomake5(e,Temp);
                             });
                         }
                         if (m3) {
                             m3.forEach((match, groupIndex) => {
-                                let Temp = [match,MediaQuery]
+                                let mq1 = MediaQuery.indexOf(":");
+                                let mq2 = MediaQuery.indexOf(")");
+                                
+                                let str1 = MediaQuery.substr(0,mq2); //(min-width:600px
+                                let str2 = str1.substr(mq1+1,mq2); //600px
+                             //   let Temp = [match,str2];
+
+                                let str3 = MediaQuery.substr(mq2+1,MediaQuery.lenght); //MediaQuery
+                        
+                        let Temp = [match,str2,str3];
+
                              mediaQueryArrayminH.push(Temp);
+
+                             //lahetaLomake5(e,Temp);
                             });
                         }
                         if (m4) {
                             m4.forEach((match, groupIndex) => {
-                                let Temp = [match,MediaQuery]
+                                let mq1 = MediaQuery.indexOf(":");
+                                let mq2 = MediaQuery.indexOf(")");
+                                
+                                let str1 = MediaQuery.substr(0,mq2); //(min-width:600px
+                                let str2 = str1.substr(mq1+1,mq2); //600px
+                              //  let Temp = [match,str2];
+
+                                let str3 = MediaQuery.substr(mq2+1,MediaQuery.lenght); //MediaQuery
+                        
+                        let Temp = [match,str2,str3];
+
                              mediaQueryArraymaxH.push(Temp);
+
+                             //lahetaLomake5(e,Temp);
                             });
                         }
                         
@@ -188,31 +214,10 @@ function fetchMediaQuery() {
                         console.log("Error in forEach",e);
                     }
 
-                        //   console.log("minW[0]",minW[0]);
-                        //
-                        //   console.log()
-                        /*
-                           try{
-                            mediaQueryArrayminW.push(minW);
-                            mediaQueryArraymaxW.push(maxW);
-                            mediaQueryArrayminH.push(minH);
-                            mediaQueryArraymaxH.push(maxH);
-                           }catch(e){
-                               
-                           }
-                        */
+                      
                         }
                     }
                     console.log("mediaQueryArrayminW: ",mediaQueryArrayminW);
-                    
-                    /*
-                    var matches = string2.split('[')
-  .filter(function(v){ return v.indexOf(']') > -1})
-  .map( function(value) { 
-    return value.split(']')[0]
-  })*/
-
-
                     console.log("mediaQueryArraymaxW: ",mediaQueryArraymaxW);
                     console.log("mediaQueryArrayminH: ",mediaQueryArrayminH);
                     console.log("mediaQueryArraymaxH: ",mediaQueryArraymaxH);
@@ -226,6 +231,55 @@ function fetchMediaQuery() {
     }
     
 }
+
+function testData(e){
+    for(let i=0;i<mediaQueryArrayminW.length;i++){
+        if(mediaQueryArrayminW[i][1].length < 15){ //jos isompi kuin 15, niin on ei ole esim 600px
+        lahetaLomake5(e,mediaQueryArrayminW[i]);
+        }else{
+            console.log(mediaQueryArrayminW[i][1].length);
+        }
+    }
+    for(let i=0;i<mediaQueryArraymaxW.length;i++){
+        if(mediaQueryArraymaxW[i][1].length < 15){
+        lahetaLomake5(e,mediaQueryArraymaxW[i]);
+        }
+    }
+    for(let i=0;i<mediaQueryArrayminH.length;i++){
+        if(mediaQueryArrayminH[i][1].length < 15){
+        lahetaLomake5(e,mediaQueryArrayminH[i]);
+        }
+    }
+    for(let i=0;i<mediaQueryArraymaxH.length;i++){
+        if(mediaQueryArraymaxH[i][1].length < 15){
+        lahetaLomake5(e,mediaQueryArraymaxH[i]);
+        }
+    }
+}
+
+function lahetaLomake5(evt,array) {
+
+    evt.preventDefault();
+    console.log("lähetä lomake 5()");
+    console.log(array[1]," | ",array[0]);
+    const fd = {};
+    fd.mediaQuery = array[2];
+    fd.widthOrHeight = array[0]; //Myöhemmin, databaseen menee inttinä + "px";
+    fd.lenght= array[1]; // + "px";
+    const asetukset = {
+      method: 'post',
+      body: JSON.stringify(fd),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    };
+
+    fetch('/checkScreenSize2', asetukset).then((response) => {
+      return response.json();
+    }).then((json) => {
+   console.log("json frontend lomake5: ",json);
+    });
+  };
 
 function poistaCSS() {
     console.log("Poista CSS");

@@ -76,15 +76,23 @@ app.use('/asd', (req, res, next) => {
 });
 
 app.post('/checkScreenSize2', (req, res, next) => {
-  console.log("req.body 2: ", req.body);
-  console.log("req.body 2: ", req.body.width);
-  const data = [
-    "MediaQuery",
-    req.body.width,
-    req.body.height,
-    null,
-    null,
-    null];
+ // console.log("req.body 2: ", req.body);
+  //const data = ["MediaQuery",null,null,null,null];
+console.log(req.body.widthOrHeight," | ",req.body.lenght);
+  const data = [];
+ // try{
+  if(req.body.widthOrHeight == "min-width"){
+    data = [req.body.mediaQuery,req.body.lenght,null,null,null];
+  }else if(req.body.widthOrHeight == "max-width"){
+    data = [req.body.mediaQuery,null,req.body.lenght,null,null];
+  }else if(req.body.widthOrHeight == "min-height"){
+    data = [req.body.mediaQuery,null,null,req.body.lenght,null];
+  }else if(req.body.widthOrHeight == "max-height"){
+    data = [req.body.mediaQuery,null,null,null,req.body.lenght];
+  }else{
+ // }catch(e) {
+    data = [null,null,null,null,null];
+  }
     insertToDB2(data, req, next);
   next();
 });

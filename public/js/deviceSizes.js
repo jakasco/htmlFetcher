@@ -34,7 +34,7 @@ device7.addEventListener("click",function(e) { resizeForDeviceSize(375,812); lah
 device8.addEventListener("click",function(e) { resizeForDeviceSize(768,1024); lahetaLomake3(e); } );
 device9.addEventListener("click",function(e) { resizeForDeviceSize(1024,1366); lahetaLomake3(e); } );
 
-testiSQL.addEventListener("click",function(e) { lahetaLomake4(e); } );
+testiSQL.addEventListener("click",function(e) { testData(e); } );
 
 let fullArr = [];
 

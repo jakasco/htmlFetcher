@@ -40,16 +40,18 @@ drop table if exists mediaQuerySaannot;
 
 CREATE TABLE mediaQuerySaannot
 (
-    Id int NOT NULL AUTO_INCREMENT,
-    CSS_Saanto TEXT,
-    Max_width INT,
-    Min_width INT,
-    Max_Height INT,
-    Min_Height INT
+    MediaQuery_Saanto TEXT,
+    Max_width VARCHAR(20),
+    Min_width VARCHAR(20),
+    Max_Height VARCHAR(20),
+    Min_Height VARCHAR(20)
 );
 
-ALTER TABLE `cssTiedostot` MODIFY `CSS_Tiedosto` LONGTEXT
 ALTER TABLE `mediaQuerySaannot` MODIFY `MediaQuery_Saanto` LONGTEXT
+
+
+ALTER TABLE `cssTiedostot` MODIFY `CSS_Tiedosto` LONGTEXT
+
 
 INSERT INTO cssTiedostot VALUE ("testi", "joku pitkä tiedosto",10,10,10,10,10,10);
 INSERT INTO testaus VALUE ("test 1", "test 2");
