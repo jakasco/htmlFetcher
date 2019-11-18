@@ -4,7 +4,7 @@ let arrOfChildrenElements = [];
 let previous = null;
 let previousChecker = false;
 
-for(let i=1;i <$("#Navigation").children().length; i++){ //alkaa 1:sta koska 0 on napit
+for(let i=2;i <$("#Navigation").children().length; i++){ //alkaa 1:sta koska 0 on napit
   //  console.log($("#Navigation").children()[i]);
     let navElem = $("#Navigation").children()[i];
     $(navElem).hide();
@@ -12,18 +12,19 @@ for(let i=1;i <$("#Navigation").children().length; i++){ //alkaa 1:sta koska 0 o
 }
 
 function hideShowElement(num) {
-    for(let i=1;i <$("#Navigation").children().length; i++){
+    for(let i=2;i <$("#Navigation").children().length; i++){
         let navElem = $("#Navigation").children()[i];
         if(num == i){
        //     console.log(num+ ", "+i+" , elem:"+arrOfChildrenElements[num].innerHTML);
-            if(arrOfChildrenElements[i+1] === true){
+            if(arrOfChildrenElements[i+2] === true){
             $(navElem).show();
+            $(navElem).css("background-color","white");
             previous = navElem;
        //     console.log("Previous :", previous.innerHTML);
-            arrOfChildrenElements[i+1] = false;
+            arrOfChildrenElements[i+2] = false;
         }else{
             $(navElem).hide();
-            arrOfChildrenElements[i+1] = true;
+            arrOfChildrenElements[i+2] = true;
         }
     }else{
         $(navElem).hide();

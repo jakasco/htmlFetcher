@@ -8,6 +8,8 @@ const errorConsole = document.querySelector("#console3");
 const inputEtsi = document.querySelector("#etsiSana");
 const ul = document.querySelector("#ulList");
 
+const fetchConsole = document.querySelector("#fetchConsole");
+
 const cssTallennusInput = document.querySelector("#input2");
 
 function findWord() {
@@ -147,10 +149,19 @@ function fetchMediaQuery() {
                            try{
                            if (m1) {
                             m1.forEach((match, groupIndex) => {
-                                console.log(`Found match in ${MediaQuery}, group ${groupIndex}: ${match}`);
-                                let Temp = [match,MediaQuery]
+                       //         console.log(`Found match in ${MediaQuery}, group ${groupIndex}: ${match}`);
+                                
                                 let tempString = MediaQuery.split("("+match+": ");
-                                console.log("tempString: ",tempString);
+                           //     console.log("tempString: ",tempString);
+                         //  let mq = MediaQuery.split(new RegExp('\\({.*}\\)'));
+                        //   console.log(mq);
+                        let mq1 = MediaQuery.indexOf(":");
+                        let mq2 = MediaQuery.indexOf(")");
+                        
+                        let str1 = MediaQuery.substr(0,mq2); //(min-width:600px
+                        let str2 = str1.substr(mq1+1,mq2); //600px
+                        let Temp = [match,str2];
+
                                 mediaQueryArrayminW.push(Temp);
                             });
                         }
@@ -193,6 +204,15 @@ function fetchMediaQuery() {
                         }
                     }
                     console.log("mediaQueryArrayminW: ",mediaQueryArrayminW);
+                    
+                    /*
+                    var matches = string2.split('[')
+  .filter(function(v){ return v.indexOf(']') > -1})
+  .map( function(value) { 
+    return value.split(']')[0]
+  })*/
+
+
                     console.log("mediaQueryArraymaxW: ",mediaQueryArraymaxW);
                     console.log("mediaQueryArrayminH: ",mediaQueryArrayminH);
                     console.log("mediaQueryArraymaxH: ",mediaQueryArraymaxH);
@@ -324,7 +344,7 @@ function jqueryTest() {
 
 function fetchData() {
     console.log("fetch data");
-    fetch('http://localhost/wp/')
+    fetch('http://localhost/wp2/')
         .then(function (response) {
 
             return response.text()
@@ -348,6 +368,18 @@ function fetchData() {
             //    console.log("div2.textContent = lineBreaksToElements:",lineBreaksToElements);
             findBodyWord(html);
             $("#console3").css("background-color", "white");
+            
+        })
+        .then(() => {
+            fetchConsole.innerHTML += "  Fetching Source Code Finished...   ";
+            getCSSfiles();
+        })
+        .then(() => {
+            fetchConsole.innerHTML += "Fetching CSS Files Finished...   ";
+            fetchMediaQuery();
+        })
+        .then(() => {
+            fetchConsole.innerHTML += "   Fetching MediaQueries Finished...   ";
         })
         .catch(function (e) {
             console.log(e);
