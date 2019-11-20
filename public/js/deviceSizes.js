@@ -89,7 +89,7 @@ const lahetaLomake3 = (evt) => {
         'Content-type': 'application/json',
       },
     };
-
+	console.log(asetukset);
     fetch('/checkScreenSize2', asetukset).then((response) => {
       return response.json();
     }).then((json) => {
@@ -99,24 +99,16 @@ const lahetaLomake3 = (evt) => {
 
 
   function addEditingToolToElement(element,arr,num) {
-   // $(element).css("pointer-events","none"); //ei voi klikata, $("#ElementName").css("pointer-events","auto"); voi klikata
-   // element.addEventListener("onclick",function() { changeColor();
-	//});
-	let className2 = $(element).attr('class');
-	//console.log("fullArr[num][3][0] ",fullArr[num]);
-	//fullArr[num][3][0] = $('.'+className2).css('backgroundColor');
 
-	//let backgroundColorDefault = hexc(fullArr[num][3][0]); // muuta hex
-	 
-  // console.log("backgroundColorDefault: ",backgroundColorDefault);
+	let className2 = $(element).attr('class'); //className2 = se kohta mihin clikataan 
+
 	$(element).click(function(e) { //KUN painetaan Elementtiä
 		
         arr.push(element);
 		let className = $(element).attr('class');
-	//	console.log("Classname = ",className);
 
 		fullArr[num][3][0] = $('.'+className).css('backgroundColor');
-	//	console.log("fullArr[num][3][0] ",fullArr[num][3][0]);
+		
 		let idElementille = "id"+num;
 
 		if(fullArr[num][1][0] == true){
@@ -148,14 +140,7 @@ const lahetaLomake3 = (evt) => {
 	activeElement[0] = fullArr[num][0][0];
 	activeElement[1] = num;
 
-	
-
-	
-
-		if(fullArr[num][2][0] == true){
-
-			
-			
+		if(fullArr[num][2][0] == true){	
 
 			let newColor = changeColorFromPanel();
 	  $('.'+className).css("background-color",newColor);

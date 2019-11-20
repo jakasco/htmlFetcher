@@ -16,23 +16,20 @@ function findWord() {
     let etsittySana = findWord4();
     console.log("Etsitty sana ", etsittySana);
 }
-function getCSSfiles() {
-    $("textarea").on('keyup', function () { //etsi kaikki css tiedostot lähdekoodista
+function getCSSfiles() { //etsi kaikki css tiedostot lähdekoodista
+    $("textarea").on('keyup', function () {
 
-        // const regex = /((?:https?:|www\.)[^\s]+)/g;
-        const regex = /((?:https?:|www\.)[^\s]+)/g;
+        const regex = /((?:https?:|www\.)[^\s]+)/g; //Etsii kaikki https tiedostot
         const str = $(this).val();
 
         let m = str.match(regex);
 
         if (m) {
             m.forEach((match, groupIndex) => {
-                //    console.log(`Found match, group ${groupIndex}: ${match}`);
-                const regex2 = /((?:css)[^\s]+)/g;
+                const regex2 = /((?:css)[^\s]+)/g; //Etsii näistä https tiedostoista kaikki css tiedostot
                 const str2 = match;
 
-                if (match.match(regex2)) {
-                    //     console.log("Css ",match);
+                if (match.match(regex2)) { //Lisää css tiedostot textareaan
                     $("#ulList").append(`<li>
                     <a href='${match}' target='_blank'>
                     ${match}
@@ -41,11 +38,13 @@ function getCSSfiles() {
                 }
             });
         }
-    }).keyup(); // trigger event for demo
+    }).keyup();
 }
+
 function getSecondPart(str) {
     return str.split('{')[1];
 }
+
 // use the function:
 function vaihaCss(csss, n) {
     console.log("VAIHDA CSS ", n);
@@ -73,35 +72,28 @@ let mediaQueryArraymaxW = [];
 let mediaQueryArrayminH = [];
 let mediaQueryArraymaxH = [];
 
-function fetchMediaQuery() {
+function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
     let ArrayOfAllMediaQueries = []; //2d array kaikista mediaqueryista
 
-    let ulPituus = document.querySelectorAll("#ulList li").length;
+    let ulPituus = document.querySelectorAll("#ulList li").length; //Looppi missä etsitään kaikki Mediaquery listan Stringit
     for (let i = 0; i < ulPituus; i++) {
         let li = document.querySelectorAll("#ulList li")[i];
-        if (i !== 2) { //Googlen css tulee cors
+        if (i !== 2) { //Googlen css tulee cors, joten skipataan "#ulList li")[2]
             try {
                 fetch(li.textContent).then((response) => {
                     return response.text();
-                }).then((text) => {
+                }).then((text) => { //text = CSS tiedosto
 
                     let m = text.match("@media");
-                    var res = text.split("@media"); //Array Kaikista CSS Tiedostoista
+                    var res = text.split("@media"); //Jos Css Tiedostossa on @media sana, splitataan string tässä kohtaa
 
-
-                  //  console.log(res);
                     var vaihdaWidth = text.replace('@media', '#container[data-size="small"]');
                     vaihdaAlkuperainenMediaQuery(vaihdaWidth);
 
-                 //   let currentWidth = DetectContainerWidth();
-                  //  console.log(currentWidt);
-                   
-
-                    ArrayOfAllMediaQueries.push(res);
-
+                    ArrayOfAllMediaQueries.push(res); //Lisätään tämä @media:lla splitattu stringi arrayna tähän listaan
+                    /*
                     for (let i = 0; i < res.length; i++) {
-                        //    let e =  res[7].split("(max-width");
                         let e = res[7].substring(2, 5);
 
                         var res2 = res[i].split(")");
@@ -124,103 +116,103 @@ function fetchMediaQuery() {
                         });
                     }
                     console.log("ArrayOfAllMediaQueries: ",ArrayOfAllMediaQueries);
+                    */
 
-                  
-                }).then(() => {
-                    for(let i=0; i<ArrayOfAllMediaQueries.length; i++){
-                        for(let j=0; j<ArrayOfAllMediaQueries[i].length; j++){
+                }).then(() => { //Tarkastetaan Min-Width ja Max-Width yms...
+                    for (let i = 0; i < ArrayOfAllMediaQueries.length; i++) {
+                        for (let j = 0; j < ArrayOfAllMediaQueries[i].length; j++) {
                             let MediaQuery = ArrayOfAllMediaQueries[i][j];
 
-                           let m1 = MediaQuery.match("min-width");
-                           let m2 = MediaQuery.match("max-width");
-                           let m3 = MediaQuery.match("min-height");
-                           let m4 = MediaQuery.match("max-height");
-                           try{
-                           if (m1) {
-                            m1.forEach((match, groupIndex) => {
+                            let m1 = MediaQuery.match("min-width");
+                            let m2 = MediaQuery.match("max-width");
+                            let m3 = MediaQuery.match("min-height");
+                            let m4 = MediaQuery.match("max-height");
+                            try {
+                                if (m1) {
+                                    m1.forEach((match, groupIndex) => {
 
-                                let tempString = MediaQuery.split("("+match+": ");
-                        let mq1 = MediaQuery.indexOf(":");
-                        let mq2 = MediaQuery.indexOf(")");
-                        
-                        let str1 = MediaQuery.substr(0,mq2); //(min-width:600px
-                        let str2 = str1.substr(mq1+1,mq2); //600px
+                                        let tempString = MediaQuery.split("(" + match + ": ");
+                                        let mq1 = MediaQuery.indexOf(":");
+                                        let mq2 = MediaQuery.indexOf(")");
 
-                        let str3 = MediaQuery.substr(mq2+1,MediaQuery.lenght); //MediaQuery
-                        
-                        let Temp = [match,str2,str3];
+                                        let str1 = MediaQuery.substr(0, mq2); //(min-width:600px
+                                        let str2 = str1.substr(mq1 + 1, mq2); //600px
 
-                                mediaQueryArrayminW.push(Temp);
+                                        let str3 = MediaQuery.substr(mq2 + 1, MediaQuery.lenght); //MediaQuery
+
+                                        let Temp = [match, str2, str3];
+
+                                        mediaQueryArrayminW.push(Temp);
 
 
-                               // lahetaLomake5(e,Temp); //Lähetä tietokantaan
-                            });
+                                        // lahetaLomake5(e,Temp); //Lähetä tietokantaan
+                                    });
+                                }
+                                if (m2) {
+                                    m2.forEach((match, groupIndex) => {
+                                        let mq1 = MediaQuery.indexOf(":");
+                                        let mq2 = MediaQuery.indexOf(")");
+
+                                        let str1 = MediaQuery.substr(0, mq2); //(min-width:600px
+                                        let str2 = str1.substr(mq1 + 1, mq2); //600px
+
+                                        let str3 = MediaQuery.substr(mq2 + 1, MediaQuery.lenght); //MediaQuery
+
+                                        let Temp = [match, str2, str3];
+
+                                        mediaQueryArraymaxW.push(Temp);
+
+                                        // lahetaLomake5(e,Temp);
+                                    });
+                                }
+                                if (m3) {
+                                    m3.forEach((match, groupIndex) => {
+                                        let mq1 = MediaQuery.indexOf(":");
+                                        let mq2 = MediaQuery.indexOf(")");
+
+                                        let str1 = MediaQuery.substr(0, mq2); //(min-width:600px
+                                        let str2 = str1.substr(mq1 + 1, mq2); //600px
+                                        //   let Temp = [match,str2];
+
+                                        let str3 = MediaQuery.substr(mq2 + 1, MediaQuery.lenght); //MediaQuery
+
+                                        let Temp = [match, str2, str3];
+
+                                        mediaQueryArrayminH.push(Temp);
+
+                                        //lahetaLomake5(e,Temp);
+                                    });
+                                }
+                                if (m4) {
+                                    m4.forEach((match, groupIndex) => {
+                                        let mq1 = MediaQuery.indexOf(":");
+                                        let mq2 = MediaQuery.indexOf(")");
+
+                                        let str1 = MediaQuery.substr(0, mq2); //(min-width:600px
+                                        let str2 = str1.substr(mq1 + 1, mq2); //600px
+                                        //  let Temp = [match,str2];
+
+                                        let str3 = MediaQuery.substr(mq2 + 1, MediaQuery.lenght); //MediaQuery
+
+                                        let Temp = [match, str2, str3];
+
+                                        mediaQueryArraymaxH.push(Temp);
+
+                                        //lahetaLomake5(e,Temp);
+                                    });
+                                }
+
+                            } catch (e) {
+                                console.log("Error in forEach", e);
+                            }
+
+
                         }
-                        if (m2) {
-                            m2.forEach((match, groupIndex) => {
-                                let mq1 = MediaQuery.indexOf(":");
-                                let mq2 = MediaQuery.indexOf(")");
-                                
-                                let str1 = MediaQuery.substr(0,mq2); //(min-width:600px
-                                let str2 = str1.substr(mq1+1,mq2); //600px
-
-                                let str3 = MediaQuery.substr(mq2+1,MediaQuery.lenght); //MediaQuery
-                        
-                                let Temp = [match,str2,str3];
-
-                             mediaQueryArraymaxW.push(Temp);   
-
-                            // lahetaLomake5(e,Temp);
-                            });
-                        }
-                        if (m3) {
-                            m3.forEach((match, groupIndex) => {
-                                let mq1 = MediaQuery.indexOf(":");
-                                let mq2 = MediaQuery.indexOf(")");
-                                
-                                let str1 = MediaQuery.substr(0,mq2); //(min-width:600px
-                                let str2 = str1.substr(mq1+1,mq2); //600px
-                             //   let Temp = [match,str2];
-
-                                let str3 = MediaQuery.substr(mq2+1,MediaQuery.lenght); //MediaQuery
-                        
-                        let Temp = [match,str2,str3];
-
-                             mediaQueryArrayminH.push(Temp);
-
-                             //lahetaLomake5(e,Temp);
-                            });
-                        }
-                        if (m4) {
-                            m4.forEach((match, groupIndex) => {
-                                let mq1 = MediaQuery.indexOf(":");
-                                let mq2 = MediaQuery.indexOf(")");
-                                
-                                let str1 = MediaQuery.substr(0,mq2); //(min-width:600px
-                                let str2 = str1.substr(mq1+1,mq2); //600px
-                              //  let Temp = [match,str2];
-
-                                let str3 = MediaQuery.substr(mq2+1,MediaQuery.lenght); //MediaQuery
-                        
-                        let Temp = [match,str2,str3];
-
-                             mediaQueryArraymaxH.push(Temp);
-
-                             //lahetaLomake5(e,Temp);
-                            });
-                        }
-                        
-                    }catch(e){
-                        console.log("Error in forEach",e);
                     }
-
-                      
-                        }
-                    }
-                    console.log("mediaQueryArrayminW: ",mediaQueryArrayminW);
-                    console.log("mediaQueryArraymaxW: ",mediaQueryArraymaxW);
-                    console.log("mediaQueryArrayminH: ",mediaQueryArrayminH);
-                    console.log("mediaQueryArraymaxH: ",mediaQueryArraymaxH);
+                    console.log("mediaQueryArrayminW: ", mediaQueryArrayminW);
+                    console.log("mediaQueryArraymaxW: ", mediaQueryArraymaxW);
+                    console.log("mediaQueryArrayminH: ", mediaQueryArrayminH);
+                    console.log("mediaQueryArraymaxH: ", mediaQueryArraymaxH);
                 }).catch(err => {
                     console.log("Ei voi fetchaa");
                 });
@@ -229,57 +221,83 @@ function fetchMediaQuery() {
             }
         }
     }
-    
+
 }
 
-function testData(e){
-    for(let i=0;i<mediaQueryArrayminW.length;i++){
-        if(mediaQueryArrayminW[i][1].length < 15){ //jos isompi kuin 15, niin on ei ole esim 600px
-        lahetaLomake5(e,mediaQueryArrayminW[i]);
-        }else{
+function testData(e) {//lähetä data nodeen
+    for (let i = 0; i < mediaQueryArrayminW.length; i++) {
+        if (mediaQueryArrayminW[i][1].length < 15) { //jos isompi kuin 15, niin on ei ole esim 600px
+            lahetaLomake5(e, mediaQueryArrayminW[i]);
+        } else {
             console.log(mediaQueryArrayminW[i][1].length);
         }
     }
-    for(let i=0;i<mediaQueryArraymaxW.length;i++){
-        if(mediaQueryArraymaxW[i][1].length < 15){
-        lahetaLomake5(e,mediaQueryArraymaxW[i]);
+    for (let i = 0; i < mediaQueryArraymaxW.length; i++) {
+        if (mediaQueryArraymaxW[i][1].length < 15) {
+            lahetaLomake5(e, mediaQueryArraymaxW[i]);
         }
     }
-    for(let i=0;i<mediaQueryArrayminH.length;i++){
-        if(mediaQueryArrayminH[i][1].length < 15){
-        lahetaLomake5(e,mediaQueryArrayminH[i]);
+    for (let i = 0; i < mediaQueryArrayminH.length; i++) {
+        if (mediaQueryArrayminH[i][1].length < 15) {
+            lahetaLomake5(e, mediaQueryArrayminH[i]);
         }
     }
-    for(let i=0;i<mediaQueryArraymaxH.length;i++){
-        if(mediaQueryArraymaxH[i][1].length < 15){
-        lahetaLomake5(e,mediaQueryArraymaxH[i]);
+    for (let i = 0; i < mediaQueryArraymaxH.length; i++) {
+        if (mediaQueryArraymaxH[i][1].length < 15) {
+            lahetaLomake5(e, mediaQueryArraymaxH[i]);
         }
     }
 }
 
-function lahetaLomake5(evt,array) {
+function lahetaLomake5(evt, array) {
 
     evt.preventDefault();
     console.log("lähetä lomake 5()");
-    console.log(array[1]," | ",array[0]);
+   // console.log(array[1], " | ", array[0]);
     const fd = {};
     fd.mediaQuery = array[2];
     fd.widthOrHeight = array[0]; //Myöhemmin, databaseen menee inttinä + "px";
-    fd.lenght= array[1]; // + "px";
+    fd.lenght = array[1]; // + "px";
     const asetukset = {
-      method: 'post',
-      body: JSON.stringify(fd),
-      headers: {
-        'Content-type': 'application/json',
-      },
+        method: 'post',
+        body: JSON.stringify(fd),
+        headers: {
+            'Content-type': 'application/json',
+        },
     };
-
+    console.log("Asetukset: ",fd);
     fetch('/checkScreenSize2', asetukset).then((response) => {
-      return response.json();
+        return response.json();
     }).then((json) => {
-   console.log("json frontend lomake5: ",json);
+        console.log("json frontend lomake5: ", json);
     });
-  };
+};
+
+const testiSQL2 = document.querySelector("#testiSql2");
+
+function lahetaLomake6(evt) {
+
+    evt.preventDefault();
+
+    let screenSize = $("#sidebar").width();//div3.style.width;
+    const fd = {};
+    fd.screenSize = screenSize;
+    const asetukset = {
+        method: 'post',
+        body: JSON.stringify(fd),
+        headers: {
+            'Content-type': 'application/json',
+        },
+    };
+    console.log("Asetukset: ",fd);
+    fetch('/findMediaQuery', asetukset).then((response) => {
+        return response.json();
+    }).then((json) => {
+        console.log("json frontend lomake 6: ", json);
+    });
+};
+
+testiSQL2.addEventListener("click",function(e) { lahetaLomake6(e); } );
 
 function poistaCSS() {
     console.log("Poista CSS");
@@ -422,7 +440,7 @@ function fetchData() {
             //    console.log("div2.textContent = lineBreaksToElements:",lineBreaksToElements);
             findBodyWord(html);
             $("#console3").css("background-color", "white");
-            
+
         })
         .then(() => {
             fetchConsole.innerHTML += "  Fetching Source Code Finished...   ";

@@ -22,6 +22,7 @@ app.use(express.static('public'));
 // create the connection to database
 const connection = database.connect();
 
+
 const insertToDB = (data, res, next) => {
   database.insertUser(data, connection, () => {
     next();
@@ -52,6 +53,20 @@ const findScreenSize = (data, req, next) => {
 };
 
 
+const findScreenMediaQuery = (data, req, next) => {
+  database.selectMediaQuery(data, connection, (results) => {
+    req.custom = results;
+    next();
+  });
+};
+
+const findScreenMediaQuery2 = (data, req, next) => {
+database.selectMediaQuery2(data, connection, (results) => {
+req.custom.push(results);
+    next();
+  });
+};
+
 app.post('/asd', (req, res, next) => {
   //console.log("req.body: ",req.body);
 
@@ -75,30 +90,100 @@ app.use('/asd', (req, res, next) => {
   res.send(req.custom);
 });
 
-app.post('/checkScreenSize2', (req, res, next) => {
- // console.log("req.body 2: ", req.body);
-  //const data = ["MediaQuery",null,null,null,null];
-console.log(req.body.widthOrHeight," | ",req.body.lenght);
-  const data = [];
- // try{
-  if(req.body.widthOrHeight == "min-width"){
-    data = [req.body.mediaQuery,req.body.lenght,null,null,null];
-  }else if(req.body.widthOrHeight == "max-width"){
-    data = [req.body.mediaQuery,null,req.body.lenght,null,null];
-  }else if(req.body.widthOrHeight == "min-height"){
-    data = [req.body.mediaQuery,null,null,req.body.lenght,null];
-  }else if(req.body.widthOrHeight == "max-height"){
-    data = [req.body.mediaQuery,null,null,null,req.body.lenght];
-  }else{
- // }catch(e) {
-    data = [null,null,null,null,null];
-  }
-    insertToDB2(data, req, next);
-  next();
+const saveCSSFiles = (name, value) => {
+  console.log("Name:", name);
+  fs.open('./public/css/' + name + '.css', "w", function (err, file) { //Tallenna uusi CSS File 
+    if (err) throw err;
+    console.log('Saved!');
+  });
+
+
+  fs.appendFile('./public/css/' + name + '.css', value, function (err) { //Lisää CSS tiedoston sisään
+    if (err) throw err;
+    console.log('Saved and Added Content!');
+  });
+};
+
+const writeNewCssFile = (name, cssMediaQuery) => {
+  console.log("Name:", name);
+  fs.open('./public/css/' + name + '.css', "w", function (err, file) { //Tallenna uusi CSS File 
+    if (err) throw err;
+    console.log('Saved!');
+  });
+
+
+  fs.appendFile('./public/css/' + name + '.css', cssMediaQuery, function (err) { //Lisää CSS tiedoston sisään
+    if (err) throw err;
+    console.log('Saved!');
+  });
+};
+
+const pushToArray = (mediaQuery,minW,maxW,minH,maxH) => {
+    let data = [];
+    data.push(mediaQuery);
+    data.push(minW);
+    data.push(maxH);
+    data.push(maxW);
+    data.push(maxH);
+    return data;
+}
+
+app.post('/findMediaQuery', (req, res, next) => {
+  console.log(req.body.screenSize);
+  let data = [req.body.screenSize];
+  console.log("data: ",data);
+  findScreenMediaQuery(data, req, next);
 });
+app.use('/findMediaQuery', (req, res, next) => {
+  console.log("req.custom 1: ",req.custom);
+  console.log("req.custom 1: ",req.custom[0]);
+  console.log("req.custom 1: ",req.custom.length);
+  for(let i=0; i<req.custom.length; i++){
+    console.log("req.custom[i]: ",req.custom[i]);
+  findScreenMediaQuery2(req.custom[i], req, next);
+  }
+});
+app.use('/findMediaQuery', (req, res, next) => {
+ // console.log("req.custom 2: ",req.custom);
+  console.log("req.custom 2: ",req.custom[4]); // ARRAY mediaqueruista
+  //REPLACE CSS WITH THIS MEDIA QUERY
+  res.send(req.custom);
+});
+
+
+
+
+app.post('/checkScreenSize2', (req, res, next) => {
+
+  let data = [];
+
+  let mediaQuery = [' ' + req.body.mediaQuery + ' '];
+  // writeNewCssFile(nameOfCssFile,mediaQuery);
+
+  switch (req.body.widthOrHeight) {
+    case "min-width":
+      data = pushToArray(mediaQuery,req.body.lenght,null,null,null);
+      break;
+    case "max-width":
+      data = pushToArray(mediaQuery,null,req.body.lenght,null,null);
+      break;
+    case "min-height":
+      data = pushToArray(mediaQuery,null,null,req.body.lenght,null);
+      break;
+    case "max-height":
+      data = pushToArray(mediaQuery,null,null,null,req.body.lenght);
+      break;
+  }
+  
+  insertToDB2(data, req, next);
+});
+
 app.use('/checkScreenSize2', (req, res, next) => {
   res.send(req.body);
 });
+
+
+
 
 app.post('/checkScreenSize', (req, res, next) => {
   console.log("req.body: ", req.body);
