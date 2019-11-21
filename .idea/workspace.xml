@@ -2,7 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9992a07a-b5f7-4e3c-a652-344853072d87" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/sql-luonti.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/21d4e25656ffc4d020841cda4f4b4983" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/2d4d5ea95fbcac405995e3e14853e27f" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/31decc96f49f7d2d97a1aa2990282e37" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/3a20e2e7e80356ef80488f55ac259d6c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/3c70aee71f3bdbf54065c25e8095af15" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/538f7c88d982e93ec59106e5401636e0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/6ff69e99927e91a435506ead8fa25245" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/79db07e499bf8e16e49655f668570543" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/84e9b6217fd8d81a2ad39121f1328569" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/85493f880c041b99d009b4e73b64688e" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/87610b3ffece546a03adb7e03013ef49" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/9081b99a209d4d60105dcaf6e362f8dc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/9637107ee5cef16c76acd7eae35bf280" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/a73198a750a5cab0c756b463d72af8de" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/a989306ca9269712eca9a083c24901f3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/b3979a8579cc958d3efa9e0339bb59a4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/b6af83159a51f4390d63adedd2b98188" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/b8f0fdf9400d037159eada00441c00d7" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/c57e54cbafc15fdc13a682fd75e8af7d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/c90c183902d32a28d5fb9494aca5dc86" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/d68d1742a9a7bdc09ae6262acf828914" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/df474abc114fdfb43f4514b8592c67ed" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/e29d5b2e8f3b5993fd399c7737da7ecb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/e9cdde58269f81b308382716d898aea3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/ec0e86496e581983179706971d6f8494" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -31,11 +55,6 @@
               <caret line="101" column="2" selection-start-line="101" selection-start-column="2" selection-end-line="101" selection-end-column="2" />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/imagesnew/kuva123.png">
-          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -164,11 +183,6 @@
             <path>
               <item name="express-cc-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="express-cc-master" type="462c0819:PsiDirectoryNode" />
-              <item name="imagesnew" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="express-cc-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="express-cc-master" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -196,6 +210,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/images" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -238,12 +253,12 @@
       <workItem from="1573659287537" duration="1556000" />
       <workItem from="1573816966636" duration="954000" />
       <workItem from="1574005057565" duration="2525000" />
-      <workItem from="1574344225837" duration="15545000" />
+      <workItem from="1574344225837" duration="15851000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="43095000" />
+    <option name="totallyTimeSpent" value="43401000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -256,9 +271,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18809272" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18809272" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -272,7 +286,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.29685807" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.29685807" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
