@@ -69,9 +69,24 @@ const convertSizes = (size) => {
     }
   }
 }
+
+const SelectCSSFile  = (data, connection, callback) => {
+  
+  console.log('SELECT CSS_Tiedosto FROM csstiedostot2 WHERE nimi = "' + data + '";');
+  connection.execute('SELECT CSS_Tiedosto FROM csstiedostot2 WHERE nimi = "' + data + '";',
+    (err, results, fields) => {
+      console.log(err);
+      console.log("CSS RESULTS: ",results.length);
+      callback(results);
+    },
+  );
+
+}
+
+
 //SELECT * FROM `mediaquerysaannot` WHERE `Max_width` LIKE '%20em
 const selectMediaQuery2 = (data, connection, callback) => {
- 
+  
     console.log('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width = "' + data + '";');
     connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
       (err, results, fields) => {
@@ -157,6 +172,20 @@ const insertUser = (data, connection, callback) => {
   console.log("sql done");
 };
 
+const insertCssFile = (data, connection, callback) => {
+  // console.log("Insert user", data)
+  connection.execute(
+    'INSERT INTO cssTiedostot2 (nimi, CSS_Tiedosto) VALUES (?, ?);',
+    data,
+    (err, results, fields) => {
+      //  console.log(results); // results contains rows returned by server
+      console.log(err);
+      callback();
+    },
+  );
+  console.log("sql insertCssFile done");
+};
+
 module.exports = {
   connect: connect,
   select: select,
@@ -165,4 +194,6 @@ module.exports = {
   insertIntoMediaQueryTable: insertIntoMediaQueryTable,
   selectMediaQuery: selectMediaQuery,
   selectMediaQuery2:selectMediaQuery2,
+  insertCssFile:insertCssFile,
+  SelectCSSFile:SelectCSSFile,
 };

@@ -35,6 +35,13 @@ CREATE TABLE cssTiedostot
   Min_Height INT
 );
 
+drop table if exists cssTiedostot2;
+CREATE TABLE cssTiedostot2
+(
+  nimi VARCHAR(100),
+  CSS_Tiedosto TEXT
+);
+ALTER TABLE `cssTiedostot2` MODIFY `CSS_Tiedosto` LONGTEXT
 
 drop table if exists mediaQuerySaannot;
 

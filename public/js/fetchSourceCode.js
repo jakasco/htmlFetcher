@@ -8,6 +8,8 @@ const errorConsole = document.querySelector("#console3");
 const inputEtsi = document.querySelector("#etsiSana");
 const ul = document.querySelector("#ulList");
 
+let ArrayOfCSSFiles = [];
+
 const fetchConsole = document.querySelector("#fetchConsole");
 
 const cssTallennusInput = document.querySelector("#input2");
@@ -26,10 +28,13 @@ function getCSSfiles() { //etsi kaikki css tiedostot lähdekoodista
 
         if (m) {
             m.forEach((match, groupIndex) => {
+                
                 const regex2 = /((?:css)[^\s]+)/g; //Etsii näistä https tiedostoista kaikki css tiedostot
                 const str2 = match;
 
                 if (match.match(regex2)) { //Lisää css tiedostot textareaan
+                    ArrayOfCSSFiles.push([match]);
+                    console.log("Match: ",match);
                     $("#ulList").append(`<li>
                     <a href='${match}' target='_blank'>
                     ${match}
@@ -84,6 +89,11 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                 fetch(li.textContent).then((response) => {
                     return response.text();
                 }).then((text) => { //text = CSS tiedosto
+                    let pituusArr = ArrayOfCSSFiles.length;
+                    console.log("ArrayOfCSSFiles[i]: "+i+" , ",ArrayOfCSSFiles[i]);
+                         //Tallenna CSS sisältö arrayhyn
+                        ArrayOfCSSFiles[i].push(text);
+                   
 
                     let m = text.match("@media");
                     var res = text.split("@media"); //Jos Css Tiedostossa on @media sana, splitataan string tässä kohtaa
@@ -299,17 +309,57 @@ function lahetaLomake6(evt) {
 
 testiSQL2.addEventListener("click",function(e) { lahetaLomake6(e); } );
 
+const testiSQL3 = document.querySelector("#testiSql3");
+
+function laheta7Useasti(evt) {
+    console.log("laheta useasti sasa",ArrayOfCSSFiles.length);
+    for(let i=0; i<ArrayOfCSSFiles.length;i++){
+        console.log("laheta useasti ",i);
+        lahetaLomake7(evt,i);
+    }
+}
+
+function lahetaLomake7(evt,num) {
+
+    evt.preventDefault();
+    console.log("lähetä lomake 7 ");
+    //console.log("ArrayOfCSSFiles: ",ArrayOfCSSFiles);
+    const fd = {};
+    fd.CssArr = ArrayOfCSSFiles[num];
+    console.log(fd);
+    const asetukset = {
+        method: 'post',
+        body: JSON.stringify(fd),
+        headers: {
+            'Content-type': 'application/json',
+        },
+    };
+
+   fetch('/tallennaCSStiedosto', asetukset).then((response) => {
+        return response.json();
+    }).then((json) => {
+        console.log("json frontend lomake  7: ", json);
+    });
+};
+
+testiSQL3.addEventListener("click",function(e) { laheta7Useasti(e); } );
+
 function poistaCSS() {
     console.log("Poista CSS");
 
     let html = div3.innerHTML;
+    for(let i=0; i<ArrayOfCSSFiles.length; i++){
+     let fiveLastChar = ArrayOfCSSFiles[i][0].slice(-2);
+     let cssName = fiveLastChar+'.css';//req.body.CssArr[0]+'.css';
+     console.log(ArrayOfCSSFiles[i][0]);
+     console.log(cssName);
     // console.log(div3.innerHTML);
-    var ret = html.replace('http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4', 'css/test.css'); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+    var ret = html.replace(ArrayOfCSSFiles[i][0], 'css/'+cssName); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
     // http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg
     div3.innerHTML = ret; //divin sisään wp content
     // console.log(div3.innerHTML);
     cssTallennusInput.value = ret;
-
+    }
 }
 
 function laitaTakaisinCSS() {
