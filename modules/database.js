@@ -26,6 +26,17 @@ const connect = () => {
   return connection;
 };
 
+const checkIfDatabaseWontWriteTablesMoreThanOnce = (name, id) => {
+  connection.execute('Select count(*) from csstiedostot2 where '+name+' = @'+name+' and '+id+' = @'+CSS_Id, //IF count = 0 = true
+    (err, results, fields) => {
+      console.log(err);
+
+      callback(results);
+    },
+  );
+};
+
+
 
 const select = (data, connection, callback) => {
   console.log("Data: ", data);
@@ -70,18 +81,6 @@ const convertSizes = (size) => {
   }
 }
 
-const SelectCSSFile  = (data, connection, callback) => {
-  
-  console.log('SELECT CSS_Tiedosto FROM csstiedostot2 WHERE nimi = "' + data + '";');
-  connection.execute('SELECT CSS_Tiedosto FROM csstiedostot2 WHERE nimi = "' + data + '";',
-    (err, results, fields) => {
-      console.log(err);
-      console.log("CSS RESULTS: ",results.length);
-      callback(results);
-    },
-  );
-
-}
 
 
 //SELECT * FROM `mediaquerysaannot` WHERE `Max_width` LIKE '%20em
@@ -95,17 +94,93 @@ const selectMediaQuery2 = (data, connection, callback) => {
         callback(results);
       },
     );
-  
 }
 
-const selectMediaQuery = (data, connection, callback) => {
-  console.log("data to select: ", data[0]);
-  let DataInPx = data[0] + "px"; // Max_width = "' + data[0] + 'px" OR Max_width  "' + data[0] + 'em"',
+const selectMediaQueryMinHeight = (data, connection, callback) => {
+  console.log("data to select: ", data[1]);
+  let DataInPx = data[1] + "px"; // Max_width = "' + data[0] + 'px" OR Max_width  "' + data[0] + 'em"',
   connection.execute(
     'SELECT Max_width FROM mediaQuerySaannot',
     (err, results, fields) => {
       console.log(err);
-      //console.log("Results MediaQuery",results[0].Max_width);
+      
+        let ArrayOfValues = [];
+        for (let i = 0; i < results.length; i++) {
+          if (results[i].Max_width !== null) {
+            let convertedValue = convertSizes(results[i].Max_width);
+            console.log("ConvertedValue: ", convertedValue);
+            try {
+            if (convertedValue[0] !== null) {
+
+              if (data[1] >= convertedValue[0]) {
+                if (convertedValue[1] !== "em") {
+                  console.log("c: ",convertedValue[0]);
+                  ArrayOfValues.push(convertedValue[0]); //px on suoraan esim 400px 
+                } else {
+                  let a = (convertedValue[0]/10).toString();// + convertedValue[i];
+                  a += convertedValue[1];
+                  console.log("a: ",a);
+                  ArrayOfValues.push(a); //Palautetaan takaisin joko px tai em
+                }
+              }
+            }
+          }
+           catch (e) {
+          console.log("Error in lopp",e);
+        }
+       }//IF
+      }//FOR LOOP
+     callback(ArrayOfValues);
+    },
+  )
+};
+
+const selectMediaQueryMaxHeight = (data, connection, callback) => {
+  console.log("data to select: ", data[1]);
+  let DataInPx = data[1] + "px"; // Max_width = "' + data[0] + 'px" OR Max_width  "' + data[0] + 'em"',
+  connection.execute(
+    'SELECT Max_width FROM mediaQuerySaannot',
+    (err, results, fields) => {
+      console.log(err);
+      
+        let ArrayOfValues = [];
+        for (let i = 0; i < results.length; i++) {
+          if (results[i].Max_width !== null) {
+            let convertedValue = convertSizes(results[i].Max_width);
+            console.log("ConvertedValue: ", convertedValue);
+            try {
+            if (convertedValue[0] !== null) {
+
+              if (data[1] >= convertedValue[0]) {
+                if (convertedValue[1] !== "em") {
+                  console.log("c: ",convertedValue[0]);
+                  ArrayOfValues.push(convertedValue[0]); //px on suoraan esim 400px 
+                } else {
+                  let a = (convertedValue[0]/10).toString();// + convertedValue[i];
+                  a += convertedValue[1];
+                  console.log("a: ",a);
+                  ArrayOfValues.push(a); //Palautetaan takaisin joko px tai em
+                }
+              }
+            }
+          }
+           catch (e) {
+          console.log("Error in lopp",e);
+        }
+       }//IF
+      }//FOR LOOP
+     callback(ArrayOfValues);
+    },
+  )
+};
+
+const selectMediaQueryMinWidth = (data, connection, callback) => {
+  console.log("data to select: ", data[0]);
+  let DataInPx = data[0] + "px"; // Max_width = "' + data[0] + 'px" OR Max_width  "' + data[0] + 'em"',
+  connection.execute(
+    'SELECT Min_width FROM mediaQuerySaannot',
+    (err, results, fields) => {
+      console.log(err);
       
         let ArrayOfValues = [];
         for (let i = 0; i < results.length; i++) {
@@ -133,8 +208,45 @@ const selectMediaQuery = (data, connection, callback) => {
         }
        }//IF
       }//FOR LOOP
-   //     console.log(ArrayOfValues); //Kaikki arvot jotka ovat pienempiä kuin annettu näytön koko
-    //    callback(selectMediaQuery2(ArrayOfValues, connection, callback));
+     callback(ArrayOfValues);
+    },
+  )
+};
+
+const selectMediaQuery = (data, connection, callback) => {
+  console.log("data to select: ", data[0]);
+  let DataInPx = data[0] + "px"; // Max_width = "' + data[0] + 'px" OR Max_width  "' + data[0] + 'em"',
+  connection.execute(
+    'SELECT Max_width FROM mediaQuerySaannot',
+    (err, results, fields) => {
+      console.log(err);
+      
+        let ArrayOfValues = [];
+        for (let i = 0; i < results.length; i++) {
+          if (results[i].Max_width !== null) {
+            let convertedValue = convertSizes(results[i].Max_width);
+            console.log("ConvertedValue: ", convertedValue);
+            try {
+            if (convertedValue[0] !== null) {
+
+              if (data[0] >= convertedValue[0]) {
+                if (convertedValue[1] !== "em") {
+                  console.log("c: ",convertedValue[0]);
+                  ArrayOfValues.push(convertedValue[0]); //px on suoraan esim 400px 
+                } else {
+                  let a = (convertedValue[0]/10).toString();// + convertedValue[i];
+                  a += convertedValue[1];
+                  console.log("a: ",a);
+                  ArrayOfValues.push(a); //Palautetaan takaisin joko px tai em
+                }
+              }
+            }
+          }
+           catch (e) {
+          console.log("Error in lopp",e);
+        }
+       }//IF
+      }//FOR LOOP
      callback(ArrayOfValues);
     },
   )
@@ -175,16 +287,57 @@ const insertUser = (data, connection, callback) => {
 const insertCssFile = (data, connection, callback) => {
   // console.log("Insert user", data)
   connection.execute(
-    'INSERT INTO cssTiedostot2 (nimi, CSS_Tiedosto) VALUES (?, ?);',
+    'INSERT INTO cssTiedostot2 (CSS_Id, nimi, CSS_Tiedosto) VALUES (?,?,?);',
+    data,
+    (err, results, fields) => {
+      console.log("ERROR IN insertCssFile", err);
+      if(!err){
+        console.log("sql insertCssFile done Successfully");
+      }
+      callback();
+    },
+  );
+ 
+};
+
+const SelectCSSFile  = (data, connection, callback) => {
+  
+  console.log('SELECT CSS_Tiedosto FROM csstiedostot2 WHERE nimi = "' + data + '";');
+  connection.execute('SELECT CSS_Tiedosto FROM csstiedostot2 WHERE nimi = "' + data + '";',
+    (err, results, fields) => {
+      console.log(err);
+      console.log("CSS RESULTS: ",results.length);
+      callback(results);
+    },
+  );
+}
+
+const tallennaTietokantaanMediaQuerynPosition = (data,connection,callback) => {
+  console.log("Data :",data);
+  connection.execute(
+    'INSERT INTO mediaquerysaannot2 (CSS_File, MediaQuery_Saanto, Position) VALUES (?, ?, ?);',
     data,
     (err, results, fields) => {
       //  console.log(results); // results contains rows returned by server
       console.log(err);
+      console.log("sql done");
       callback();
     },
   );
-  console.log("sql insertCssFile done");
 };
+
+const SelectCSSMediaQueryPositions = (data, connection, callback) => {
+  
+  let query = 'SELECT * FROM mediaQuerySaannot2 WHERE Position = ' + data[0] + ' AND CSS_File = "'+data[1]+'";';
+  connection.execute(query,
+    (err, results, fields) => {
+      console.log(err);
+      callback(results);
+    },
+  );
+
+};
+
 
 module.exports = {
   connect: connect,
@@ -196,4 +349,7 @@ module.exports = {
   selectMediaQuery2:selectMediaQuery2,
   insertCssFile:insertCssFile,
   SelectCSSFile:SelectCSSFile,
+  checkIfDatabaseWontWriteTablesMoreThanOnce:checkIfDatabaseWontWriteTablesMoreThanOnce,
+  tallennaTietokantaanMediaQuerynPosition:tallennaTietokantaanMediaQuerynPosition,
+  SelectCSSMediaQueryPositions:SelectCSSMediaQueryPositions,
 };

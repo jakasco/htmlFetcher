@@ -35,11 +35,14 @@ CREATE TABLE cssTiedostot
   Min_Height INT
 );
 
+/* Taulu mihin tallennetaan CSS tiedostot ja niiden sisältö*/
 drop table if exists cssTiedostot2;
 CREATE TABLE cssTiedostot2
 (
+  CSS_Id int NOT NULL AUTO_INCREMENT,
   nimi VARCHAR(100),
-  CSS_Tiedosto TEXT
+  CSS_Tiedosto TEXT,
+  PRIMARY KEY (CSS_Id)
 );
 ALTER TABLE `cssTiedostot2` MODIFY `CSS_Tiedosto` LONGTEXT
 
