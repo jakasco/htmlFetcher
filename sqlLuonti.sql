@@ -57,6 +57,21 @@ CREATE TABLE mediaQuerySaannot
     Min_Height VARCHAR(20)
 );
 
+drop table if exists mediaQuerySaannot2;
+CREATE TABLE mediaQuerySaannot2
+(
+    CSS_File VARCHAR(100),
+    MediaQuery_Saanto1 TEXT,
+    MediaQuery_Saanto2 TEXT,
+    Position INT,
+    lengthType VARCHAR(20),
+    width VARCHAR(20),
+    height VARCHAR(20)
+);
+
+ALTER TABLE `mediaQuerySaannot2` MODIFY `MediaQuery_Saanto1` LONGTEXT;
+ALTER TABLE `mediaQuerySaannot2` MODIFY `MediaQuery_Saanto2` LONGTEXT;
+
 ALTER TABLE `mediaQuerySaannot` MODIFY `MediaQuery_Saanto` LONGTEXT
 
 

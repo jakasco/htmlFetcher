@@ -10,6 +10,8 @@ const ul = document.querySelector("#ulList");
 
 let ArrayOfCSSFiles = [];
 
+let ArrayOfPositons = [];
+
 const fetchConsole = document.querySelector("#fetchConsole");
 
 const cssTallennusInput = document.querySelector("#input2");
@@ -34,7 +36,9 @@ function getCSSfiles() { //etsi kaikki css tiedostot lähdekoodista
 
                 if (match.match(regex2)) { //Lisää css tiedostot textareaan
                     ArrayOfCSSFiles.push([match]);
-                    console.log("Match: ", match);
+                    MinAndMaxOfCssFiles.push([match]);
+                    ArrayOfPositons.push([match]);
+                    //  console.log("Match: ", match);
                     $("#ulList").append(`<li>
                     <a href='${match}' target='_blank'>
                     ${match}
@@ -68,7 +72,7 @@ function vaihdaAlkuperainenMediaQuery(css) {
 
 function DetectContainerWidth() {
     let containerWidth = $("fetchatti").width();
-    console.log("ContainerWidth: " + containerWidth);
+    //console.log("ContainerWidth: " + containerWidth);
     return containerWidth;
 }
 
@@ -79,16 +83,41 @@ let mediaQueryArraymaxH = [];
 
 let arrayOfCssMediaPosition = [];
 
-const tallennaTietokantaanMediaQuerynPosition = (evt, cssTiedosto, mediaQueryPosition, mediaQuery_Saanto) => {
-    evt.preventDefault;
+function refactorArr(name, arr, num) {
+    arr2 = []
+    for (let i = 0; i < arr.length; i++) {
+        if (!arr[i][num]) {
+            arr2.push(null);
+        } else {
+            arr2.push(arr[i][num]);
+        }
+    }
+    if (!arr2) {
+        return null;
+    } else {
+        return arr2;
+    }
+}
 
-    console.log("tallennaTietokantaanMediaQuerynPosition cssTiedosto: ", cssTiedosto, " , mediaQueryPosition: ", mediaQueryPosition);
+/* 17 tai 18 RIkkoo
+0 = min width
+1 = positon
+2 = saanto
+3 = toinen saanto
+*/
+
+const tallennaTietokantaanMediaQuerynPosition = (evt, cssTiedosto, arr) => {
+    evt.preventDefault;
+    //  console.log("Arr: ",arr);
+    //console.log("tallennaTietokantaanMediaQuerynPosition cssTiedosto: ", cssTiedosto, " , mediaQueryPosition: ", mediaQueryPosition);
     const fd = {};
     fd.cssTiedosto = cssTiedosto;
-    fd.mediaQuerySaanto = mediaQuery_Saanto;
-    fd.mediaQueryPosition = mediaQueryPosition;
-    fd.width = $("#fetchatti").width(); 
-    fd.height= $("#fetchatti").height(); 
+    fd.mediaQuerySaanto1 = refactorArr("saanto1_", arr, 2);
+    fd.mediaQuerySaanto2 = refactorArr("saanto2_", arr, 3);
+    fd.mediaQueryPosition = refactorArr("position", arr, 1);
+    fd.lengthType = refactorArr("lengthType", arr, 0);
+    fd.width = $("#fetchatti").width();
+    fd.height = $("#fetchatti").height();
     const asetukset = {
         method: 'post',
         body: JSON.stringify(fd),
@@ -100,13 +129,17 @@ const tallennaTietokantaanMediaQuerynPosition = (evt, cssTiedosto, mediaQueryPos
     fetch('/tallennaTietokantaanMediaQuerynPosition', asetukset).then((response) => {
         return response.json();
     }).then((json) => {
+        try{
         console.log("json frontend lomake 7: ", json);
-      
+        }catch(e){
+            console.log("ERRR ",e);
+        }
+        
     });
 };
 
 
-
+let MinAndMaxOfCssFiles = [];
 
 function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
@@ -114,6 +147,11 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
     let ulPituus = document.querySelectorAll("#ulList li").length; //Looppi missä etsitään kaikki Mediaquery listan Stringit
     for (let i = 0; i < ulPituus; i++) {
+        let TextOfLi = $("#ulList li").text();
+        /*  if(!MinAndMaxOfCssFiles.includes(TextOfLi)){
+             
+          }*/
+
         let li = document.querySelectorAll("#ulList li")[i];
         if (i !== 2) { //Googlen css tulee cors, joten skipataan "#ulList li")[2]
             try {
@@ -121,11 +159,11 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                     return response.text();
                 }).then((text) => { //text = CSS tiedosto
                     let pituusArr = ArrayOfCSSFiles.length;
-                    console.log("ArrayOfCSSFiles[i]: " + i + " , ", ArrayOfCSSFiles[i]);
+                    //      console.log("ArrayOfCSSFiles[i]: " + i + " , ", ArrayOfCSSFiles[i]);
                     //Tallenna CSS sisältö arrayhyn
                     ArrayOfCSSFiles[i].push(text);
 
-                    
+                    //  console.log(ArrayOfCSSFiles);
                     let m = text.match("@media");
                     var res = text.split("@media"); //Jos Css Tiedostossa on @media sana, splitataan string tässä kohtaa
 
@@ -142,10 +180,9 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                         let regex = /@Media/gi, result, indices = [];
                         while ((result = regex.exec(text))) {
                             indices.push(result.index);
-                            tallennaTietokantaanMediaQuerynPosition(event, ArrayOfCSSFiles[i][0], result.index,res[i]);
                         }
-                        console.log("indices ....... ", indices);
-                    /////////////////////////////////////////////////////////////
+                        //      console.log("indices ....... ", indices);
+                        /////////////////////////////////////////////////////////////
 
 
 
@@ -166,15 +203,43 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
                     if (m) { //Turha?
                         m.forEach((match, groupIndex) => {
-                            console.log(`Found match in ${li.textContent}, group ${groupIndex}: ${match}`);
+                            //   console.log(`Found match in ${li.textContent}, group ${groupIndex}: ${match}`);
                             let m = match.match(/{[\w\d]+}/g);
                         });
                     }
-                    console.log("ArrayOfAllMediaQueries: ", ArrayOfAllMediaQueries);
+                    //      console.log("ArrayOfAllMediaQueries: ", ArrayOfAllMediaQueries);
+                    let regex1 = /min-width/gi, result1;
+                    let regex2 = /max-width/gi, result2;
+                    let regex3 = /min-height/gi, result3;
+                    let regex4 = /max-height/gi, result4;
 
 
-                }).then(() => { //Tarkastetaan Min-Width ja Max-Width yms...
+
+                    while ((result1 = regex1.exec(text))) {
+                        ArrayOfPositons[i].push(["min-width", result1.index]);
+                    }
+                    while ((result2 = regex2.exec(text))) {
+                        ArrayOfPositons[i].push(["max-width", result2.index]);
+                    }
+                    while ((result3 = regex3.exec(text))) {
+                        ArrayOfPositons[i].push(["min-height", result3.index]);
+                    }
+                    while ((result4 = regex4.exec(text))) {
+                        ArrayOfPositons[i].push(["max-height", result4.index]);
+                    }
+
+
+
+                    return text;
+                }).then((text) => { //Tarkastetaan Min-Width ja Max-Width yms...
+
+
+
                     for (let i = 0; i < ArrayOfAllMediaQueries.length; i++) {
+
+
+
+
                         for (let j = 0; j < ArrayOfAllMediaQueries[i].length; j++) {
                             let MediaQuery = ArrayOfAllMediaQueries[i][j];
 
@@ -187,6 +252,7 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                                 if (m1) {
                                     m1.forEach((match, groupIndex) => {
 
+
                                         let tempString = MediaQuery.split("(" + match + ": ");
                                         let mq1 = MediaQuery.indexOf(":");
                                         let mq2 = MediaQuery.indexOf(")");
@@ -196,9 +262,17 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
                                         let str3 = MediaQuery.substr(mq2 + 1, MediaQuery.lenght); //MediaQuery
 
+
+
+
                                         let Temp = [match, str2, str3];
 
+
+
                                         mediaQueryArrayminW.push(Temp);
+                                        if (MinAndMaxOfCssFiles[i][0] === ArrayOfCSSFiles[i][0]) { //Jos on saman CSS tiedoston nimi
+                                            MinAndMaxOfCssFiles[i].push(Temp);
+                                        }
 
 
                                         // lahetaLomake5(e,Temp); //Lähetä tietokantaan
@@ -217,7 +291,9 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                                         let Temp = [match, str2, str3];
 
                                         mediaQueryArraymaxW.push(Temp);
-
+                                        if (MinAndMaxOfCssFiles[i][0] === ArrayOfCSSFiles[i][0]) { //Jos on saman CSS tiedoston nimi
+                                            MinAndMaxOfCssFiles[i].push(Temp);
+                                        }
                                         // lahetaLomake5(e,Temp);
                                     });
                                 }
@@ -235,7 +311,9 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                                         let Temp = [match, str2, str3];
 
                                         mediaQueryArrayminH.push(Temp);
-
+                                        if (MinAndMaxOfCssFiles[i][0] === ArrayOfCSSFiles[i][0]) { //Jos on saman CSS tiedoston nimi
+                                            MinAndMaxOfCssFiles[i].push(Temp);
+                                        }
                                         //lahetaLomake5(e,Temp);
                                     });
                                 }
@@ -253,7 +331,11 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                                         let Temp = [match, str2, str3];
 
                                         mediaQueryArraymaxH.push(Temp);
-
+                                        if (MinAndMaxOfCssFiles[i][0] === ArrayOfCSSFiles[i][0]) { //Jos on saman CSS tiedoston nimi
+                                            MinAndMaxOfCssFiles[i].push(Temp);
+                                        } else {
+                                            //    console.log(ArrayOfCSSFiles[i][0]);
+                                        }
                                         //lahetaLomake5(e,Temp);
                                     });
                                 }
@@ -264,14 +346,58 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
 
                         }
+                    }//j looppi loppuu
+                    let event = document.createEvent('Event');
+                    for (let j = 0; j < ArrayOfPositons[i].length; j++) {
+                        if (ArrayOfPositons[i][j].includes("min-width")) {
+                            ArrayOfPositons[i][j].push(mediaQueryArrayminW[0][1], mediaQueryArrayminW[0][2]);
+                        } else if (ArrayOfPositons[i][j].includes("max-width")) {
+                            ArrayOfPositons[i][j].push(mediaQueryArraymaxW[0][1], mediaQueryArraymaxW[0][2]);
+
+                        } else if (ArrayOfPositons[i][j].includes("max-height")) {
+                            ArrayOfPositons[i][j].push(mediaQueryArraymaxH[0][1], mediaQueryArraymaxH[0][2]);
+
+                        } else if (ArrayOfPositons[i][j].includes("min-height")) {
+                            ArrayOfPositons[i][j].push(mediaQueryArrayminH[0][1], mediaQueryArrayminH[0][2]);
+                        }
+                      
                     }
+                    tallennaTietokantaanMediaQuerynPosition(event, MinAndMaxOfCssFiles[i][0], ArrayOfPositons[i]);
+
+
+
+                    /*
                     console.log("mediaQueryArrayminW: ", mediaQueryArrayminW);
                     console.log("mediaQueryArraymaxW: ", mediaQueryArraymaxW);
                     console.log("mediaQueryArrayminH: ", mediaQueryArrayminH);
-                    console.log("mediaQueryArraymaxH: ", mediaQueryArraymaxH);
+                    console.log("mediaQueryArraymaxH: ", mediaQueryArraymaxH);*/
+
+                    ///////////////////////////////////////////////////////////////
+                    /*     let regex = /@Media/gi, result, indices = [];
+                         let tempArr = [];
+                        
+                        
+                         while ((result = regex.exec(text))) { //css tiedoston nimi MinAndMaxOfCssFiles[i][0]   MinAndMaxOfCssFiles[i][j] == [minwidth,mediaquery]
+                             indices.push(result.index);
+                         //    tallennaTietokantaanMediaQuerynPosition(event,MinAndMaxOfCssFiles[i][0], result.index, tempArr);
+                         }*/
+
+
+
+
+
+
                 }).catch(err => {
                     console.log("Ei voi fetchaa", err);
-                });
+                })
+                /*     console.log( ArrayOfCSSFiles[i][0]," ,",MinAndMaxOfCssFiles[i]);
+     if(ArrayOfCSSFiles[i][0] === MinAndMaxOfCssFiles[i][0]){
+         console.log("TRUE!"+i);
+     }*/
+                // console.log("MinAndMaxOfCssFiles",MinAndMaxOfCssFiles," i: ",i);
+
+                //  console.log("MinAndMaxOfCssFiles,i",i," , ",MinAndMaxOfCssFiles);
+                //    console.log("ArrayOfPostiosn: ",ArrayOfPositons);
             } catch (e) {
                 console.log("Error ", e);
             }
@@ -362,7 +488,7 @@ const testiSQL3 = document.querySelector("#testiSql3");
 function laheta7Useasti(evt) {
     console.log("laheta useasti sasa", ArrayOfCSSFiles.length);
     for (let i = 0; i < ArrayOfCSSFiles.length; i++) {
-        console.log("laheta useasti ", i);
+        //   console.log("laheta useasti ", i);
         lahetaLomake7(evt, i);
     }
 }
@@ -386,7 +512,7 @@ function lahetaLomake7(evt, num) {
     fetch('/tallennaCSStiedosto', asetukset).then((response) => {
         return response.json();
     }).then((json) => {
-        console.log("json frontend lomake  7: ", json);
+        //console.log("json frontend lomake  7: ", json);
     });
 };
 

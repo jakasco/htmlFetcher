@@ -312,10 +312,20 @@ const SelectCSSFile  = (data, connection, callback) => {
   );
 }
 
+/*
+  req.body.cssTiedosto,
+  req.body.fd.mediaQuerySaanto1,
+  req.body.fd.mediaQuerySaanto2,
+  req.body.fd.mediaQueryPosition,
+  req.body.fd.lengthType,
+  req.body.fd.width,
+  req.body.fd.height
+*/
+
 const tallennaTietokantaanMediaQuerynPosition = (data,connection,callback) => {
   console.log("Data :",data);
   connection.execute(
-    'INSERT INTO mediaquerysaannot2 (CSS_File, MediaQuery_Saanto, Position) VALUES (?, ?, ?);',
+    'INSERT INTO mediaquerysaannot2 (CSS_File, MediaQuery_Saanto1, MediaQuery_Saanto2, Position, lengthType,width,height) VALUES (?, ?, ?, ?,?,?,?);',
     data,
     (err, results, fields) => {
       //  console.log(results); // results contains rows returned by server
@@ -337,6 +347,18 @@ const SelectCSSMediaQueryPositions = (data, connection, callback) => {
   );
 
 };
+
+const UpdateMediaQuery = (data, connection, callback) => {
+  
+  console.log('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width = "' + data + '";');
+  connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
+    (err, results, fields) => {
+      console.log(err);
+      console.log("RESULTS 2:", results);
+      callback(results);
+    },
+  );
+}
 
 
 module.exports = {

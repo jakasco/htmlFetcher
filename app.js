@@ -166,7 +166,7 @@ const pushToArray = (mediaQuery, minW, maxW, minH, maxH) => {
 //Etsi MEDIA QUERY JOKA SOPII #Fethcatti width:n kokoon
 app.post('/findMediaQuery', (req, res, next) => {
   //console.log(req.body.screenSize);
-  let data = [req.body.width,req.body.height];
+  let data = [req.body.width, req.body.height];
   console.log("data: ", data);
   findScreenMediaQuery(data, req, next);
 });
@@ -289,24 +289,171 @@ app.use('/checkScreenSize', (req, res, next) => {
   res.send(req.custom);
 });
 
+function addNullOrCorrect(jsonData) {
+  if (jsonData !== null) {
+    return jsonData;
+  } else {
+    return null;
+  }
+}
+
+function getAllParameters(json) {
+
+  let arr = [];
+
+  for (let i = 0; i < json.length; i++) {
+    arr.push(addNullOrCorrect(json));
+  }
+  return arr;
+}
+
+const getLenght = (jsonFile, req, next) => {
+
+  if (!jsonFile) {
+    req.custom = { cssTiedosto: 0 }
+    next();
+  } else {
+    req.custom = { cssTiedosto: jsonFile.length }
+  }
+  next();
+};
+
+const getLenghtmediaQuerySaanto1 = (jsonFile, req, next) => {
+
+  if (!jsonFile) {
+    req.custom = { mediaQuerySaanto1: 0 }
+    next();
+  } else {
+    req.custom = { mediaQuerySaanto1: jsonFile.length }
+  }
+  next();
+};
+
+const getLenghtmediaQuerySaanto2 = (jsonFile, req, next) => {
+
+  if (!jsonFile) {
+    req.custom = { mediaQuerySaanto2: 0 }
+    next();
+  } else {
+    req.custom = { mediaQuerySaanto2: jsonFile.length }
+  }
+  next();
+};
+
+const getLenghtmediaQueryPosition = (jsonFile, req, next) => {
+
+  if (!jsonFile) {
+    try{
+    req.custom = { mediaQueryPosition: 0 };
+  }catch(e){
+    console.log("Erroe, ",e);
+  }
+    next();
+  } else {
+    req.custom = { mediaQueryPosition: jsonFile.length };
+    next();
+  }
+
+  next();
+};
+
+const getLenghtlengthType = (jsonFile, req, next) => {
+
+  if (!jsonFile) {
+    req.custom = { lengthType: 0 }
+    next();
+  } else {
+    req.custom = { lengthType: jsonFile.length }
+  }
+  next();
+};
+
+const getLenghtwidth = (jsonFile, req, next) => {
+
+  if (!jsonFile) {
+    req.custom = { width: 0 }
+    next();
+  } else {
+    req.custom = { width: jsonFile.length }
+  }
+  next();
+};
+
+const getLenghtheight = (jsonFile, req, next) => {
+
+  if (!jsonFile) {
+    req.custom = { height: 0 }
+    next();
+  } else {
+    req.custom = { height: jsonFile.length }
+  }
+  next();
+};
+
+
 app.post('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
- //  insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
+
+  const data = [];
+
+
+
+ // getLenght(req.body.cssTiedosto, req, next);
+  //getLenghtmediaQuerySaanto1(req.body.mediaQuerySaanto1, req, next);
+ // getLenghtmediaQuerySaanto2(req.body.mediaQuerySaanto2, req, next);
+ 
+ //getLenghtmediaQueryPosition(req.body.mediaQueryPosition, req, next);
+
+  //getLenghtlengthType(req.body.lengthType, req, next);
+ // getLenghtwidth(req.body.width, req, next);
+  ///getLenghtheight(req.body.height, req, next);
+
+  //   var obj = addNullOrCorrect(req.body.mediaQuerySaanto1);
+
+  // console.log("Pituus: "+getLenght(obj));
+
+  /* data2.push(getAllParameters(req.body.cssTiedosto));
+   data2.push(getAllParameters(req.body.mediaQuerySaanto1));
+   ddata2.pus(getAllParametersh(req.body.mediaQuerySaanto2));
+   data2.push(getAllParameters(req.body.mediaQueryPosition));
+   data2.push(getAllParameters(req.body.lengthType));
+   data2.push(getAllParameters(req.body.width));
+   data2.push(getAllParameters(req.body.height));*/
+  
+    data.push(addNullOrCorrect(req.body.cssTiedosto));
+    data.push(addNullOrCorrect(req.body.mediaQuerySaanto1));
+    data.push(addNullOrCorrect(req.body.mediaQuerySaanto2));
+    data.push(addNullOrCorrect(req.body.mediaQueryPosition));
+    data.push(addNullOrCorrect(req.body.lengthType));
+    data.push(addNullOrCorrect(req.body.width));
+    data.push(addNullOrCorrect(req.body.height));
+  
+    //console.log("DATA2:", data);
+    req.custom = data;
+
+
+  // insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
   next();
 });
 app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
-  let data = [req.body.mediaQueryPosition, req.body.cssTiedosto];
 
-  SelectCSSMediaQueryPositions(data, req, next);
+
+  console.log(req.custom);
+
+  //let data = [req.body.mediaQueryPosition, req.body.cssTiedosto];
+
+  // SelectCSSMediaQueryPositions(data, req, next);
+  next();
 });
 
 app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
- // console.log(req.custom.binary_row);
- // SelectCSSFile(req.custom.CSS_File, req, next);
- // console.log(req.custom.length);
-  try{
-    console.log(req.custom[0].Position);
-    console.log(req.custom[0].CSS_File);
-  }catch(e){}
+  // console.log(req.custom.binary_row);
+  // SelectCSSFile(req.custom.CSS_File, req, next);
+  // console.log(req.custom.length);
+  /* try{
+     console.log(req.custom[0].Position);
+     console.log(req.custom[0].CSS_File);
+   }catch(e){}*/
+  // console.log(req.body);
   res.send(req.custom);
 });
 
