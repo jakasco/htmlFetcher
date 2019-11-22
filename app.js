@@ -431,7 +431,7 @@ app.post('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
     req.custom = data;
 
 
-  // insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
+ //  insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
   next();
 });
 app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {

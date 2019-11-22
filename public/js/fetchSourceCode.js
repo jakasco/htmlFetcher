@@ -83,14 +83,16 @@ let mediaQueryArraymaxH = [];
 
 let arrayOfCssMediaPosition = [];
 
-function refactorArr(name, arr, num) {
+function refactorArr(arr) {
     arr2 = []
     for (let i = 0; i < arr.length; i++) {
-        if (!arr[i][num]) {
+        //  for(let j=0; j<arr[i].length; j++){
+        if (!arr[i]) {
             arr2.push(null);
         } else {
-            arr2.push(arr[i][num]);
+            arr2.push(arr[i]);
         }
+        //  }
     }
     if (!arr2) {
         return null;
@@ -110,34 +112,48 @@ const tallennaTietokantaanMediaQuerynPosition = (evt, cssTiedosto, arr) => {
     evt.preventDefault;
     //  console.log("Arr: ",arr);
     //console.log("tallennaTietokantaanMediaQuerynPosition cssTiedosto: ", cssTiedosto, " , mediaQueryPosition: ", mediaQueryPosition);
-    const fd = {};
-    fd.cssTiedosto = cssTiedosto;
-    fd.mediaQuerySaanto1 = refactorArr("saanto1_", arr, 2);
-    fd.mediaQuerySaanto2 = refactorArr("saanto2_", arr, 3);
-    fd.mediaQueryPosition = refactorArr("position", arr, 1);
-    fd.lengthType = refactorArr("lengthType", arr, 0);
-    fd.width = $("#fetchatti").width();
-    fd.height = $("#fetchatti").height();
-    const asetukset = {
-        method: 'post',
-        body: JSON.stringify(fd),
-        headers: {
-            'Content-type': 'application/json',
-        },
-    };
-    console.log("Asetukset: ", fd);
-    fetch('/tallennaTietokantaanMediaQuerynPosition', asetukset).then((response) => {
-        return response.json();
-    }).then((json) => {
-        try{
-        console.log("json frontend lomake 7: ", json);
-        }catch(e){
-            console.log("ERRR ",e);
-        }
-        
-    });
+
+    for (let i = 0; i < arr.length; i++) {
+        const fd = {};
+        fd.cssTiedosto = cssTiedosto;
+        fd.mediaQuerySaanto1 = arr[2][i];//refactorArr("saanto1_", arr, 2);
+        fd.mediaQuerySaanto2 = arr[3][i];//refactorArr("saanto2_", arr, 3);
+        fd.mediaQueryPosition = arr[1][i];//refactorArr("position", arr, 1);
+        fd.lengthType = arr[0][i];//refactorArr("lengthType", arr, 0);
+        fd.width = $("#fetchatti").width();
+        fd.height = $("#fetchatti").height();
+        const asetukset = {
+            method: 'post',
+            body: JSON.stringify(fd),
+            headers: {
+                'Content-type': 'application/json',
+            },
+        };
+    //    console.log("Asetukset: ", fd);
+        fetch('/tallennaTietokantaanMediaQuerynPosition', asetukset).then((response) => {
+            return response.json();
+        }).then((json) => {
+            try {
+                //  console.log("json frontend lomake 7: ", json);
+            } catch (e) {
+                console.log("ERRR ", e);
+            }
+
+        });
+    }
 };
 
+let t1 = 0;
+
+function checkIfRelatedToMedia (mediaArr,widthArr) {
+    let sum = (widthArr - mediaArr);
+   // console.log("Minus: ",sum);
+    if(sum < 70 && sum >= 0){
+        return true;
+    }else{
+        return false;
+    }
+}
 
 let MinAndMaxOfCssFiles = [];
 
@@ -177,10 +193,7 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                         //evt, css tiedoston nimi, mediaqueryn positon numerona
                         let event = document.createEvent('Event');
                         ///////////////////////////////////////////////////////////////
-                        let regex = /@Media/gi, result, indices = [];
-                        while ((result = regex.exec(text))) {
-                            indices.push(result.index);
-                        }
+                       
                         //      console.log("indices ....... ", indices);
                         /////////////////////////////////////////////////////////////
 
@@ -208,13 +221,17 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                         });
                     }
                     //      console.log("ArrayOfAllMediaQueries: ", ArrayOfAllMediaQueries);
+                    let regex = /@Media/gi, result, indices = [];
+                    
                     let regex1 = /min-width/gi, result1;
                     let regex2 = /max-width/gi, result2;
                     let regex3 = /min-height/gi, result3;
                     let regex4 = /max-height/gi, result4;
 
-
-
+                    
+                    while ((result = regex.exec(text))) {
+                        ArrayOfPositons[i].push(["@Media", result.index]);
+                    }
                     while ((result1 = regex1.exec(text))) {
                         ArrayOfPositons[i].push(["min-width", result1.index]);
                     }
@@ -227,7 +244,40 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                     while ((result4 = regex4.exec(text))) {
                         ArrayOfPositons[i].push(["max-height", result4.index]);
                     }
+               //     console.log("ArrayOfPositons",ArrayOfPositons);
+                    
+                    let MediaRows = [];
+                    let MediaRows2d = [];
 
+                    for(let j=0; j<ArrayOfPositons[i].length;j++){
+                        if(ArrayOfPositons[i][j][0] === "@Media"){
+                            MediaRows.push(ArrayOfPositons[i][j][1]);
+                        }
+                      //  checkIfRelatedToMedia (,ArrayOfPositons[i][1]);
+                    }
+                    MediaRows2d.push(MediaRows);
+                    console.log("MediaRows",MediaRows2d);
+
+                    for(let j=0; j<ArrayOfPositons[i].length;j++){
+                        for(let k=0; k<MediaRows.length;k++){
+                            if(ArrayOfPositons[i][j][0] !== "@Media"){
+                         let bool = checkIfRelatedToMedia(MediaRows[k],ArrayOfPositons[i][j][1]);
+                       //  console.log("Bool = "+bool);
+                         if(bool===true){
+                           //  console.log("TÄSMÄÄ SAMALLE RIVILLE",MediaRows[k]," , ",ArrayOfPositons[i][j][0],ArrayOfPositons[i][j][1]);
+                            let mediaq = text.substr(MediaRows[k],ArrayOfPositons[i][j][1]);
+                           // console.log(mediaq);
+                           var res45 = text.slice(MediaRows[k],(ArrayOfPositons[i][j][1]+20));
+                         ///   res45 = res45+" "+ArrayOfPositons[i][j][0];
+                         var n = res45.lastIndexOf("{");
+                           
+                           res45 = res45.slice(0,n);
+                           console.log(res45);
+                            }
+                        }
+                        }//k looppi
+                       
+                    }
 
 
                     return text;
@@ -360,31 +410,42 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                         } else if (ArrayOfPositons[i][j].includes("min-height")) {
                             ArrayOfPositons[i][j].push(mediaQueryArrayminH[0][1], mediaQueryArrayminH[0][2]);
                         }
-                      
+
                     }
-                    tallennaTietokantaanMediaQuerynPosition(event, MinAndMaxOfCssFiles[i][0], ArrayOfPositons[i]);
 
+                    for (let j = 0; i < ArrayOfPositons[i].length; j++) {
+                        let arr2 = [];
+                        let lengthType2 = [];
+                        /*     lengthType2.push(refactorArr(ArrayOfPositons[j]));
+                             ​
+                             let mediaQueryPosition = refactorArr(ArrayOfPositons[j]);
+                             ​
+                             let mediaQuerySaanto1 = refactorArr(ArrayOfPositons[j]);
+                             ​
+                             let mediaQuerySaanto2 = refactorArr(ArrayOfPositons[j]);
+                          console.log(ArrayOfPositons[j].length);*/
+                        arr2.push(refactorArr(ArrayOfPositons[j]));
 
+                        arr2.push(refactorArr(ArrayOfPositons[i][2]));
+                        arr2.push(refactorArr(ArrayOfPositons[i][3]));
+                        arr2.push(refactorArr(ArrayOfPositons[i][4]));
 
-                    /*
-                    console.log("mediaQueryArrayminW: ", mediaQueryArrayminW);
-                    console.log("mediaQueryArraymaxW: ", mediaQueryArraymaxW);
-                    console.log("mediaQueryArrayminH: ", mediaQueryArrayminH);
-                    console.log("mediaQueryArraymaxH: ", mediaQueryArraymaxH);*/
+                        let lengthType = arr2[0];
+                        let position = arr2[1];
+                        let saanto = arr2[2];
+                        let saanto2 = arr2[3];
+                //        console.log(lengthType,position,saanto,saanto2);
+                        try {
+                            tallennaTietokantaanMediaQuerynPosition(event, MinAndMaxOfCssFiles[i][0], arr2[j]);
+                        } catch (e) { }
 
-                    ///////////////////////////////////////////////////////////////
-                    /*     let regex = /@Media/gi, result, indices = [];
-                         let tempArr = [];
-                        
-                        
-                         while ((result = regex.exec(text))) { //css tiedoston nimi MinAndMaxOfCssFiles[i][0]   MinAndMaxOfCssFiles[i][j] == [minwidth,mediaquery]
-                             indices.push(result.index);
-                         //    tallennaTietokantaanMediaQuerynPosition(event,MinAndMaxOfCssFiles[i][0], result.index, tempArr);
-                         }*/
+                        //console.log("arr2: ",arr2);
+                        t1 = t1 + 1;
+                    //    console.log(t1 + "Looppia");
+                 //       console.log("Arr2 : ", arr2);
+                    }
 
-
-
-
+                    console.log("MinAndMaxOfCssFiles", MinAndMaxOfCssFiles);
 
 
                 }).catch(err => {
@@ -398,9 +459,11 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
                 //  console.log("MinAndMaxOfCssFiles,i",i," , ",MinAndMaxOfCssFiles);
                 //    console.log("ArrayOfPostiosn: ",ArrayOfPositons);
+
             } catch (e) {
                 console.log("Error ", e);
             }
+
         }
     }
 
