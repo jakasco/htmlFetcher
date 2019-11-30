@@ -72,6 +72,23 @@ CREATE TABLE mediaQuerySaannot2
 ALTER TABLE `mediaQuerySaannot2` MODIFY `MediaQuery_Saanto1` LONGTEXT;
 ALTER TABLE `mediaQuerySaannot2` MODIFY `MediaQuery_Saanto2` LONGTEXT;
 
+
+drop table if exists mediaQuerySaannot3;
+CREATE TABLE mediaQuerySaannot3
+(
+    CSS_File VARCHAR(100),
+    MediaQuery_Saanto TEXT,
+    Position INT,
+    TextToClearPosition INT,
+    min_width VARCHAR(20),
+    max_width VARCHAR(20),
+    min_height VARCHAR(20),
+    max_height VARCHAR(20)
+);
+
+ALTER TABLE `mediaQuerySaannot3` MODIFY `MediaQuery_Saanto` LONGTEXT
+
+
 ALTER TABLE `mediaQuerySaannot` MODIFY `MediaQuery_Saanto` LONGTEXT
 
 

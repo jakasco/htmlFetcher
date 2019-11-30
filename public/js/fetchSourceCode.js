@@ -112,7 +112,7 @@ const tallennaTietokantaanMediaQuerynPosition = (evt, cssTiedosto, arr) => {
     evt.preventDefault;
     //  console.log("Arr: ",arr);
     //console.log("tallennaTietokantaanMediaQuerynPosition cssTiedosto: ", cssTiedosto, " , mediaQueryPosition: ", mediaQueryPosition);
-
+/*
     for (let i = 0; i < arr.length; i++) {
         const fd = {};
         fd.cssTiedosto = cssTiedosto;
@@ -140,7 +140,39 @@ const tallennaTietokantaanMediaQuerynPosition = (evt, cssTiedosto, arr) => {
             }
 
         });
-    }
+    }*/
+};
+
+const tallennaTietokantaanMediaQuerynPosition2 = 
+(evt, cssTiedostoNimi, MediaQuery_Saanto, Position,TextToClearPosition) => {
+
+       evt.preventDefault;
+
+        const fd = {};
+        fd.CSS_File = cssTiedostoNimi;
+        fd.MediaQuery_Saanto = MediaQuery_Saanto;//refactorArr("saanto1_", arr, 2);
+        fd.Position = Position;//refactorArr("saanto2_", arr, 3);
+        fd.TextToClearPosition = TextToClearPosition;//refactorArr("position", arr, 1);
+     //   fd.width = $("#fetchatti").width();
+    //    fd.height = $("#fetchatti").height();
+        const asetukset = {
+            method: 'post',
+            body: JSON.stringify(fd),
+            headers: {
+                'Content-type': 'application/json',
+            },
+        };
+        console.log("Asetukset: ", fd);
+        fetch('/tallennaTietokantaanMediaQuerynPosition', asetukset).then((response) => {
+            return response.json();
+        }).then((json) => {
+            try {
+                  console.log("tallennaTietokantaanMediaQuerynPosition  2: ", json);
+            } catch (e) {
+                console.log("ERRR ", e);
+            }
+
+        });
 };
 
 let t1 = 0;
@@ -164,9 +196,6 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
     let ulPituus = document.querySelectorAll("#ulList li").length; //Looppi missä etsitään kaikki Mediaquery listan Stringit
     for (let i = 0; i < ulPituus; i++) {
         let TextOfLi = $("#ulList li").text();
-        /*  if(!MinAndMaxOfCssFiles.includes(TextOfLi)){
-             
-          }*/
 
         let li = document.querySelectorAll("#ulList li")[i];
         if (i !== 2) { //Googlen css tulee cors, joten skipataan "#ulList li")[2]
@@ -257,29 +286,34 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                     }
                     MediaRows2d.push(MediaRows);
                     console.log("MediaRows",MediaRows2d);
-
+                    
+                 //   let tempArrForMediaQuery = [];
+                    let event = document.createEvent('Event');
                     for(let j=0; j<ArrayOfPositons[i].length;j++){
                         for(let k=0; k<MediaRows.length;k++){
                             if(ArrayOfPositons[i][j][0] !== "@Media"){
                          let bool = checkIfRelatedToMedia(MediaRows[k],ArrayOfPositons[i][j][1]);
                        //  console.log("Bool = "+bool);
                          if(bool===true){
-                           //  console.log("TÄSMÄÄ SAMALLE RIVILLE",MediaRows[k]," , ",ArrayOfPositons[i][j][0],ArrayOfPositons[i][j][1]);
-                            let mediaq = text.substr(MediaRows[k],ArrayOfPositons[i][j][1]);
-                           // console.log(mediaq);
-                           var res45 = text.slice(MediaRows[k],(ArrayOfPositons[i][j][1]+20));
-                         ///   res45 = res45+" "+ArrayOfPositons[i][j][0];
-                         var n = res45.lastIndexOf("{");
+                        
+                        let MediaQuery_Saanto = text.slice(MediaRows[k],(ArrayOfPositons[i][j][1]+20));
+                         let n = MediaQuery_Saanto.lastIndexOf("{"); // @media screen and (min-width: 48em) { <- otetaan pois {
                            
-                           res45 = res45.slice(0,n);
-                           console.log(res45);
-                            }
+                         MediaQuery_Saanto = MediaQuery_Saanto.slice(0,n); //tulostaa @media screen and (min-width: 48em)
+                        let TextToClearPosition = MediaRows[k]+n; //media query loppuu t'h'n kohtaan stringissä (numero)
+                        //console.log(ArrayOfPositons[i][j][0],ArrayOfPositons[i][j][1]); //min-width 83604
+                            try{
+                       tallennaTietokantaanMediaQuerynPosition2(event, ArrayOfCSSFiles[i][0], MediaQuery_Saanto, MediaRows[k],TextToClearPosition);
+                    } catch (e) { 
+                        console.log("Error");
+                    }
+                    }
                         }
                         }//k looppi
                        
                     }
-
-
+                   
+                    
                     return text;
                 }).then((text) => { //Tarkastetaan Min-Width ja Max-Width yms...
 
@@ -436,7 +470,7 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                         let saanto2 = arr2[3];
                 //        console.log(lengthType,position,saanto,saanto2);
                         try {
-                            tallennaTietokantaanMediaQuerynPosition(event, MinAndMaxOfCssFiles[i][0], arr2[j]);
+                           // tallennaTietokantaanMediaQuerynPosition(event, MinAndMaxOfCssFiles[i][0], arr2[j]);
                         } catch (e) { }
 
                         //console.log("arr2: ",arr2);
@@ -465,7 +499,7 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
             }
 
         }
-    }
+    } // FOR LOOP
 
 }
 

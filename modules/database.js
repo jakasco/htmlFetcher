@@ -325,7 +325,7 @@ const SelectCSSFile  = (data, connection, callback) => {
 const tallennaTietokantaanMediaQuerynPosition = (data,connection,callback) => {
   console.log("Data :",data);
   connection.execute(
-    'INSERT INTO mediaquerysaannot2 (CSS_File, MediaQuery_Saanto1, MediaQuery_Saanto2, Position, lengthType,width,height) VALUES (?, ?, ?, ?,?,?,?);',
+    'INSERT INTO mediaquerysaannot3 (CSS_File, MediaQuery_Saanto, Position, TextToClearPosition,	width, height) VALUES (?, ?, ?, ?, ?, ?);',
     data,
     (err, results, fields) => {
       //  console.log(results); // results contains rows returned by server

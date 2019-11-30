@@ -343,11 +343,11 @@ const getLenghtmediaQuerySaanto2 = (jsonFile, req, next) => {
 const getLenghtmediaQueryPosition = (jsonFile, req, next) => {
 
   if (!jsonFile) {
-    try{
-    req.custom = { mediaQueryPosition: 0 };
-  }catch(e){
-    console.log("Erroe, ",e);
-  }
+    try {
+      req.custom = { mediaQueryPosition: 0 };
+    } catch (e) {
+      console.log("Erroe, ", e);
+    }
     next();
   } else {
     req.custom = { mediaQueryPosition: jsonFile.length };
@@ -390,54 +390,239 @@ const getLenghtheight = (jsonFile, req, next) => {
   next();
 };
 
+const convertSizesOfPxOrEm = (size) => {
+  let lastTwoCharacters = size.slice(-2); // =em tai px
+  let arr = [];
+
+  if (size !== null) {
+    if (lastTwoCharacters == "px") {
+      arr.push(size, "px");
+      return arr; //otetaan pois px, jotta voidaan vertailla kokoa
+    } else if (lastTwoCharacters == "em") {
+      let sizeInEm = size.slice(0, -2); //otetaan pois em
+      sizeInEm *= 10; //em = 10x koko
+      console.log("Size in em", sizeInEm);
+      arr.push(sizeInEm, "em");
+      return arr;
+    }
+  }
+}
+/*
+  switch (match) {
+    case "min-width":
+      data = pushToArray(mediaQuery, req.body.lenght, null, null, null);
+      break;
+    case "max-width":
+      data = pushToArray(mediaQuery, null, req.body.lenght, null, null);
+      break;
+    case "min-height":
+      data = pushToArray(mediaQuery, null, null, req.body.lenght, null);
+      break;
+    case "max-height":
+      data = pushToArray(mediaQuery, null, null, null, req.body.lenght);
+      break;
+  }*/
+const convertMediaQueryToNumbers = (MediaQuery_Saanto) => {
+  console.log("MediaQuery_Saanto: ", MediaQuery_Saanto);
+  let n1 = MediaQuery_Saanto.lastIndexOf(")"); // @media screen and (min-width: 48em) { <- otetaan pois {
+  let n2 = MediaQuery_Saanto.lastIndexOf(":"); // : ja ) väliltä luku x(px tai em)
+  console.log("n1: ", n1, " , n2: ", n2);
+  let MinMaxWidthHeight = MediaQuery_Saanto.slice(n1, n2);
+  console.log("MinMaxWidthHeight: ", MinMaxWidthHeight);
+  return null;//VAIHDA
+};
+
+const manipulateString = (Media_Query, Arr) => {
+
+  MediaQuery = Media_Query.replace(/ /g, ''); //ota tyhjat valit poist
+  let tempArr = [];
+
+  let first = MediaQuery.indexOf(Arr[0]);  // @media screen and (min-width
+
+  for (let i = 0; i < Arr.length; i++) {
+
+    if (i === 0) {
+      let n = MediaQuery.IndexOf(")");
+      console.log("MediaQuery_Saanto ", n);
+      let value = MediaQuery.slice(first, n);
+
+      tempArr.push(value);
+    } else {
+      //let first2 = first + 1; // ) <- alkaa sulun jälkeen
+      let first2 = MediaQuery.IndexOf(")");
+      let n = MediaQuery.indexOf(Arr[i]); // @media screen and (min-width:<- otetaan pois kaikki ekasta
+      console.log("n: ", n);
+      MediaQuery = MediaQuery.slice(first2, n); //tulostaa @media screen and (min-width: 48em)
+      tempArr.push(value);
+    }
+  }
+
+}
+
+const addToArrIfContains = (MediaQuery, match, arr) => {
+
+  let temp = [];
+
+  if (MediaQuery.includes(match)) { //Ensin tarkastetaan oikea arvo, sitten onko 2 alemanpana
+    temp.push(match);
+  }
+  for (let i = 0; i < arr.length; i++) {
+    if (MediaQuery.includes(arr[i]) && arr[i] !== match) { //Jos sisältää 2 esim. min-width and min-height
+      temp.push(arr[i]);
+    }
+  }
+
+  return temp;
+};
+
+const splitMultipleQueries = (MediaQuery, match, arr) => {
+
+  let tempArr1 = [];
+  let tempArr2 = [];
+  let tempArr3 = [];
+  let tempArr4 = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    let res = MediaQuery.split(arr[i]); //arr[i] on min-height yms.
+    tempArr1.push(res[0]);
+    tempArr2.push(res[1]);
+  }
+  // console.log("tempArr 1: ",tempArr1);
+  // console.log("tempArr 2: ",tempArr2);
+  for (let i = 0; i < tempArr2.length; i++) {
+    let bool = true;
+    if (typeof tempArr2[i] === 'undefined') {
+      //null 
+    } else {
+      try {
+        
+        let res2 = tempArr2[i].split("and"); //arr[i] on min-height yms.
+        bool = false;
+        tempArr3.push(res2);
+      } catch (e) {
+     //   console.log(e);
+      }
+      if(bool !== true){
+        tempArr4.push(tempArr2[i]);
+      }
+    }
+  }
+  if(tempArr3.length > 1){ //Jos mediaquery sisältää enemmän sääntöjä kuin 1, esim min-height and min-width niin palautetaan arr3
+    console.log("tempArr 3: ", tempArr3);
+    return tempArr3;
+  }else{
+    console.log("tempArr  4  : ", tempArr4);
+    return tempArr2;
+  }
+}
+
+const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
+
+  let arr = [];
+  let mWH = ["min-width", "max-width", "min-height", "max-height"];
+
+  let m1 = MediaQuery.match(mWH[0]);
+  let m2 = MediaQuery.match(mWH[1]);
+  let m3 = MediaQuery.match(mWH[2]);
+  let m4 = MediaQuery.match(mWH[3]);
+  try {
+    if (m1) {
+      m1.forEach((match) => {
+        //     console.log(`Found match in: ${match}`);
+        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
+        let temp = match;
+        arr.push(temp);
+      });
+    }
+    if (m2) {
+      m2.forEach((match) => {
+        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
+        let temp = match;
+        arr.push(temp);
+      });
+    }
+    if (m3) {
+      m3.forEach((match) => {
+        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
+        let temp = match;
+        arr.push(temp);
+      });
+    }
+    if (m4) {
+      m4.forEach((match) => {
+        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
+        //  let temp = [match, convertMediaQueryToNumbers(m4)];
+        let temp = match;
+        arr.push(temp);
+      });
+    }
+  } catch (e) {
+    console.log("Error in forEach", e);
+  }
+  return arr;
+}
+
 
 app.post('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
 
-  const data = [];
+
+  let MinMaxWidthHeight = getMultipleConditionsFromMediaQuery(req.body.MediaQuery_Saanto);
+
+  console.log(MinMaxWidthHeight);
 
 
 
- // getLenght(req.body.cssTiedosto, req, next);
+  const data = [
+    req.body.CSS_File,
+    req.body.MediaQuery_Saanto,
+    req.body.Position,
+    req.body.TextToClearPosition,
+  ];
+
+
+
+  // getLenght(req.body.cssTiedosto, req, next);
   //getLenghtmediaQuerySaanto1(req.body.mediaQuerySaanto1, req, next);
- // getLenghtmediaQuerySaanto2(req.body.mediaQuerySaanto2, req, next);
- 
- //getLenghtmediaQueryPosition(req.body.mediaQueryPosition, req, next);
+  // getLenghtmediaQuerySaanto2(req.body.mediaQuerySaanto2, req, next);
+
+  //getLenghtmediaQueryPosition(req.body.mediaQueryPosition, req, next);
 
   //getLenghtlengthType(req.body.lengthType, req, next);
- // getLenghtwidth(req.body.width, req, next);
+  // getLenghtwidth(req.body.width, req, next);
   ///getLenghtheight(req.body.height, req, next);
 
   //   var obj = addNullOrCorrect(req.body.mediaQuerySaanto1);
 
   // console.log("Pituus: "+getLenght(obj));
 
-  /* data2.push(getAllParameters(req.body.cssTiedosto));
-   data2.push(getAllParameters(req.body.mediaQuerySaanto1));
-   ddata2.pus(getAllParametersh(req.body.mediaQuerySaanto2));
-   data2.push(getAllParameters(req.body.mediaQueryPosition));
-   data2.push(getAllParameters(req.body.lengthType));
-   data2.push(getAllParameters(req.body.width));
-   data2.push(getAllParameters(req.body.height));*/
-  
-    data.push(addNullOrCorrect(req.body.cssTiedosto));
-    data.push(addNullOrCorrect(req.body.mediaQuerySaanto1));
-    data.push(addNullOrCorrect(req.body.mediaQuerySaanto2));
-    data.push(addNullOrCorrect(req.body.mediaQueryPosition));
-    data.push(addNullOrCorrect(req.body.lengthType));
-    data.push(addNullOrCorrect(req.body.width));
-    data.push(addNullOrCorrect(req.body.height));
-  
-    //console.log("DATA2:", data);
-    req.custom = data;
+  /*  data2.push(getAllParameters(req.body.cssTiedosto));
+    data2.push(getAllParameters(req.body.mediaQuerySaanto1));
+    ddata2.pus(getAllParametersh(req.body.mediaQuerySaanto2));
+    data2.push(getAllParameters(req.body.mediaQueryPosition));
+    data2.push(getAllParameters(req.body.lengthType));
+    data2.push(getAllParameters(req.body.width));
+    data2.push(getAllParameters(req.body.height));_/
+   
+   /*  data.push(addNullOrCorrect(req.body.cssTiedosto));
+     data.push(addNullOrCorrect(req.body.mediaQuerySaanto1));
+     data.push(addNullOrCorrect(req.body.mediaQuerySaanto2));
+     data.push(addNullOrCorrect(req.body.mediaQueryPosition));
+     data.push(addNullOrCorrect(req.body.lengthType));
+     data.push(addNullOrCorrect(req.body.width));
+     data.push(addNullOrCorrect(req.body.height));*/
+
+  //console.log("DATA2:", data);
+  // req.custom = data;
 
 
- //  insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
+  //  insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
   next();
 });
+
 app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
 
 
-  console.log(req.custom);
+  // console.log(req.custom);
 
   //let data = [req.body.mediaQueryPosition, req.body.cssTiedosto];
 
