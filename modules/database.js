@@ -360,6 +360,17 @@ const UpdateMediaQuery = (data, connection, callback) => {
   );
 }
 
+const SelectCSSMediaQueryPositions3 = (data, connection, callback) => {
+  
+  let query = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE min_width = '+ data[0] +' OR min_height < '+data[1]+';';
+  connection.execute(query,
+    (err, results, fields) => {
+      console.log(err);
+      callback(results);
+    },
+  );
+
+};
 
 module.exports = {
   connect: connect,
@@ -374,4 +385,5 @@ module.exports = {
   checkIfDatabaseWontWriteTablesMoreThanOnce:checkIfDatabaseWontWriteTablesMoreThanOnce,
   tallennaTietokantaanMediaQuerynPosition:tallennaTietokantaanMediaQuerynPosition,
   SelectCSSMediaQueryPositions:SelectCSSMediaQueryPositions,
+  SelectCSSMediaQueryPositions3:SelectCSSMediaQueryPositions3,
 };

@@ -552,7 +552,7 @@ function lahetaLomake5(evt, array) {
     });
 };
 
-const testiSQL2 = document.querySelector("#testiSql2");
+//const testiSQL2 = document.querySelector("#testiSql2");
 
 function lahetaLomake6(evt) {
 
@@ -578,7 +578,7 @@ function lahetaLomake6(evt) {
     });
 };
 
-testiSQL2.addEventListener("click", function (e) { lahetaLomake6(e); });
+//testiSQL2.addEventListener("click", function (e) { lahetaLomake6(e); });
 
 const testiSQL3 = document.querySelector("#testiSql3");
 
@@ -776,6 +776,10 @@ function fetchData() {
         })
         .then(() => {
             fetchConsole.innerHTML += "   Fetching MediaQueries Finished...   ";
+        })
+        .then(() => { 
+            let e = document.createEvent('Event');
+            lahetaLomake4(e);
         })
         .catch(function (e) {
             console.log(e);

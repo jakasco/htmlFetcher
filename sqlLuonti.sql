@@ -80,10 +80,10 @@ CREATE TABLE mediaQuerySaannot3
     MediaQuery_Saanto TEXT,
     Position INT,
     TextToClearPosition INT,
-    min_width VARCHAR(20),
-    max_width VARCHAR(20),
-    min_height VARCHAR(20),
-    max_height VARCHAR(20)
+    min_width INT,
+    max_width INT,
+    min_height INT,
+    max_height INT
 );
 
 ALTER TABLE `mediaQuerySaannot3` MODIFY `MediaQuery_Saanto` LONGTEXT

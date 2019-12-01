@@ -2,12 +2,14 @@
 require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 // const https   = require('https');
 
 const database = require('./modules/database');
 const exif = require('./modules/exif');
 const multer = require('multer');
 const upload = multer({ dest: 'public/files/' });
+const uploadCSS = multer({ dest: 'public/css/' });
 const crypto = require('crypto');
 
 const app = express();
@@ -52,7 +54,7 @@ const insertCssFile = (data, res, next) => {
 const SelectCSSFile = (data, req, next) => {
   database.SelectCSSFile(data, connection, (results) => {
 
-    req.custom = results;
+    req.custom2 = results;
     next();
   });
 };
@@ -77,6 +79,16 @@ const PalautaFrontendiin = (data, req, next) => {
     next();
   });
 };
+
+const SelectCSSMediaQueryPositions3 = (data, req, next) => {
+  database.SelectCSSMediaQueryPositions3(data, connection, (results) => {
+    //  console.log("Result palauyta frontend: ",results);
+    req.custom = results;
+    next();
+  });
+};
+
+
 
 const findScreenSize = (data, req, next) => {
   database.selectScreenSize(data, connection, (results) => {
@@ -124,15 +136,21 @@ app.use('/asd', (req, res, next) => {
   res.send(req.custom);
 });
 
+
+
 const saveCSSFiles = (name, value) => {
-  console.log("Name of CSS File to Be Added:", name);
-  fs.open('./public/css/' + name + '.css', "w", function (err, file) { //Tallenna uusi CSS File 
+  const nameOfCss = name + '.css';
+  console.log("nameOfCss: "+nameOfCss);
+  const cssPath = path.join(__dirname, '../htmlFetcher', 'public', 'css', nameOfCss);
+  console.log(cssPath);
+  console.log("Name of CSS File to Be Added:", nameOfCss);
+  fs.open('./public/css/' + name, "w", function (err, file) { //Tallenna uusi CSS File 
     if (err) throw err;
     console.log('Saved!');
   });
 
 
-  fs.appendFile('./public/css/' + name + '.css', value, function (err) { //Lisää CSS tiedoston sisään
+  fs.appendFile('./public/css/'+name, value, function (err) { //Lisää CSS tiedoston sisään
     if (err) throw err;
     console.log('Saved and Added Content!');
   });
@@ -265,28 +283,39 @@ app.use('/checkScreenSize2', (req, res, next) => {
 });
 
 
-
+const modifyCSSFile = (CssFile,cut) => {
+  let newCss = CssFile.slice(0,cut);
+  return newCss;
+};
 
 app.post('/checkScreenSize', (req, res, next) => {
   console.log("req.body: ", req.body);
   console.log("req.body: ", req.body.width);
   const data = [req.body.width, req.body.height];
   console.log("Data App.js ", data);
-  PalautaFrontendiin(data, req, next);
+ // PalautaFrontendiin(data, req, next);
+ SelectCSSMediaQueryPositions3(data, req, next);
 });
+
 app.use('/checkScreenSize', (req, res, next) => {
+  console.log(req.custom[0].CSS_File);
+  console.log(req.custom[0].TextToClearPosition);
+  SelectCSSFile(req.custom[0].CSS_File, req, next);
+//  next();
+});
 
-  fs.open('./public/css/mynewfile2.css', 'w', function (err, file) { //Tallenna uusi CSS File 
-    if (err) throw err;
-    console.log('Saved!');
-  });
-
-  fs.appendFile('./public/css/mynewfile2.css', 'body {color:blue}', function (err) { //Lisää CSS tiedoston sisään
-    if (err) throw err;
-    console.log('Saved!');
-  });
-
-  res.send(req.custom);
+app.use('/checkScreenSize', (req, res, next) => {
+ // console.log("Req.custom2 ",req.custom2[0].CSS_Tiedosto);
+ let fiveLastChar = req.custom[0].CSS_File.slice(-2);
+ 
+ let cssName = fiveLastChar + '.css';
+ console.log("cssname: "+cssName);
+ let cut = 65844;//req.custom[0].TextToClearPosition;
+ let newCss = modifyCSSFile(req.custom2[0].CSS_Tiedosto,cut);
+ console.log(newCss);
+ saveCSSFiles(cssName, newCss);
+ req.custom[0].NewCss = cssName;
+ res.send(req.custom);
 });
 
 function addNullOrCorrect(jsonData) {
@@ -432,6 +461,31 @@ const convertMediaQueryToNumbers = (MediaQuery_Saanto) => {
   return null;//VAIHDA
 };
 
+const decimalToint = (value) => {
+  return value | 0;
+}
+
+const empxConversion = (value) => {
+ 
+  let lastTwoCharacters = value.slice(-2); // =em tai px
+  console.log("Value: ",value);
+ // console.log("value: ",value);
+    if (lastTwoCharacters == "px") {
+      let px = value.indexOf("px");
+      value = value.slice(0, px);
+      
+      console.log("value 2: ",value);
+      return decimalToint(value); //otetaan pois px, jotta voidaan vertailla kokoa
+    } else if (lastTwoCharacters == "em") {
+      let em = value.indexOf("em");
+      let sizeInEm = value.slice(0, em); //otetaan pois em
+      sizeInEm *= 10; //em = 10x koko
+      console.log("sizeInEm: ",sizeInEm," em: "+em);
+      return decimalToint(sizeInEm);
+    }
+     
+}
+
 const manipulateString2 = (Arr) => {
   //console.log("  manipulateString2 Arr :", Arr);
 
@@ -454,7 +508,7 @@ const manipulateString2 = (Arr) => {
       value += "x";
     }
     console.log("value: ",value);
-
+    value = empxConversion(value); //convertoi intiksi
     tempArr.push(value);
 
   }
@@ -475,6 +529,14 @@ const manipulateString4 = (PartOfArray, match) => {
     let n = MediaQuery.indexOf(")");
 
     value = MediaQuery.slice((first + 1), (n));
+
+    if(value.endsWith("e")){ //tarkasta ettei lopu em e tai px p
+      value += "m";
+    }else if(value.endsWith("p")){
+      value += "x";
+    }
+    console.log("value: ",value);
+    value = empxConversion(value); //convertoi intiksi
 
     //  tempArr.push(value);
   }
