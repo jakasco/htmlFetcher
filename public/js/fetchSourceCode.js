@@ -162,12 +162,12 @@ const tallennaTietokantaanMediaQuerynPosition2 =
                 'Content-type': 'application/json',
             },
         };
-        console.log("Asetukset: ", fd);
+      //  console.log("Asetukset: ", fd);
         fetch('/tallennaTietokantaanMediaQuerynPosition', asetukset).then((response) => {
             return response.json();
         }).then((json) => {
             try {
-                  console.log("tallennaTietokantaanMediaQuerynPosition  2: ", json);
+               //   console.log("tallennaTietokantaanMediaQuerynPosition  2: ", json);
             } catch (e) {
                 console.log("ERRR ", e);
             }
@@ -544,7 +544,7 @@ function lahetaLomake5(evt, array) {
             'Content-type': 'application/json',
         },
     };
-    console.log("Asetukset: ", fd);
+ //   console.log("Asetukset: ", fd);
     fetch('/checkScreenSize2', asetukset).then((response) => {
         return response.json();
     }).then((json) => {
@@ -570,7 +570,7 @@ function lahetaLomake6(evt) {
             'Content-type': 'application/json',
         },
     };
-    console.log("Asetukset: ", fd);
+   // console.log("Asetukset: ", fd);
     fetch('/findMediaQuery', asetukset).then((response) => {
         return response.json();
     }).then((json) => {

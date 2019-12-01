@@ -14,6 +14,8 @@ const crypto = require('crypto');
 
 const app = express();
 
+
+
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -54,7 +56,19 @@ const insertCssFile = (data, res, next) => {
 const SelectCSSFile = (data, req, next) => {
   database.SelectCSSFile(data, connection, (results) => {
 
-    req.custom2 = results;
+  //  if(typeof req.custom2 === 'undefined'){
+      req.custom2 = results;
+  //  }else{
+ ////     req.custom2.push(results);
+ //   }
+    next();
+  });
+};
+
+const SelectCSSFile2 = (data, req, next) => {
+  database.SelectCSSFile(data, connection, (results) => {
+
+    req.custom3 = results;
     next();
   });
 };
@@ -88,6 +102,13 @@ const SelectCSSMediaQueryPositions3 = (data, req, next) => {
   });
 };
 
+const SelectCSSMediaQueryPositions32 = (data, req, next) => {
+  database.SelectCSSMediaQueryPositions32(data, connection, (results) => {
+    //  console.log("Result palauyta frontend: ",results);
+    req.custom3 = results;
+    next();
+  });
+};
 
 
 const findScreenSize = (data, req, next) => {
@@ -298,23 +319,37 @@ app.post('/checkScreenSize', (req, res, next) => {
 });
 
 app.use('/checkScreenSize', (req, res, next) => {
-  console.log(req.custom[0].CSS_File);
-  console.log(req.custom[0].TextToClearPosition);
+  const data = [req.body.width, req.body.height];
+  SelectCSSMediaQueryPositions32(data, req, next);
+  });
+
+app.use('/checkScreenSize', (req, res, next) => {
+ console.log("req.custom ",req.custom[0]);
+ console.log("req.custom3 ",req.custom3[0]);
+ // console.log(req.custom[0].TextToClearPosition);
   SelectCSSFile(req.custom[0].CSS_File, req, next);
 //  next();
 });
 
 app.use('/checkScreenSize', (req, res, next) => {
- // console.log("Req.custom2 ",req.custom2[0].CSS_Tiedosto);
- let fiveLastChar = req.custom[0].CSS_File.slice(-2);
+  SelectCSSFile2(req.custom[0].CSS_File, req, next);
+  });
+
+app.use('/checkScreenSize', (req, res, next) => {
+  console.log("Req.custom2 ",req.custom2[0].nimi);
+  console.log("Req.custom3 ",req.custom3[0].nimi);
+
+  for(let i=0; i<2; i++){
+    let fiveLastChar = req.custom2[0].nimi.slice(-2);
  
- let cssName = fiveLastChar + '.css';
- console.log("cssname: "+cssName);
- let cut = 65844;//req.custom[0].TextToClearPosition;
- let newCss = modifyCSSFile(req.custom2[0].CSS_Tiedosto,cut);
- console.log(newCss);
- saveCSSFiles(cssName, newCss);
- req.custom[0].NewCss = cssName;
+    let cssName = fiveLastChar + i+'.css';
+    //console.log("cssname: "+cssName);
+    let cut = req.custom[0].TextToClearPosition;
+    let newCss = modifyCSSFile(req.custom2[0].CSS_Tiedosto,cut);
+    //console.log(newCss);
+    saveCSSFiles(cssName, newCss);
+    `req.custom[0].NewCss${i} = ${cssName};`
+  }
  res.send(req.custom);
 });
 

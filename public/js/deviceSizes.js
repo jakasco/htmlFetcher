@@ -77,12 +77,12 @@ const lahetaLomake3 = (evt) => {
 	});
 };
 
-function poistaCSS2(CSS_File, newCssFile) {
+function poistaCSS2(CSS_File, newCssFile, num) {
 	console.log("Poista CSS 2");
 
 	let html = div3.innerHTML;
 	let fiveLastChar = CSS_File.slice(-2);
-	let cssName = fiveLastChar + '.css';//req.body.CssArr[0]+'.css';
+	let cssName = fiveLastChar +num+ '.css';//req.body.CssArr[0]+'.css';
 	console.log("CSS_File: ",CSS_File);
 	
 	CSS_File = CSS_File.replace("'", ""); //ylimääräinen pilkku pois lopusta
@@ -122,7 +122,7 @@ function laitaTakaisinCSS3(OldCSS,New_CSS_File) {
 
 }
 
-const lahetaLomake4 = (evt) => {
+function lahetaLomake4(evt) {
 
 	evt.preventDefault();
 	console.log("lähetä lomake 4()");
@@ -142,7 +142,7 @@ const lahetaLomake4 = (evt) => {
 	}).then((json) => {
 		console.log("json frontend lomake4: ", json);
 		for (let i = 0; i < json.length; i++) {
-			poistaCSS2(json[i].CSS_File,json[i].NewCss);
+			poistaCSS2(json[i].CSS_File,json[i].NewCss,i);
 		}
 	}).then(() => {
 		console.log("Finished CSS")

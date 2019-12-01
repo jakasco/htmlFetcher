@@ -302,8 +302,8 @@ const insertCssFile = (data, connection, callback) => {
 
 const SelectCSSFile  = (data, connection, callback) => {
   
-  console.log('SELECT CSS_Tiedosto FROM csstiedostot2 WHERE nimi = "' + data + '";');
-  connection.execute('SELECT CSS_Tiedosto FROM csstiedostot2 WHERE nimi = "' + data + '";',
+  console.log('SELECT CSS_Tiedosto,nimi FROM csstiedostot2 WHERE nimi = "' + data + '";');
+  connection.execute('SELECT CSS_Tiedosto,nimi FROM csstiedostot2 WHERE nimi = "' + data + '";',
     (err, results, fields) => {
       console.log(err);
       console.log("CSS RESULTS: ",results.length);
@@ -360,9 +360,69 @@ const UpdateMediaQuery = (data, connection, callback) => {
   );
 }
 
-const SelectCSSMediaQueryPositions3 = (data, connection, callback) => {
+const SelectCSSMediaQueryPositions32 = (data, connection, callback) => {
+  let query1 = 'SELECT MAX(min_width) as MW, MAX(min_height) as MH FROM mediaQuerySaannot3 WHERE min_width < '+ data[0] +' OR min_height < '+data[1]+';'
   
-  let query = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE min_width = '+ data[0] +' OR min_height < '+data[1]+';';
+  connection.execute(query1,
+    (err, results, fields) => {
+      console.log(err);
+      console.log(results[0].MW);
+      let data2 = [results[0].MW,results[0].MH];
+
+     // let query2 = 'SELECT CSS_File,TextToClearPosition,MIN(min_width),MIN(min_height) FROM mediaQuerySaannot3 WHERE min_width > '+data2[0]+' OR min_height > '+data2[1]+';'
+     
+      
+      let query2 = 'SELECT MIN(min_width) as MW2 ,MIN(min_height) as MH2 FROM mediaQuerySaannot3 WHERE min_width > '+data2[0]+' OR min_height > '+data2[1]+';'
+      connection.execute(query2, function(err, results2, fields) {
+            if (err) throw err;
+            console.log(results2)
+            let data3 = [results2[0].MW2,results2[0].MH2];
+            
+            let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE min_width = '+data3[0]+' OR min_height = '+data3[1]+';'
+            connection.execute(query3, function(err, results3, fields) {
+              if (err) throw err;
+              console.log("Results3: ",results3);
+            callback(results3);
+          });
+        });
+    },
+  );
+
+};
+
+
+const SelectCSSMediaQueryPositions3 = (data, connection, callback) => {
+  let query1 = 'SELECT MIN(max_width) as MW, MIN(max_height) as MH FROM mediaQuerySaannot3 WHERE max_width > '+ data[0] +' OR max_height > '+data[1]+';'
+  
+  connection.execute(query1,
+    (err, results, fields) => {
+      console.log(err);
+      console.log(results[0].MW);
+      let data2 = [results[0].MW,results[0].MH];
+
+     // let query2 = 'SELECT CSS_File,TextToClearPosition,MIN(min_width),MIN(min_height) FROM mediaQuerySaannot3 WHERE min_width > '+data2[0]+' OR min_height > '+data2[1]+';'
+     
+      
+      let query2 = 'SELECT MAX(max_width) as MW2 ,MAX(max_height) as MH2 FROM mediaQuerySaannot3 WHERE max_width > '+data2[0]+' OR max_height > '+data2[1]+';'
+      connection.execute(query2, function(err, results2, fields) {
+            if (err) throw err;
+            console.log(results2)
+            let data3 = [results2[0].MW2,results2[0].MH2];
+            
+            let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width = '+data3[0]+' OR max_height = '+data3[1]+';'
+            connection.execute(query3, function(err, results3, fields) {
+              if (err) throw err;
+              console.log("Results3: ",results3);
+            callback(results3);
+          });
+        });
+    },
+  );
+
+};
+
+const SelectCSSMediaQueryPositions3_2 = (data, connection, callback) => {
+  let query = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width < '+ data[0] +' OR max_height < '+data[1]+';';
   connection.execute(query,
     (err, results, fields) => {
       console.log(err);
@@ -371,6 +431,8 @@ const SelectCSSMediaQueryPositions3 = (data, connection, callback) => {
   );
 
 };
+
+
 
 module.exports = {
   connect: connect,
@@ -386,4 +448,5 @@ module.exports = {
   tallennaTietokantaanMediaQuerynPosition:tallennaTietokantaanMediaQuerynPosition,
   SelectCSSMediaQueryPositions:SelectCSSMediaQueryPositions,
   SelectCSSMediaQueryPositions3:SelectCSSMediaQueryPositions3,
+  SelectCSSMediaQueryPositions32:SelectCSSMediaQueryPositions32,
 };
