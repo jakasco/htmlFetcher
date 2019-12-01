@@ -156,8 +156,8 @@ const pushToArray = (mediaQuery, minW, maxW, minH, maxH) => {
   let data = [];
   data.push(mediaQuery);
   data.push(minW);
-  data.push(maxH);
   data.push(maxW);
+  data.push(minH);
   data.push(maxH);
   return data;
 }
@@ -448,6 +448,13 @@ const manipulateString2 = (Arr) => {
 
     let value = MediaQuery.slice((first + 1), (n));
 
+    if(value.endsWith("e")){ //tarkasta ettei lopu em e tai px p
+      value += "m";
+    }else if(value.endsWith("p")){
+      value += "x";
+    }
+    console.log("value: ",value);
+
     tempArr.push(value);
 
   }
@@ -541,7 +548,12 @@ const manipulateString = (arr) => {
     //  console.log("mString"+mString);
 
   });
-
+  if(stringToBeManipulated.endsWith("e")){
+    stringToBeManipulated += "m";
+  }else if(stringToBeManipulated.endsWith("p")){
+    stringToBeManipulated += "x";
+  }
+  console.log("stringToBeManipulated: "+stringToBeManipulated);
   // console.log("stringToBeManipulated : ", stringToBeManipulated);
   return stringToBeManipulated;
 }
@@ -583,10 +595,9 @@ const splitMultipleQueries = (MediaQuery, match, arr) => {
       try {
 
         let res2 = MediaQuery.split("and"); //arr[i] on min-height yms.
+        tempArr3.push(res2);
         //    console.log("res2 ", res2);
         bool = false;
-        tempArr3.push(res2);
-
       } catch (e) {
         //   console.log(e);
       }
@@ -607,7 +618,7 @@ const splitMultipleQueries = (MediaQuery, match, arr) => {
     return tempArr5;
   } else {
 
-    tempArr2 = [false, match, manipulateString2(tempArr4)];
+    tempArr2 = [false, match, manipulateString2(tempArr4)[0]];
     //  console.log("TempArr 2 : ", tempArr2);
     return tempArr2;
   }
@@ -636,7 +647,7 @@ const findMWH = (arr, match) => {
 }
 
 const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
-  console.log(MediaQuery);
+ // console.log(MediaQuery);
   let arr = [];
 
   let arr1 = [];
@@ -698,11 +709,9 @@ const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
       });
     }
   } catch (e) {
-    console.log("Error in forEach", e);
+  //  console.log("Error in forEach", e);
   }
-  console.log(" ");
-  console.log("_______________");
-  console.log(" ");
+  
   // console.log("2). ", arr2);
   //  console.log("3). ", arr3);
   // console.log("4). ", arr4);
@@ -712,7 +721,7 @@ const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
 
 const split2dArray = (arr) => {
   let temp = arr;
-  console.log("TEMP: ", arr[0][0]);
+ // console.log("TEMP: ", arr[0][0]);
 
   if (arr[0][0] === true) {
     temp[0][0] = false;
@@ -720,22 +729,35 @@ const split2dArray = (arr) => {
   }
 }
 
+const modify2dArraytoDatabaseFormat = (arr) => {
+  let temp1dArr = [null,null,null,null];
+  for (let i = 0; i < arr.length; i++) {
+ //   console.log(i+" , ",arr[i][1][0]);
+    if(arr[i][1][0] === "min-width"){
+      temp1dArr[0] = arr[i][1][1];
+    }
+    if(arr[i][1][0] === "max-width"){
+      temp1dArr[1] = arr[i][1][1];
+    }
+    if(arr[i][1][0] === "min-height"){
+      temp1dArr[2] = arr[i][1][1];
+    }
+    if(arr[i][1][0] === "max-height"){
+      temp1dArr[3] = arr[i][1][1];
+    }
+  }
+ // console.log("Temp1dArr: ",temp1dArr);
+  return temp1dArr;
+}
 
 app.post('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
 
 
   let MinMaxWidthHeight = getMultipleConditionsFromMediaQuery(req.body.MediaQuery_Saanto);
 
-  console.log("MinMaxWidthHeight", MinMaxWidthHeight);
+  // console.log("MinMaxWidthHeight", MinMaxWidthHeight);
 
- // let twodArr = [];
-/*
-  for (let i = 0; i < MinMaxWidthHeight.length; i++) {
-    if (MinMaxWidthHeight[i][0] === true) {
-      MinMaxWidthHeight[i] = split2dArray(MinMaxWidthHeight);
-    }
-  }*/
- // console.log(MinMaxWidthHeight);
+
 
   const data = [
     req.body.CSS_File,
@@ -746,42 +768,40 @@ app.post('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
 
 
 
-  // getLenght(req.body.cssTiedosto, req, next);
-  //getLenghtmediaQuerySaanto1(req.body.mediaQuerySaanto1, req, next);
-  // getLenghtmediaQuerySaanto2(req.body.mediaQuerySaanto2, req, next);
-
-  //getLenghtmediaQueryPosition(req.body.mediaQueryPosition, req, next);
-
-  //getLenghtlengthType(req.body.lengthType, req, next);
-  // getLenghtwidth(req.body.width, req, next);
-  ///getLenghtheight(req.body.height, req, next);
-
-  //   var obj = addNullOrCorrect(req.body.mediaQuerySaanto1);
-
-  // console.log("Pituus: "+getLenght(obj));
-
-  /*  data2.push(getAllParameters(req.body.cssTiedosto));
-    data2.push(getAllParameters(req.body.mediaQuerySaanto1));
-    ddata2.pus(getAllParametersh(req.body.mediaQuerySaanto2));
-    data2.push(getAllParameters(req.body.mediaQueryPosition));
-    data2.push(getAllParameters(req.body.lengthType));
-    data2.push(getAllParameters(req.body.width));
-    data2.push(getAllParameters(req.body.height));_/
+  if (MinMaxWidthHeight[0][0] === false) { //1d array
+    switch (MinMaxWidthHeight[0][1]) {
+      case "min-width":
+        data.push(MinMaxWidthHeight[0][2], null, null, null);
+        break;
+      case "max-width":
+        data.push(null, MinMaxWidthHeight[0][2], null, null);
+        break;
+      case "min-height":
+        data = pushToArray(null, null, MinMaxWidthHeight[0][2], null);
+        break;
+      case "max-height":
+        data = pushToArray(null, null, null, MinMaxWidthHeight[0][2]);
+        break;
+    }
+  } else {
+    let temp2d = modify2dArraytoDatabaseFormat(MinMaxWidthHeight);
+    for(let i=0; i<temp2d.length; i++){
+      data.push(temp2d[i]);
+    }
    
-   /*  data.push(addNullOrCorrect(req.body.cssTiedosto));
-     data.push(addNullOrCorrect(req.body.mediaQuerySaanto1));
-     data.push(addNullOrCorrect(req.body.mediaQuerySaanto2));
-     data.push(addNullOrCorrect(req.body.mediaQueryPosition));
-     data.push(addNullOrCorrect(req.body.lengthType));
-     data.push(addNullOrCorrect(req.body.width));
-     data.push(addNullOrCorrect(req.body.height));*/
-
-  //console.log("DATA2:", data);
+  } //IF 2d arrayconsole.log(" ");
+  console.log("_______________");
+  console.log(" ");
+  console.log("DATA: ", data);
+  console.log(" ");
   req.custom = data;
+  
+  if(data.length < 8){ //Tietokantaan 8 lokeroa
+    data.push(null);
+  }
 
-
-  //  insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
-  next();
+  // insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
+ next();
 });
 
 app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
