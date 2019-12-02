@@ -449,4 +449,5 @@ module.exports = {
   SelectCSSMediaQueryPositions:SelectCSSMediaQueryPositions,
   SelectCSSMediaQueryPositions3:SelectCSSMediaQueryPositions3,
   SelectCSSMediaQueryPositions32:SelectCSSMediaQueryPositions32,
+  SelectCSSMediaQueryPositions3_2:SelectCSSMediaQueryPositions3_2,
 };

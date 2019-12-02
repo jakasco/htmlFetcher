@@ -77,16 +77,19 @@ const lahetaLomake3 = (evt) => {
 	});
 };
 
-function poistaCSS2(CSS_File, newCssFile, num) {
-	console.log("Poista CSS 2");
+function poistaCSS2(cssFileName, newCssFile, num) {
+	console.log("Poista CSS 2,cssFileName: ",cssFileName," , replace: ",newCssFile, "   num: ",num);
 
 	let html = div3.innerHTML;
-	let fiveLastChar = CSS_File.slice(-2);
+	let fiveLastChar = cssFileName.slice(-2);
 	let cssName = fiveLastChar +num+ '.css';//req.body.CssArr[0]+'.css';
-	console.log("CSS_File: ",CSS_File);
+//	console.log("cssName: ",cssName);
 	
-	CSS_File = CSS_File.replace("'", ""); //ylimääräinen pilkku pois lopusta
-	var ret = html.replace(CSS_File, 'css/' + newCssFile); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+	cssName = cssFileName.replace("'", ""); //ylimääräinen pilkku pois lopusta
+	var ret = html.replace(cssName, 'css/' + newCssFile); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+	
+	//console.log(cssFileName+ " , 'css/' "+ newCssFile);
+	
 	div3.innerHTML = ret; //divin sisään wp content
 	console.log(div3.innerHTML);
 	cssTallennusInput.value = ret;
@@ -142,7 +145,8 @@ function lahetaLomake4(evt) {
 	}).then((json) => {
 		console.log("json frontend lomake4: ", json);
 		for (let i = 0; i < json.length; i++) {
-			poistaCSS2(json[i].CSS_File,json[i].NewCss,i);
+			console.log(json[i][0]);
+			poistaCSS2(json[i][0].nimi,json[i][0].NewCss,i);
 		}
 	}).then(() => {
 		console.log("Finished CSS")

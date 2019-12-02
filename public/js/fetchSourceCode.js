@@ -167,7 +167,7 @@ const tallennaTietokantaanMediaQuerynPosition2 =
             return response.json();
         }).then((json) => {
             try {
-               //   console.log("tallennaTietokantaanMediaQuerynPosition  2: ", json);
+                console.log("tallennaTietokantaanMediaQuerynPosition2: ", json);
             } catch (e) {
                 console.log("ERRR ", e);
             }
@@ -285,7 +285,7 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                       //  checkIfRelatedToMedia (,ArrayOfPositons[i][1]);
                     }
                     MediaRows2d.push(MediaRows);
-                    console.log("MediaRows",MediaRows2d);
+               //     console.log("MediaRows",MediaRows2d); TÄRKEÄ
                     
                  //   let tempArrForMediaQuery = [];
                     let event = document.createEvent('Event');
@@ -303,7 +303,7 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                         let TextToClearPosition = MediaRows[k]+n; //media query loppuu t'h'n kohtaan stringissä (numero)
                         //console.log(ArrayOfPositons[i][j][0],ArrayOfPositons[i][j][1]); //min-width 83604
                             try{
-                       tallennaTietokantaanMediaQuerynPosition2(event, ArrayOfCSSFiles[i][0], MediaQuery_Saanto, MediaRows[k],TextToClearPosition);
+                    //TÄRKEÄ POIS KOMMENTTI   tallennaTietokantaanMediaQuerynPosition2(event, ArrayOfCSSFiles[i][0], MediaQuery_Saanto, MediaRows[k],TextToClearPosition);
                     } catch (e) { 
                         console.log("Error");
                     }
@@ -479,7 +479,7 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                  //       console.log("Arr2 : ", arr2);
                     }
 
-                    console.log("MinAndMaxOfCssFiles", MinAndMaxOfCssFiles);
+                 //   console.log("MinAndMaxOfCssFiles", MinAndMaxOfCssFiles); TÄRKEÄ
 
 
                 }).catch(err => {
