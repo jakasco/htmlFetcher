@@ -43,7 +43,7 @@ const insertTotallennaTietokantaanMediaQuerynPosition = (data, res, next) => {
 const SelectCSSMediaQueryPositions = (data, req, next) => {
   database.SelectCSSMediaQueryPositions(data, connection, (results) => {
     req.custom = results;
-    //console.log(req.custom);
+
     next();
   });
 };
@@ -56,12 +56,41 @@ const insertCssFile = (data, res, next) => {
 
 const SelectCSSFile = (data, req, next) => {
   database.SelectCSSFile(data, connection, (results) => {
-   
-  //  if(typeof req.custom2 === 'undefined'){
-    req.arr.push(results);
-  //  }else{
- ////     req.custom2.push(results);
- //   }
+    req.custom = results;
+    next();
+  });
+};
+
+const insertCssFile3 = (data, res, next) => {
+  database.insertCssFile3(data, connection, () => {
+    next();
+  });
+};
+
+const SelectCSSFile3 = (data, req, next) => {
+  database.SelectCSSFile3(data, connection, (results) => {
+    req.custom = results;
+    next();
+  });
+};
+
+const addAutoIncrement = (num,req,next) => {
+  database.addAutoIncrement(data, connection, (results) => {
+    req.custom = results;
+    next();
+  });
+}
+
+const SelectCSSMediaQueryPositions4 = (data, req, next) => {
+  database.SelectCSSMediaQueryPositions4(data, connection, (results) => {
+    req.custom4 = results;
+    next();
+  });
+};
+
+const SelectCSSFilesID = (data, req, next) => {
+  database.SelectCSSFilesID(data, connection, (results) => {
+    req.CssId = results;
     next();
   });
 };
@@ -73,6 +102,22 @@ const SelectCSSFile2 = (data, req, next) => {
     next();
   });
 };
+
+const SelectCSSFileByID = (idArr, req, next) => {
+
+  database.SelectCSSFileByID(idArr, connection, (results) => {
+    req.custom5 = results;
+
+    next();
+  });
+
+};
+
+const UpdateCSSFile = (id, data, req, next) =>
+database.UpdateCSSFile(id, data, connection, (results) => {
+  req.custom6 = results;
+  next();
+});
 
 const checkIfDatabaseWontWriteTablesMoreThanOnce = (data, req, next) =>
   database.checkIfDatabaseWontWriteTablesMoreThanOnce(data, connection, (results) => {
@@ -89,7 +134,7 @@ const insertToDB2 = (data, res, next) => {
 
 const PalautaFrontendiin = (data, req, next) => {
   database.select(data, connection, (results) => {
-    //  console.log("Result palauyta frontend: ",results);
+
     req.custom = results;
     next();
   });
@@ -97,7 +142,7 @@ const PalautaFrontendiin = (data, req, next) => {
 
 const SelectCSSMediaQueryPositions3 = (data, req, next) => {
   database.SelectCSSMediaQueryPositions3(data, connection, (results) => {
-    //  console.log("Result palauyta frontend: ",results);
+
     req.custom.push(results);
     next();
   });
@@ -105,7 +150,7 @@ const SelectCSSMediaQueryPositions3 = (data, req, next) => {
 //SelectCSSMediaQueryPositions3_2
 const SelectCSSMediaQueryPositions32 = (data, req, next) => {
   database.SelectCSSMediaQueryPositions32(data, connection, (results) => {
-    //  console.log("Result palauyta frontend: ",results);
+
     req.custom.push(results);
     next();
   });
@@ -113,7 +158,7 @@ const SelectCSSMediaQueryPositions32 = (data, req, next) => {
 
 const SelectCSSMediaQueryPositions3_2 = (data, req, next) => {
   database.SelectCSSMediaQueryPositions3_2(data, connection, (results) => {
-    //  console.log("Result palauyta frontend: ",results);
+
     req.custom.push(results);
     next();
   });
@@ -122,7 +167,7 @@ const SelectCSSMediaQueryPositions3_2 = (data, req, next) => {
 
 const findScreenSize = (data, req, next) => {
   database.selectScreenSize(data, connection, (results) => {
-    //  console.log("Result palauyta frontend: ",results);
+
     req.custom = results;
     next();
   });
@@ -144,9 +189,7 @@ const findScreenMediaQuery2 = (data, req, next) => {
 };
 
 app.post('/asd', (req, res, next) => {
-  //console.log("req.body: ",req.body);
 
-  console.log("Req body.width :", req.body.width);
   const data = ["css",//1
     req.body.cssData, //2
     req.body.width, //3
@@ -162,7 +205,7 @@ app.use('/asd', (req, res, next) => {
   PalautaFrontendiin("null toistaiseksi", req, next);
 });
 app.use('/asd', (req, res, next) => {
-  // console.log("req.custom: ",req.custom);
+
   res.send(req.custom);
 });
 
@@ -170,33 +213,19 @@ app.use('/asd', (req, res, next) => {
 
 const saveCSSFiles = (name, value) => {
   const nameOfCss = name;
-  //console.log("nameOfCss: "+nameOfCss);
+
   const cssPath = path.join(__dirname, '../htmlFetcher', 'public', 'css', nameOfCss);
-  console.log(cssPath);
-  console.log("Name of CSS File to Be Added:", nameOfCss);
+  //  console.log(cssPath);
+  //  console.log("Name of CSS File to Be Added:", nameOfCss);
   fs.open('./public/css/' + name, "w", function (err, file) { //Tallenna uusi CSS File 
     if (err) throw err;
     console.log('Saved!');
   });
 
 
-  fs.appendFile('./public/css/'+name, value, function (err) { //Lisää CSS tiedoston sisään
+  fs.appendFile('./public/css/' + name, value, function (err) { //Lisää CSS tiedoston sisään
     if (err) throw err;
     console.log('Saved and Added Content!');
-  });
-};
-
-const writeNewCssFile = (name, cssMediaQuery) => {
-  console.log("Name:", name);
-  fs.open('./public/css/' + name + "w", function (err, file) { //Tallenna uusi CSS File 
-    if (err) throw err;
-    console.log('Saved!');
-  });
-
-
-  fs.appendFile('./public/css/' + name + cssMediaQuery, function (err) { //Lisää CSS tiedoston sisään
-    if (err) throw err;
-    console.log('Saved!');
   });
 };
 
@@ -210,74 +239,39 @@ const pushToArray = (mediaQuery, minW, maxW, minH, maxH) => {
   return data;
 }
 
-
 //Etsi MEDIA QUERY JOKA SOPII #Fethcatti width:n kokoon
 app.post('/findMediaQuery', (req, res, next) => {
-  //console.log(req.body.screenSize);
   let data = [req.body.width, req.body.height];
-  console.log("data: ", data);
   findScreenMediaQuery(data, req, next);
 });
 app.use('/findMediaQuery', (req, res, next) => {
-  console.log("req.custom 1: ", req.custom);
-  console.log("req.custom 1: ", req.custom[0]);
-  console.log("req.custom 1: ", req.custom.length);
   for (let i = 0; i < req.custom.length; i++) {
-    console.log("req.custom[i]: ", req.custom[i]);
     findScreenMediaQuery2(req.custom[i], req, next);
   }
 });
 app.use('/findMediaQuery', (req, res, next) => {
-  // console.log("req.custom 2: ",req.custom);
-  //var res = str.slice(0, 5);
-  //req.custom -> ["20em", "20em", Array(2)]
-  console.log("req.custom 2: ", req.custom[4]); // ARRAY mediaqueruista
-  //REPLACE CSS WITH THIS MEDIA QUERY
   res.send(req.custom);
 });
-
 
 
 let ArrayOfCssFilesNames = [];
 //Tallenna CSS TIEDOSTO
 app.post('/tallennaCSStiedosto', (req, res, next) => {
-
-  SelectCSSFile(req.body.CssArr[0], req, next); //req.body.CssArr[0] on CSS_Tiedoston nimi,
+  SelectCSSFile3(req.body.CssArr[0], req, next); //req.body.CssArr[0] on CSS_Tiedoston nimi,
   //Frontendissä käydään looppi missä on kaikki nämä
-
 });
 
 app.use('/tallennaCSStiedosto', (req, res, next) => {
-  // ArrayOfCssFilesNames.push(req.custom);
-  // console.log("ArrayOfCssFilesNames:",ArrayOfCssFilesNames);
-  console.log("req.custom:", req.custom);
-  // checkIfDatabaseWontWriteTablesMoreThanOnce(req.body.CssArr[0], req, next);
-  next();
-});
-
-app.use('/tallennaCSStiedosto', (req, res, next) => {
-  console.log(req.body.CssArr[0]); //CSS Tiedoston nimi
-  //console.log(req.body.CssArr[1]); //Css tiedoston sisältö
 
   if (req.custom.length === 0) { //Jos ei ole sisältöä req.customissa, laita sinne
-    let data = [int, req.body.CssArr[0], req.body.CssArr[1]];
-    console.log("insertCssFile");
-    insertCssFile(data, req, next); //Lisää CSS Tiedosto ja sen nimi tietokantaan
+    let data = [1, req.body.CssArr[0], req.body.CssArr[1],req.body.CssArr[1]];
+    insertCssFile3(data, req, next); //Lisää CSS Tiedosto ja sen nimi tietokantaan, (vanaha pelkkä inserCSSFile functio)
   } else {
-    console.log("DONT insertCssFile");
     next();
   }
 });
 
-
-
 app.use('/tallennaCSStiedosto', (req, res, next) => {
-
-  if (req.custom.length === 0) { //Jos ei ole sisältöä req.customissa, laita sinne
-    let fiveLastChar = req.body.CssArr[0].slice(-2);
-    let cssName = fiveLastChar + '.css';//req.body.CssArr[0]+'.css';
-  //  saveCSSFiles(cssName, req.body.CssArr[1]);
-  }
   res.send(req.body);
 });
 
@@ -313,92 +307,128 @@ app.use('/checkScreenSize2', (req, res, next) => {
 });
 
 const checkIfLastRowContainsMediaQuery = (newCss, cutPoint) => {
-  console.log("checkIfLastRowContainsMediaQuery = (newCss: ",newCss);
+  // console.log("checkIfLastRowContainsMediaQuery = (newCss: ",newCss);
   let n = newCss.lastIndexOf("@media");
-  console.log("checkIfLastRowContainsMediaQuery , n: "+n);
+  console.log("checkIfLastRowContainsMediaQuery , n: " + n);
   let arrToBeReturned = [];
-  if(cutPoint < n){
+  if (cutPoint < n) {
     console.log("Ei ylimääräistä Mediaquerya");
-    arrToBeReturned.push(false,cutPoint);
+    arrToBeReturned.push(false, cutPoint);
     return arrToBeReturned;
-  }else{
+  } else {
     console.log("Ylimääräinen @media query viimeisellä rivillä");
-    arrToBeReturned.push(true,n);
+    arrToBeReturned.push(true, n);
     return arrToBeReturned;
   }
 }
 
-const modifyCSSFile = (CssFile,cut) => {
-  
-  let newCss = CssFile.slice(0,cut);
-  console.log(newCss, " <---- Modified CSS tiedosto");
+const modifyCSSFile = (CssFile, cut) => {
+
+  let newCss = CssFile.slice(0, cut);
+  // console.log(newCss, " <---- Modified CSS tiedosto");
   //let n = newCss.lastIndexOf("@media"); 
-  let checkLastRow = checkIfLastRowContainsMediaQuery(newCss,cut);
-  if(checkLastRow[0] === true){
-     newCss = CssFile.slice(0,checkLastRow[1]); //Poista ylimääräinen @media query rikkomasta viimeiseltä riviltä
+  let checkLastRow = checkIfLastRowContainsMediaQuery(newCss, cut);
+  if (checkLastRow[0] === true) {
+    newCss = CssFile.slice(0, checkLastRow[1]); //Poista ylimääräinen @media query rikkomasta viimeiseltä riviltä
   }
-  console.log("Leikkaa kohdasta: ",checkLastRow[1], " | checkLastRow(bool, numero) viimeinen rivi Css tiedostossa @media: ",checkLastRow);
+  console.log("Leikkaa kohdasta: ", checkLastRow[1], " | checkLastRow(bool, numero) viimeinen rivi Css tiedostossa @media: ", checkLastRow);
   return newCss;
 };
 
+const refactorCssFileName = (toBeRenamed, num) => {
+  let fiveLastChar = toBeRenamed.slice(-2);
+  let cssName = fiveLastChar + num + '.css';
+  return cssName;
+}
+
 app.post('/checkScreenSize', (req, res, next) => {
-  console.log("req.body: ", req.body);
+  // console.log("req.body: ", req.body);
   console.log("req.body: ", req.body.width);
   const data = [req.body.width, req.body.height];
   console.log("Data App.js ", data);
   req.arr = [];
   req.custom = [];
- // PalautaFrontendiin(data, req, next);
- next();
+  // PalautaFrontendiin(data, req, next);
+  next();
 });
 
 app.use('/checkScreenSize', (req, res, next) => {
   const data = [req.body.width, req.body.height];
   SelectCSSMediaQueryPositions3(data, req, next);
-  });
+});
 
 app.use('/checkScreenSize', (req, res, next) => {
   const data = [req.body.width, req.body.height];
   SelectCSSMediaQueryPositions32(data, req, next);
-  });
-
-app.use('/checkScreenSize', (req, res, next) => {
- 
- console.log("req.custom ",req.custom);
- //req.custom2.arr = [];
- // console.log(req.custom[0].TextToClearPosition);
-  SelectCSSFile(req.custom[0][0].CSS_File, req, next);
-//  next();
 });
 
 app.use('/checkScreenSize', (req, res, next) => {
-  SelectCSSFile(req.custom[1][0].CSS_File, req, next);
-  });
+  const data = [req.body.width, req.body.height];
+  SelectCSSMediaQueryPositions4(data, req, next);
+});
 
 app.use('/checkScreenSize', (req, res, next) => {
-  console.log("req.arr ",req.arr.length);
-  console.log("req.arr ",req.arr[0][0].nimi);
+  console.log("");
+  console.log("_______________");
+  console.log("req.custom4 ", req.custom4);
+  console.log("");
+  console.log("_______________");
+  //console.log("req.custom ",req.custom);
+  //req.custom2.arr = [];
+  // console.log(req.custom[0].TextToClearPosition);
+  let arrOfId = [];
+  for (let i = 0; i < req.custom4.length; i++) {
+    console.log("SelectCSSFile(req.custom4[" + i + "].CSS_File, req, next);")
+    if (!arrOfId.includes(req.custom4[i].CSS_File_ID)) {
+      arrOfId.push(req.custom4[i].CSS_File_ID);
+    }
+    console.log("arrOfId: ", arrOfId);
+  }
+  SelectCSSFileByID(arrOfId, req, next);
+  //  next();
+});
+/*
+app.use('/checkScreenSize', (req, res, next) => {
+  SelectCSSFile(req.custom[1][0].CSS_File, req, next);
+  });*/
+
+app.use('/checkScreenSize', (req, res, next) => {
+  // console.log("req.arr.length ",req.arr.length);
+  //console.log("req.arr ",req.arr);
+  //console.log("req.arr ",req.arr[0][0].nimi);
   //console.log("Req.custom2 ",req.custom2[0].nimi);
   //console.log("Req.custom3 ",req.custom3[0].nimi);
   //req.arr[0].NewCss = [];
-  for(let i=0; i<req.arr.length; i++){
-    let fiveLastChar = req.arr[i][0].nimi.slice(-2);
- 
-    let cssName = fiveLastChar + i+'.css';
-    //console.log("cssname: "+cssName);
-    let cut = req.custom[i][0].TextToClearPosition;
-    console.log("Cut: "+cut);
-    let newCss = modifyCSSFile(req.arr[i][0].CSS_Tiedosto,cut);
-    //console.log(newCss);
-    console.log("cssName: ",cssName);
-    console.log("______________________");
-    console.log(" ");
-    saveCSSFiles(cssName, newCss);// VAIHDA
-    
-   // let cssNameArr = [req.custom2[0].nimi,cssName];
-    req.arr[i][0].NewCss = cssName;
+  for (let i = 0; i < req.custom4.length; i++) {
+    //  console.log(i+": ",req.custom4[i]); //Pitkä lista
   }
- res.send(req.arr);
+  let custom4pituus = req.custom4.length;
+  console.log("\x1b[37m", "req.custom4.LENGTH ", req.custom4.length);
+  console.log("req.custom5.length: " + req.custom5.length);
+
+  let diffCssFilesLength = req.custom5.length;
+
+  for (let i = 0; i < custom4pituus; i++) {
+
+
+    for (let j = 0; j < diffCssFilesLength; j++) {
+      if (req.custom5[j].CSS_Id === req.custom4[i].CSS_File_ID) {
+        let cssName = req.custom4[i].CSS_File; //Css tiedoston nimi
+        console.log("\x1b[41m"+ "cssname: " + cssName+"\x1b[0m" + " ....");
+        let cut = req.custom4[i].TextToClearPosition;
+        console.log("Cut: " + cut);
+
+        cssName = refactorCssFileName(cssName, j);
+        let newCss = modifyCSSFile(req.custom5[j].CSS_Tiedosto, cut); //CSStiedostot2 taulusta haetun pitkän tiedoston muokkaus
+        saveCSSFiles(cssName, newCss);
+        console.log("cssName: ", cssName);
+        console.log("______________________");
+        console.log(" ");
+        req.custom4[i].NewCss = cssName; //Lähetä uusi muokattu CSS filen nimi frontendiin
+      }
+    }
+  }
+  res.send(req.custom4);
 });
 
 function addNullOrCorrect(jsonData) {
@@ -519,21 +549,7 @@ const convertSizesOfPxOrEm = (size) => {
     }
   }
 }
-/*
-  switch (match) {
-    case "min-width":
-      data = pushToArray(mediaQuery, req.body.lenght, null, null, null);
-      break;
-    case "max-width":
-      data = pushToArray(mediaQuery, null, req.body.lenght, null, null);
-      break;
-    case "min-height":
-      data = pushToArray(mediaQuery, null, null, req.body.lenght, null);
-      break;
-    case "max-height":
-      data = pushToArray(mediaQuery, null, null, null, req.body.lenght);
-      break;
-  }*/
+
 const convertMediaQueryToNumbers = (MediaQuery_Saanto) => {
   // console.log("MediaQuery_Saanto: ", MediaQuery_Saanto);
   let n1 = MediaQuery_Saanto.lastIndexOf(")"); // @media screen and (min-width: 48em) { <- otetaan pois {
@@ -549,29 +565,22 @@ const decimalToint = (value) => {
 }
 
 const empxConversion = (value) => {
- 
+
   let lastTwoCharacters = value.slice(-2); // =em tai px
-//  console.log("Value: ",value);
- // console.log("value: ",value);
-    if (lastTwoCharacters == "px") {
-      let px = value.indexOf("px");
-      value = value.slice(0, px);
-      
-      //console.log("value 2: ",value);
-      return decimalToint(value); //otetaan pois px, jotta voidaan vertailla kokoa
-    } else if (lastTwoCharacters == "em") {
-      let em = value.indexOf("em");
-      let sizeInEm = value.slice(0, em); //otetaan pois em
-      sizeInEm *= 10; //em = 10x koko
-  //    console.log("sizeInEm: ",sizeInEm," em: "+em);
-      return decimalToint(sizeInEm);
-    }
-     
+  if (lastTwoCharacters == "px") {
+    let px = value.indexOf("px");
+    value = value.slice(0, px);
+    return decimalToint(value); //otetaan pois px, jotta voidaan vertailla kokoa
+  } else if (lastTwoCharacters == "em") {
+    let em = value.indexOf("em");
+    let sizeInEm = value.slice(0, em); //otetaan pois em
+    sizeInEm *= 10; //em = 10x koko
+    return decimalToint(sizeInEm);
+  }
+
 }
 
 const manipulateString2 = (Arr) => {
-  //console.log("  manipulateString2 Arr :", Arr);
-
   let tempArr = [];
 
   let MediaQuery = "";
@@ -585,12 +594,12 @@ const manipulateString2 = (Arr) => {
 
     let value = MediaQuery.slice((first + 1), (n));
 
-    if(value.endsWith("e")){ //tarkasta ettei lopu em e tai px p
+    if (value.endsWith("e")) { //tarkasta ettei lopu em e tai px p
       value += "m";
-    }else if(value.endsWith("p")){
+    } else if (value.endsWith("p")) {
       value += "x";
     }
- //   console.log("value: ",value);
+    //   console.log("value: ",value);
     value = empxConversion(value); //convertoi intiksi
     tempArr.push(value);
 
@@ -613,12 +622,12 @@ const manipulateString4 = (PartOfArray, match) => {
 
     value = MediaQuery.slice((first + 1), (n));
 
-    if(value.endsWith("e")){ //tarkasta ettei lopu em e tai px p
+    if (value.endsWith("e")) { //tarkasta ettei lopu em e tai px p
       value += "m";
-    }else if(value.endsWith("p")){
+    } else if (value.endsWith("p")) {
       value += "x";
     }
-    console.log("value manipulateString4: ",value);
+    //  console.log("value manipulateString4: ",value);
     value = empxConversion(value); //convertoi intiksi
 
     //  tempArr.push(value);
@@ -644,35 +653,31 @@ const manipulateString3 = (Arr) => {
       if (m1) {
         m1.forEach((match) => {
 
-          //   console.log("m1 ", match);
           tempArr.push([mWH[0], manipulateString4(Arr[i], match)]); //push(String)
         });
       }
       if (m2) {
         m2.forEach((match) => {
-          //  console.log("m2 ", match);
+
           tempArr.push([mWH[1], manipulateString4(Arr[i], match)]);
         });
       }
       if (m3) {
         m3.forEach((match) => {
-          //  console.log("m3 ", match);
+
           tempArr.push([mWH[2], manipulateString4(Arr[i], match)]);
         });
       }
       if (m4) {
         m4.forEach((match) => {
-          //   console.log("m4 ", match);
+
           tempArr.push([mWH[3], manipulateString4(Arr[i], match)]);
         });
       }
     } catch (e) {
       //  console.log("Error in forEach", e);
     }
-
-    // console.log("Manipualte 2d arr :", tempArr);
   }
-  //console.log("tempARRRR . ", tempArr);
   return tempArr;
 };
 
@@ -683,23 +688,19 @@ const manipulateString = (arr) => {
 
   arr.forEach((mString) => {
     let MediaQuery = mString.replace(/ /g, '').toString(); //ota tyhjat valit poist
-    // console.log("MediaQuery" + MediaQuery);
+
     // for (let i = 0; i < Arr.length; i++) {
     let first1 = MediaQuery.IndexOf(":");
     let first2 = MediaQuery.IndexOf(")");
     // @media screen and (min-width:<- otetaan pois kaikki ekasta
     stringToBeManipulated = MediaQuery.slice(first1, first2); //tulostaa @media screen and (min-width: 48em)
 
-    //  console.log("mString"+mString);
-
   });
-  if(stringToBeManipulated.endsWith("e")){
+  if (stringToBeManipulated.endsWith("e")) {
     stringToBeManipulated += "m";
-  }else if(stringToBeManipulated.endsWith("p")){
+  } else if (stringToBeManipulated.endsWith("p")) {
     stringToBeManipulated += "x";
   }
-  console.log("stringToBeManipulated: "+stringToBeManipulated);
-  // console.log("stringToBeManipulated : ", stringToBeManipulated);
   return stringToBeManipulated;
 }
 
@@ -720,7 +721,7 @@ const addToArrIfContains = (MediaQuery, match, arr) => {
 };
 
 const splitMultipleQueries = (MediaQuery, match, arr) => {
-  // console.log("MediaQuery:", MediaQuery);
+
   let tempArr1 = [];
   let tempArr2 = [];
   let tempArr3 = [];
@@ -741,7 +742,7 @@ const splitMultipleQueries = (MediaQuery, match, arr) => {
 
         let res2 = MediaQuery.split("and"); //arr[i] on min-height yms.
         tempArr3.push(res2);
-        //    console.log("res2 ", res2);
+
         bool = false;
       } catch (e) {
         //   console.log(e);
@@ -756,15 +757,15 @@ const splitMultipleQueries = (MediaQuery, match, arr) => {
 
 
     for (let i = 0; i < tempArr3.length; i++) {
-      // console.log("33333333  ", tempArr3[i]);
+
       tempArr5.push(manipulateString3(tempArr3[i]));
     }
-    //   console.log("TempArr 5 : ", tempArr5);
+
     return tempArr5;
   } else {
 
     tempArr2 = [false, match, manipulateString2(tempArr4)[0]];
-    //  console.log("TempArr 2 : ", tempArr2);
+
     return tempArr2;
   }
 }
@@ -777,13 +778,12 @@ const modifyArray = (arr, arrToBeAdded) => {
 }
 
 const findMWH = (arr, match) => {
-  // console.log("SEARCH: ", match);
+
   for (let i = 0; i < arr.length; i++) { //0 on Boolean
-    //   console.log("arr["+i+"]",arr[i]);
+
     for (let j = 0; j < arr[i].length; j++) {
       //   console.log("arr["+i+"]["+j+"]",arr[i][j]);
       let contain = (arr[i][j][0].indexOf(match) > -1);
-      //  console.log("rr["+i+"]["+j+"],Contain: "+match+" - " + contain+ " , "+arr[i][j]);
       if (contain === true) {
         return arr[i][j]; //j+1 on luku, j on min-width
       }
@@ -792,7 +792,7 @@ const findMWH = (arr, match) => {
 }
 
 const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
- // console.log(MediaQuery);
+
   let arr = [];
 
   let arr1 = [];
@@ -811,7 +811,7 @@ const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
       m1.forEach((match) => {
 
         let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
-        // console.log("m1 ", tempArr);
+
         if (tempArr[0] === true) {
           let tempString = (findMWH(tempArr, mWH[0]));
           tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
@@ -822,7 +822,7 @@ const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
     if (m2) {
       m2.forEach((match) => {
         let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
-        //  console.log("m2 ", tempArr);
+
         if (tempArr[0] === true) {
           let tempString = (findMWH(tempArr, mWH[1]));
           tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
@@ -833,7 +833,7 @@ const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
     if (m3) {
       m3.forEach((match) => {
         let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
-        //   console.log("m3 ", tempArr);
+
         if (tempArr[0] === true) {
           let tempString = (findMWH(tempArr, mWH[2]));
           tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
@@ -844,8 +844,7 @@ const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
     if (m4) {
       m4.forEach((match) => {
         let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
-        //  let temp = [match, convertMediaQueryToNumbers(m4)];
-        //   console.log("m4 ", tempArr);
+
         if (tempArr[0] === true) {
           let tempString = (findMWH(tempArr, mWH[3]));
           tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
@@ -854,19 +853,15 @@ const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
       });
     }
   } catch (e) {
-  //  console.log("Error in forEach", e);
+    //  console.log("Error in forEach", e);
   }
-  
-  // console.log("2). ", arr2);
-  //  console.log("3). ", arr3);
-  // console.log("4). ", arr4);
-  console.log(arr);
+
+  //  console.log(arr);
   return arr;
 }
 
 const split2dArray = (arr) => {
   let temp = arr;
- // console.log("TEMP: ", arr[0][0]);
 
   if (arr[0][0] === true) {
     temp[0][0] = false;
@@ -875,40 +870,41 @@ const split2dArray = (arr) => {
 }
 
 const modify2dArraytoDatabaseFormat = (arr) => {
-  let temp1dArr = [null,null,null,null];
+  let temp1dArr = [null, null, null, null];
   for (let i = 0; i < arr.length; i++) {
- //   console.log(i+" , ",arr[i][1][0]);
-    if(arr[i][1][0] === "min-width"){
+    if (arr[i][1][0] === "min-width") {
       temp1dArr[0] = arr[i][1][1];
     }
-    if(arr[i][1][0] === "max-width"){
+    if (arr[i][1][0] === "max-width") {
       temp1dArr[1] = arr[i][1][1];
     }
-    if(arr[i][1][0] === "min-height"){
+    if (arr[i][1][0] === "min-height") {
       temp1dArr[2] = arr[i][1][1];
     }
-    if(arr[i][1][0] === "max-height"){
+    if (arr[i][1][0] === "max-height") {
       temp1dArr[3] = arr[i][1][1];
     }
   }
- // console.log("Temp1dArr: ",temp1dArr);
   return temp1dArr;
 }
 
 app.post('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
 
+  SelectCSSFilesID(req.body.CSS_File, req, next); //req.body.CssArr[0] on CSS_Tiedoston nimi,
 
+});
+
+app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
   let MinMaxWidthHeight = getMultipleConditionsFromMediaQuery(req.body.MediaQuery_Saanto);
-
-  // console.log("MinMaxWidthHeight", MinMaxWidthHeight);
-
-
 
   const data = [
     req.body.CSS_File,
+    req.CssId[0].CSS_Id,
     req.body.MediaQuery_Saanto,
     req.body.Position,
     req.body.TextToClearPosition,
+    req.body.LastIndexToClearPosition,
+    req.body.FullMediaQuery
   ];
 
 
@@ -930,29 +926,26 @@ app.post('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
     }
   } else {
     let temp2d = modify2dArraytoDatabaseFormat(MinMaxWidthHeight);
-    for(let i=0; i<temp2d.length; i++){
+    for (let i = 0; i < temp2d.length; i++) {
       data.push(temp2d[i]);
     }
-   
+
   } //IF 2d arrayconsole.log(" ");
   console.log("_______________");
   console.log(" ");
- // console.log("DATA: ", data);
+  // console.log("DATA: ", data);
   console.log(" ");
   req.custom = data;
-  
-  if(data.length < 8){ //Tietokantaan 8 lokeroa
+
+  if (data.length < 8) { //Tietokantaan 8 lokeroa
     data.push(null);
   }
 
   // insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
- next();
+  next();
 });
 
 app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
-
-
-  // console.log(req.custom);
 
   //let data = [req.body.mediaQueryPosition, req.body.cssTiedosto];
 
@@ -961,13 +954,14 @@ app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
 });
 
 app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
-  
+
   // console.log(req.custom.length);
   /* try{
      console.log(req.custom[0].Position);
      console.log(req.custom[0].CSS_File);
    }catch(e){}*/
   // console.log(req.body);
+  // console.log(req.CssId[0].CSS_Id);
   res.send(req.custom);
 });
 

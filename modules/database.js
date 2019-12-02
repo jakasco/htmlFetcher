@@ -2,6 +2,18 @@
 // get the client
 const mysql = require('mysql2');
 
+//Värit Debuggaukseen console.log
+const reset = "\x1b[0m";
+
+const red = "\x1b[31m";
+const green = "\x1b[32m";
+const yellow = "\x1b[33m";
+const blue = "\x1b[34m";
+
+const BgRed = "\x1b[41m";
+const BgGreen = "\x1b[42m";
+const BgYellow = "\x1b[43m";
+
 const connect = () => {
 
   // create the connection to database
@@ -17,20 +29,20 @@ const connect = () => {
   connection.connect(function (error) {
     if (!!error) {
 
-      console.log("Error to connect mySQL");
+      console.log("\x1b[31m", "Error to connect mySQL!");
     } else {
 
-      console.log("Connected to MySQL");
+      console.log("\x1b[36m", "Connected to MySQL Successfully!", reset);
     }
   });
   return connection;
 };
 
 const checkIfDatabaseWontWriteTablesMoreThanOnce = (name, id) => {
-  connection.execute('Select count(*) from csstiedostot2 where '+name+' = @'+name+' and '+id+' = @'+CSS_Id, //IF count = 0 = true
+  connection.execute('Select count(*) from csstiedostot2 where ' + name + ' = @' + name + ' and ' + id + ' = @' + CSS_Id, //IF count = 0 = true
     (err, results, fields) => {
       console.log(err);
-
+      console.log("\x1b[43m", "Results checkIfDatabaseWontWriteTablesMoreThanOnce:", "\x1b[0m", results)
       callback(results);
     },
   );
@@ -39,7 +51,7 @@ const checkIfDatabaseWontWriteTablesMoreThanOnce = (name, id) => {
 
 
 const select = (data, connection, callback) => {
-  console.log("Data: ", data);
+
   console.log('SELECT * FROM cssTiedostot where width = ' + data[0] + ' and height = ' + data[1] + ';');
   connection.execute(
     'SELECT * FROM cssTiedostot where width = ' + data[0] + ' and height = ' + data[1] + ';',
@@ -85,204 +97,17 @@ const convertSizes = (size) => {
 
 //SELECT * FROM `mediaquerysaannot` WHERE `Max_width` LIKE '%20em
 const selectMediaQuery2 = (data, connection, callback) => {
-  
-    console.log('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width = "' + data + '";');
-    connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
-      (err, results, fields) => {
-        console.log(err);
-        console.log("RESULTS 2:", results);
-        callback(results);
-      },
-    );
+
+  console.log('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width = "' + data + '";');
+  connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
+    (err, results, fields) => {
+      console.log(err);
+      //    console.log("RESULTS 2:", results);
+      callback(results);
+    },
+  );
 }
 
-const selectMediaQueryMinHeight = (data, connection, callback) => {
-  console.log("data to select: ", data[1]);
-  let DataInPx = data[1] + "px"; // Max_width = "' + data[0] + 'px" OR Max_width  "' + data[0] + 'em"',
-  connection.execute(
-    'SELECT Max_width FROM mediaQuerySaannot',
-    (err, results, fields) => {
-      console.log(err);
-      
-        let ArrayOfValues = [];
-        for (let i = 0; i < results.length; i++) {
-          if (results[i].Max_width !== null) {
-            let convertedValue = convertSizes(results[i].Max_width);
-            console.log("ConvertedValue: ", convertedValue);
-            try {
-            if (convertedValue[0] !== null) {
-
-              if (data[1] >= convertedValue[0]) {
-                if (convertedValue[1] !== "em") {
-                  console.log("c: ",convertedValue[0]);
-                  ArrayOfValues.push(convertedValue[0]); //px on suoraan esim 400px 
-                } else {
-                  let a = (convertedValue[0]/10).toString();// + convertedValue[i];
-                  a += convertedValue[1];
-                  console.log("a: ",a);
-                  ArrayOfValues.push(a); //Palautetaan takaisin joko px tai em
-                }
-              }
-            }
-          }
-           catch (e) {
-          console.log("Error in lopp",e);
-        }
-       }//IF
-      }//FOR LOOP
-     callback(ArrayOfValues);
-    },
-  )
-};
-
-const selectMediaQueryMaxHeight = (data, connection, callback) => {
-  console.log("data to select: ", data[1]);
-  let DataInPx = data[1] + "px"; // Max_width = "' + data[0] + 'px" OR Max_width  "' + data[0] + 'em"',
-  connection.execute(
-    'SELECT Max_width FROM mediaQuerySaannot',
-    (err, results, fields) => {
-      console.log(err);
-      
-        let ArrayOfValues = [];
-        for (let i = 0; i < results.length; i++) {
-          if (results[i].Max_width !== null) {
-            let convertedValue = convertSizes(results[i].Max_width);
-            console.log("ConvertedValue: ", convertedValue);
-            try {
-            if (convertedValue[0] !== null) {
-
-              if (data[1] >= convertedValue[0]) {
-                if (convertedValue[1] !== "em") {
-                  console.log("c: ",convertedValue[0]);
-                  ArrayOfValues.push(convertedValue[0]); //px on suoraan esim 400px 
-                } else {
-                  let a = (convertedValue[0]/10).toString();// + convertedValue[i];
-                  a += convertedValue[1];
-                  console.log("a: ",a);
-                  ArrayOfValues.push(a); //Palautetaan takaisin joko px tai em
-                }
-              }
-            }
-          }
-           catch (e) {
-          console.log("Error in lopp",e);
-        }
-       }//IF
-      }//FOR LOOP
-     callback(ArrayOfValues);
-    },
-  )
-};
-
-const selectMediaQueryMinWidth = (data, connection, callback) => {
-  console.log("data to select: ", data[0]);
-  let DataInPx = data[0] + "px"; // Max_width = "' + data[0] + 'px" OR Max_width  "' + data[0] + 'em"',
-  connection.execute(
-    'SELECT Min_width FROM mediaQuerySaannot',
-    (err, results, fields) => {
-      console.log(err);
-      
-        let ArrayOfValues = [];
-        for (let i = 0; i < results.length; i++) {
-          if (results[i].Max_width !== null) {
-            let convertedValue = convertSizes(results[i].Max_width);
-            console.log("ConvertedValue: ", convertedValue);
-            try {
-            if (convertedValue[0] !== null) {
-
-              if (data[0] >= convertedValue[0]) {
-                if (convertedValue[1] !== "em") {
-                  console.log("c: ",convertedValue[0]);
-                  ArrayOfValues.push(convertedValue[0]); //px on suoraan esim 400px 
-                } else {
-                  let a = (convertedValue[0]/10).toString();// + convertedValue[i];
-                  a += convertedValue[1];
-                  console.log("a: ",a);
-                  ArrayOfValues.push(a); //Palautetaan takaisin joko px tai em
-                }
-              }
-            }
-          }
-           catch (e) {
-          console.log("Error in lopp",e);
-        }
-       }//IF
-      }//FOR LOOP
-     callback(ArrayOfValues);
-    },
-  )
-};
-
-const selectMediaQuery = (data, connection, callback) => {
-  console.log("data to select: ", data[0]);
-  let DataInPx = data[0] + "px"; // Max_width = "' + data[0] + 'px" OR Max_width  "' + data[0] + 'em"',
-  connection.execute(
-    'SELECT Max_width FROM mediaQuerySaannot',
-    (err, results, fields) => {
-      console.log(err);
-      
-        let ArrayOfValues = [];
-        for (let i = 0; i < results.length; i++) {
-          if (results[i].Max_width !== null) {
-            let convertedValue = convertSizes(results[i].Max_width);
-            console.log("ConvertedValue: ", convertedValue);
-            try {
-            if (convertedValue[0] !== null) {
-
-              if (data[0] >= convertedValue[0]) {
-                if (convertedValue[1] !== "em") {
-                  console.log("c: ",convertedValue[0]);
-                  ArrayOfValues.push(convertedValue[0]); //px on suoraan esim 400px 
-                } else {
-                  let a = (convertedValue[0]/10).toString();// + convertedValue[i];
-                  a += convertedValue[1];
-                  console.log("a: ",a);
-                  ArrayOfValues.push(a); //Palautetaan takaisin joko px tai em
-                }
-              }
-            }
-          }
-           catch (e) {
-          console.log("Error in lopp",e);
-        }
-       }//IF
-      }//FOR LOOP
-     callback(ArrayOfValues);
-    },
-  )
-};
-
-
-
-const insertIntoMediaQueryTable = (data, connection, callback) => {
-  console.log("DATA: ", data);
-
-  connection.execute(
-    'INSERT INTO mediaQuerySaannot (MediaQuery_Saanto, Max_width, Min_width, Max_Height, Min_Height) VALUES (?, ?, ?, ?, ?);',
-    data,
-    (err, results, fields) => {
-      //  console.log(results); // results contains rows returned by server
-      console.log(err);
-      callback();
-    },
-  );
-  console.log("sql done");
-};
-
-
-const insertUser = (data, connection, callback) => {
-  // console.log("Insert user", data)
-  connection.execute(
-    'INSERT INTO cssTiedostot (nimi, CSS_Tiedosto, Width, Height, Max_width, Min_width, Max_Height, Min_Height) VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
-    data,
-    (err, results, fields) => {
-      //  console.log(results); // results contains rows returned by server
-      console.log(err);
-      callback();
-    },
-  );
-  console.log("sql done");
-};
 
 const insertCssFile = (data, connection, callback) => {
   // console.log("Insert user", data)
@@ -291,41 +116,162 @@ const insertCssFile = (data, connection, callback) => {
     data,
     (err, results, fields) => {
       console.log("ERROR IN insertCssFile", err);
-      if(!err){
+      if (!err) {
         console.log("sql insertCssFile done Successfully");
       }
       callback();
     },
   );
- 
 };
 
-const SelectCSSFile  = (data, connection, callback) => {
-  
-  console.log('SELECT CSS_Tiedosto,nimi FROM csstiedostot2 WHERE nimi = "' + data + '";');
-  connection.execute('SELECT CSS_Tiedosto,nimi FROM csstiedostot2 WHERE nimi = "' + data + '";',
+const insertCssFile3 = (data, connection, callback) => {
+  console.log(blue, "insertCssFile3 Data[0]: ", reset, data[0]);
+  console.log(blue, "insertCssFile3 Data[0]: ", reset, data[1]);
+  // let query1 = "INSERT INTO cssTiedostot3 (CSS_Id, nimi, CSS_Tiedosto,	Muokattu_Tiedosto) VALUES (?,?,?,?);"
+  connection.execute(
+    'INSERT INTO cssTiedostot3 (CSS_Id, nimi, CSS_Tiedosto,	Muokattu_Tiedosto) VALUES (?,?,?,?);',
+    data,
+    (err, results, fields) => {
+      console.log("ERROR IN insertCssFile", err);
+      if (!err) {
+        console.log("\x1b[32m", "sql insertCssFile done Successfully", reset);
+      }
+      callback();
+    },
+  );
+};
+
+const SelectCSSFile = (data, connection, callback) => {
+
+  //console.log('SELECT CSS_Tiedosto,nimi FROM csstiedostot2 WHERE nimi = "' + data + '";');
+  connection.execute('SELECT CSS_Tiedosto,nimi,CSS_Id FROM csstiedostot2 WHERE nimi = "' + data + '";',
     (err, results, fields) => {
       console.log(err);
-      console.log("CSS RESULTS: ",results.length);
+      //console.log("CSS RESULTS SelectCSSFile Length: ",results.length);
       callback(results);
+    },
+  );
+};
+
+
+const laitaPilkkuJosEiSanoja = (string, value) => {
+  if (string === "") {
+    string += value
+  } else {
+    string += ("," + value);
+  }
+};
+
+const getTableRows = (table) => { //Laita arrayna tablen nimet
+  let arr = [];
+  let names = "";
+  let questionMarks = "";
+  for (let i = 0; i < table.length; i++) {
+    laitaPilkkuJosEiSanoja(names, table[i]);
+    laitaPilkkuJosEiSanoja(questionMarks, "?");
+  }
+  arr.push([names, questionMarks]);
+}
+
+const insertQuery = (autoIncrementNum,table,tableRows) => {
+  let rows = getTableRows(tableRows), query;
+  if(autoIncrementNum !== null){ //jos ei haluta autoincrementtiä
+   query = "INSERT INTO " + table + "(" + rows[0]+ ") VALUES (" + rows[0]+ ");";
+  }else{
+    query = "INSERT INTO " + table + "("+autoIncrementNum+"," + rows[0]+ ") VALUES (? ," + rows[0]+ ");";
+  }
+  console.log(blue,query,reset);
+  return query;
+}
+
+const selectQuery = (data,table,where,equals) => {
+  let query = "SELECT " + data + " FROM " + table + " WHERE " + where + " = " + equals + ";";
+  console.log(blue,query,reset);
+  return query;
+}
+//let iquery= "INSERT INTO " + table + "(" + rows[0] + ") VALUES (" + rows[0] + ");";
+//'INSERT INTO cssTiedostot2 (CSS_Id, nimi, CSS_Tiedosto) VALUES (?,?,?); ) as MW2 ,
+///////////////////////   1, array, array, id rown nimi, data *?, 
+const addAutoIncrement = (id, table, tableRows, idName, data, connection, callback) => {
+  let sq = selectQuery(data,table,idName,id);
+  
+  connection.execute(sq,
+    (err, results, fields) => {
+      console.log(err);
+      let checkIfIdExist = `results[0].${idName}`;
+      if (checkIfIdExist === null || typeof checkIfIdExist === 'undefined') {
+        checkIfIdExist = 1;
+        let iq = insertQuery(checkIfIdExist,table,tableRows);
+      //  console.log(green, " new autoincrement id added to table " + table + "!", reset);
+        connection.execute(iq, function (err, results2, fields) {
+          if (err) throw err;
+          callback(results2);
+        });
+      } else {
+        //Ota pienin id taulusta
+        let query2 = "SELECT (MAX)" + checkIfIdExist + "as tempID FROM " + table + " WHERE " + idName + " = " + id + ";";
+        connection.execute(query2, function (err, results2, fields) {
+          if (err) throw err;
+          let newId = results2[0].tempID +1;
+          connection.execute(query2, function (err, results3, fields) {
+            if (err) throw err;
+            newId = insertQuery(checkIfIdExist,table,tableRows);
+            console.log(green," Uusi Autoincrement lisättty!",reset);
+            callback(results3);
+          });
+        });
+      }
+    },
+  );
+};
+
+//SELECT CSS_Tiedosto,nimi,CSS_Id,Muokattu_Tiedosto FROM csstiedostot3 WHERE CSS_Id = "' + data + '";',
+const SelectCSSFile3 = (data, connection, callback) => {
+  connection.execute('SELECT CSS_Tiedosto,nimi,CSS_Id,Muokattu_Tiedosto FROM csstiedostot3 WHERE CSS_Id = "' + data + '";',
+    (err, results, fields) => {
+      console.log(err);
+      callback(results);
+    },
+  );
+};
+//addAutoIncrement
+
+const getUniqueIds = (idArr, distincArray, amount) => {
+  let stringToBeReturned = "";
+  for (let i = 0; i < amount; i++) {
+    if (idArr.includes(distincArray[i].CSS_Id)) { //Jos css tiedoston id sisältää mediaqueruja
+      stringToBeReturned = laitaPilkkuJosEiSanoja(stringToBeReturned, distincArray[i].CSS_Id);
+    }
+  }
+  return stringToBeReturned;
+};
+
+const SelectCSSFileByID = (idArr, connection, callback) => {
+  let query1 = "SELECT DISTINCT CSS_Id FROM csstiedostot2";
+  console.log("\x1b[33m", query1);
+  connection.execute(query1,
+    (err, results, fields) => {
+      console.log(err);
+      console.log("\x1b[32m", "Query1 Successfully executed, ");
+      let amount = results.length;
+      let ids = getUniqueIds(idArr, results, amount);
+      console.log("ids: " + ids);
+      let query2 = 'SELECT CSS_Tiedosto,CSS_Id FROM csstiedostot2 WHERE CSS_Id in (' + ids + ')';
+      console.log("\x1b[33m", query2);
+      console.log(query2);
+      connection.execute(query2, (err, results2, fields) => {
+        if (err) throw err;
+        callback(results2);
+      });
     },
   );
 }
 
-/*
-  req.body.cssTiedosto,
-  req.body.fd.mediaQuerySaanto1,
-  req.body.fd.mediaQuerySaanto2,
-  req.body.fd.mediaQueryPosition,
-  req.body.fd.lengthType,
-  req.body.fd.width,
-  req.body.fd.height
-*/
 
-const tallennaTietokantaanMediaQuerynPosition = (data,connection,callback) => {
-  console.log("Data :",data);
+const tallennaTietokantaanMediaQuerynPosition = (data, connection, callback) => {
+  console.log("Data :", data);
   connection.execute(
-    'INSERT INTO mediaquerysaannot3 (CSS_File, MediaQuery_Saanto, Position, TextToClearPosition,	min_width,	max_width,	min_height,	max_height) VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
+    'INSERT INTO mediaquerysaannot3 (CSS_File, CSS_File_ID, MediaQuery_Saanto, Position, TextToClearPosition, LastIndexToClearPosition, FullMediaQuery,	min_width,	max_width,	min_height,	max_height) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
     data,
     (err, results, fields) => {
       //  console.log(results); // results contains rows returned by server
@@ -337,8 +283,8 @@ const tallennaTietokantaanMediaQuerynPosition = (data,connection,callback) => {
 };
 
 const SelectCSSMediaQueryPositions = (data, connection, callback) => {
-  
-  let query = 'SELECT * FROM mediaQuerySaannot2 WHERE Position = ' + data[0] + ' AND CSS_File = "'+data[1]+'";';
+
+  let query = 'SELECT * FROM mediaQuerySaannot2 WHERE Position = ' + data[0] + ' AND CSS_File = "' + data[1] + '";';
   connection.execute(query,
     (err, results, fields) => {
       console.log(err);
@@ -349,42 +295,42 @@ const SelectCSSMediaQueryPositions = (data, connection, callback) => {
 };
 
 const UpdateMediaQuery = (data, connection, callback) => {
-  
+
   console.log('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width = "' + data + '";');
   connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
     (err, results, fields) => {
       console.log(err);
-      console.log("RESULTS 2:", results);
+      //   console.log("RESULTS 2:", results);
       callback(results);
     },
   );
 }
 
 const SelectCSSMediaQueryPositions32 = (data, connection, callback) => {
-  let query1 = 'SELECT MAX(min_width) as MW, MAX(min_height) as MH FROM mediaQuerySaannot3 WHERE min_width < '+ data[0] +' OR min_height < '+data[1]+';'
-  
+  let query1 = 'SELECT MAX(min_width) as MW, MAX(min_height) as MH FROM mediaQuerySaannot3 WHERE min_width < ' + data[0] + ' OR min_height < ' + data[1] + ';'
+
   connection.execute(query1,
     (err, results, fields) => {
       console.log(err);
-      console.log(results[0].MW);
-      let data2 = [results[0].MW,results[0].MH];
+      // console.log(results[0].MW);
+      let data2 = [results[0].MW, results[0].MH];
 
-     // let query2 = 'SELECT CSS_File,TextToClearPosition,MIN(min_width),MIN(min_height) FROM mediaQuerySaannot3 WHERE min_width > '+data2[0]+' OR min_height > '+data2[1]+';'
-     
-      
-      let query2 = 'SELECT MIN(min_width) as MW2 ,MIN(min_height) as MH2 FROM mediaQuerySaannot3 WHERE min_width > '+data2[0]+' OR min_height > '+data2[1]+';'
-      connection.execute(query2, function(err, results2, fields) {
-            if (err) throw err;
-            console.log(results2)
-            let data3 = [results2[0].MW2,results2[0].MH2];
-            
-            let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE min_width = '+data3[0]+' OR min_height = '+data3[1]+';'
-            connection.execute(query3, function(err, results3, fields) {
-              if (err) throw err;
-              console.log("Results3: ",results3);
-            callback(results3);
-          });
+      // let query2 = 'SELECT CSS_File,TextToClearPosition,MIN(min_width),MIN(min_height) FROM mediaQuerySaannot3 WHERE min_width > '+data2[0]+' OR min_height > '+data2[1]+';'
+
+
+      let query2 = 'SELECT MIN(min_width) as MW2 ,MIN(min_height) as MH2 FROM mediaQuerySaannot3 WHERE min_width > ' + data2[0] + ' OR min_height > ' + data2[1] + ';'
+      connection.execute(query2, function (err, results2, fields) {
+        if (err) throw err;
+        //    console.log(results2)
+        let data3 = [results2[0].MW2, results2[0].MH2];
+
+        let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE min_width = ' + data3[0] + ' OR min_height = ' + data3[1] + ';'
+        connection.execute(query3, function (err, results3, fields) {
+          if (err) throw err;
+          //      console.log("Results3: ",results3);
+          callback(results3);
         });
+      });
     },
   );
 
@@ -392,37 +338,49 @@ const SelectCSSMediaQueryPositions32 = (data, connection, callback) => {
 
 
 const SelectCSSMediaQueryPositions3 = (data, connection, callback) => {
-  let query1 = 'SELECT MIN(max_width) as MW, MIN(max_height) as MH FROM mediaQuerySaannot3 WHERE max_width > '+ data[0] +' OR max_height > '+data[1]+';'
-  
+  let query1 = 'SELECT MIN(max_width) as MW, MIN(max_height) as MH FROM mediaQuerySaannot3 WHERE max_width > ' + data[0] + ' OR max_height > ' + data[1] + ';'
+
   connection.execute(query1,
     (err, results, fields) => {
       console.log(err);
-      console.log(results[0].MW);
-      let data2 = [results[0].MW,results[0].MH];
+      //     console.log(results[0].MW);
+      let data2 = [results[0].MW, results[0].MH];
 
-     // let query2 = 'SELECT CSS_File,TextToClearPosition,MIN(min_width),MIN(min_height) FROM mediaQuerySaannot3 WHERE min_width > '+data2[0]+' OR min_height > '+data2[1]+';'
-     
-      
-      let query2 = 'SELECT MAX(max_width) as MW2 ,MAX(max_height) as MH2 FROM mediaQuerySaannot3 WHERE max_width > '+data2[0]+' OR max_height > '+data2[1]+';'
-      connection.execute(query2, function(err, results2, fields) {
-            if (err) throw err;
-            console.log(results2)
-            let data3 = [results2[0].MW2,results2[0].MH2];
-            
-            let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width = '+data3[0]+' OR max_height = '+data3[1]+';'
-            connection.execute(query3, function(err, results3, fields) {
-              if (err) throw err;
-              console.log("Results3: ",results3);
-            callback(results3);
-          });
+      // let query2 = 'SELECT CSS_File,TextToClearPosition,MIN(min_width),MIN(min_height) FROM mediaQuerySaannot3 WHERE min_width > '+data2[0]+' OR min_height > '+data2[1]+';'
+
+
+      let query2 = 'SELECT MAX(max_width) as MW2 ,MAX(max_height) as MH2 FROM mediaQuerySaannot3 WHERE max_width > ' + data2[0] + ' OR max_height > ' + data2[1] + ';'
+      connection.execute(query2, function (err, results2, fields) {
+        if (err) throw err;
+        //    console.log(results2)
+        let data3 = [results2[0].MW2, results2[0].MH2];
+
+        let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width = ' + data3[0] + ' OR max_height = ' + data3[1] + ';'
+        connection.execute(query3, function (err, results3, fields) {
+          if (err) throw err;
+          //   console.log("Results3: ",results3);
+          callback(results3);
         });
+      });
     },
   );
 
 };
 
 const SelectCSSMediaQueryPositions3_2 = (data, connection, callback) => {
-  let query = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width < '+ data[0] +' OR max_height < '+data[1]+';';
+  let query = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width < ' + data[0] + ' OR max_height < ' + data[1] + ';';
+  connection.execute(query,
+    (err, results, fields) => {
+      console.log(err);
+      callback(results);
+    },
+  );
+
+};
+//SELECT min_width,min_height FROM mediaQuerySaannot3 WHERE CSS_File_ID = 1 AND min_width > 375  OR min_height > 600
+const SelectCSSMediaQueryPositions4 = (data, connection, callback) => {
+  console.log("SelectCSSMediaQueryPositions4 data: ", data);
+  let query = 'SELECT min_width,min_height,CSS_File_ID,CSS_File,TextToClearPosition,LastIndexToClearPosition FROM mediaQuerySaannot3 WHERE min_width > ' + data[0] + ' OR min_height > ' + data[1] + ';'
   connection.execute(query,
     (err, results, fields) => {
       console.log(err);
@@ -432,22 +390,94 @@ const SelectCSSMediaQueryPositions3_2 = (data, connection, callback) => {
 
 };
 
+//select CSS_Id from csstiedostot2 where nimi = "http://localhost/wp2/wp-includes/css/dist/block-library/theme.min.css?ver=5.2.4'"
 
+const SelectCSSFilesID = (data, connection, callback) => {
+  let query = 'select CSS_Id from csstiedostot2 where nimi ="' + data + '";';
+  connection.execute(query,
+    (err, results, fields) => {
+      console.log(err);
+      connection.execute(query3, function (err, results3, fields) {
+        if (err) throw err;
+        //   console.log("Results3: ",results3);
+        callback(results3);
+      });
+    },
+  );
+};
+
+const SelectCSSMediaQueryPositions5 = (data, connection, callback) => {
+  let query1 = 'SELECT min_width,min_height,CSS_File_ID,TextToClearPosition FROM mediaQuerySaannot3 WHERE min_width > ' + data[0] + ' OR min_height > ' + data[1] + ';'
+
+  connection.execute(query1,
+    (err, results, fields) => {
+      console.log(err);
+      //     console.log(results[0].MW);
+      let data2 = [results[0].MW, results[0].MH];
+      let id = results[0].CSS_File_ID;
+      // let query2 = 'SELECT CSS_File,TextToClearPosition,MIN(min_width),MIN(min_height) FROM mediaQuerySaannot3 WHERE min_width > '+data2[0]+' OR min_height > '+data2[1]+';'
+
+
+      let query2 = 'SELECT MAX(max_width) as MW2 ,MAX(max_height) as MH2 FROM mediaQuerySaannot3 WHERE max_width > ' + data2[0] + ' OR max_height > ' + data2[1] + ';'
+      connection.execute(query2, function (err, results2, fields) {
+        if (err) throw err;
+        //    console.log(results2)
+        let data3 = [results2[0].MW2, results2[0].MH2];
+
+        let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width = ' + data3[0] + ' OR max_height = ' + data3[1] + ';'
+        connection.execute(query3, function (err, results3, fields) {
+          if (err) throw err;
+          //   console.log("Results3: ",results3);
+          callback(results3);
+        });
+      });
+    },
+  );
+
+};
+
+/*
+const UpdateMediaQuery = (data, connection, callback) => {
+  
+  console.log('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width = "' + data + '";');
+  connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
+    (err, results, fields) => {
+      console.log(err);
+   //   console.log("RESULTS 2:", results);
+      callback(results);
+    },
+  );
+}*/
+//csstiedostot2
+const UpdateCSSFile = (id, data, connection, callback) => {
+
+  console.log('SELECT Muokattu_Tiedosto FROM csstiedostot3 WHERE CSS_Id = ' + id + ';');
+  connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
+    (err, results, fields) => {
+      console.log(err);
+      //   console.log("RESULTS 2:", results);
+      callback(results);
+    },
+  );
+}
 
 module.exports = {
   connect: connect,
   select: select,
   selectScreenSize: selectScreenSize,
-  insertUser: insertUser,
-  insertIntoMediaQueryTable: insertIntoMediaQueryTable,
-  selectMediaQuery: selectMediaQuery,
-  selectMediaQuery2:selectMediaQuery2,
-  insertCssFile:insertCssFile,
-  SelectCSSFile:SelectCSSFile,
-  checkIfDatabaseWontWriteTablesMoreThanOnce:checkIfDatabaseWontWriteTablesMoreThanOnce,
-  tallennaTietokantaanMediaQuerynPosition:tallennaTietokantaanMediaQuerynPosition,
-  SelectCSSMediaQueryPositions:SelectCSSMediaQueryPositions,
-  SelectCSSMediaQueryPositions3:SelectCSSMediaQueryPositions3,
-  SelectCSSMediaQueryPositions32:SelectCSSMediaQueryPositions32,
-  SelectCSSMediaQueryPositions3_2:SelectCSSMediaQueryPositions3_2,
+  selectMediaQuery2: selectMediaQuery2,
+  insertCssFile: insertCssFile,
+  SelectCSSFile: SelectCSSFile,
+  checkIfDatabaseWontWriteTablesMoreThanOnce: checkIfDatabaseWontWriteTablesMoreThanOnce,
+  tallennaTietokantaanMediaQuerynPosition: tallennaTietokantaanMediaQuerynPosition,
+  SelectCSSMediaQueryPositions: SelectCSSMediaQueryPositions,
+  SelectCSSMediaQueryPositions3: SelectCSSMediaQueryPositions3,
+  SelectCSSMediaQueryPositions32: SelectCSSMediaQueryPositions32,
+  SelectCSSMediaQueryPositions3_2: SelectCSSMediaQueryPositions3_2,
+  SelectCSSFilesID: SelectCSSFilesID,
+  SelectCSSMediaQueryPositions4: SelectCSSMediaQueryPositions4,
+  SelectCSSFileByID: SelectCSSFileByID,
+  SelectCSSFile3: SelectCSSFile3,
+  insertCssFile3: insertCssFile3,
+  UpdateCSSFile: UpdateCSSFile,
 };

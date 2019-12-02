@@ -145,8 +145,8 @@ function lahetaLomake4(evt) {
 	}).then((json) => {
 		console.log("json frontend lomake4: ", json);
 		for (let i = 0; i < json.length; i++) {
-			console.log(json[i][0]);
-			poistaCSS2(json[i][0].nimi,json[i][0].NewCss,i);
+			console.log(json[i]);
+			poistaCSS2(json[i].CSS_File,json[i].NewCss,i);
 		}
 	}).then(() => {
 		console.log("Finished CSS")

@@ -77,16 +77,19 @@ drop table if exists mediaQuerySaannot3;
 CREATE TABLE mediaQuerySaannot3
 (
     CSS_File VARCHAR(100),
+    CSS_File_ID INT,
     MediaQuery_Saanto TEXT,
     Position INT,
     TextToClearPosition INT,
+    LastIndexToClearPosition INT,
+    FullMediaQuery TEXT,
     min_width INT,
     max_width INT,
     min_height INT,
     max_height INT
 );
 
-ALTER TABLE `mediaQuerySaannot3` MODIFY `MediaQuery_Saanto` LONGTEXT
+ALTER TABLE `mediaQuerySaannot3` MODIFY `FullMediaQuery` LONGTEXT
 
 
 ALTER TABLE `mediaQuerySaannot` MODIFY `MediaQuery_Saanto` LONGTEXT
@@ -98,3 +101,16 @@ ALTER TABLE `cssTiedostot` MODIFY `CSS_Tiedosto` LONGTEXT
 INSERT INTO cssTiedostot VALUE ("testi", "joku pitkä tiedosto",10,10,10,10,10,10);
 INSERT INTO testaus VALUE ("test 1", "test 2");
 INSERT INTO testaus2 VALUE (1, "test 2","asdsad");
+
+
+drop table if exists cssTiedostot3;
+CREATE TABLE cssTiedostot3
+(
+  CSS_Id int NOT NULL AUTO_INCREMENT,
+  nimi VARCHAR(100),
+  CSS_Tiedosto TEXT,
+  Muokattu_Tiedosto TEXT,
+  PRIMARY KEY (CSS_Id)
+);
+ALTER TABLE `cssTiedostot3` MODIFY `CSS_Tiedosto` LONGTEXT
+ALTER TABLE `cssTiedostot2` MODIFY `Muokattu_Tiedosto` LONGTEXT

@@ -144,7 +144,7 @@ const tallennaTietokantaanMediaQuerynPosition = (evt, cssTiedosto, arr) => {
 };
 
 const tallennaTietokantaanMediaQuerynPosition2 = 
-(evt, cssTiedostoNimi, MediaQuery_Saanto, Position,TextToClearPosition) => {
+(evt, cssTiedostoNimi, MediaQuery_Saanto, Position,TextToClearPosition,LastIndexToClearPosition,FullMediaQuery) => {
 
        evt.preventDefault;
 
@@ -153,6 +153,8 @@ const tallennaTietokantaanMediaQuerynPosition2 =
         fd.MediaQuery_Saanto = MediaQuery_Saanto;//refactorArr("saanto1_", arr, 2);
         fd.Position = Position;//refactorArr("saanto2_", arr, 3);
         fd.TextToClearPosition = TextToClearPosition;//refactorArr("position", arr, 1);
+        fd.LastIndexToClearPosition = LastIndexToClearPosition;
+        fd.FullMediaQuery = FullMediaQuery;
      //   fd.width = $("#fetchatti").width();
     //    fd.height = $("#fetchatti").height();
         const asetukset = {
@@ -295,15 +297,23 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                          let bool = checkIfRelatedToMedia(MediaRows[k],ArrayOfPositons[i][j][1]);
                        //  console.log("Bool = "+bool);
                          if(bool===true){
-                        
+                            let FullMediaQuery = text.slice(MediaRows[k],MediaRows[k+1]);
+                      //  console.log("FullMediaQuery: ",FullMediaQuery);
+                         
                         let MediaQuery_Saanto = text.slice(MediaRows[k],(ArrayOfPositons[i][j][1]+20));
+                     //   console.log("MediaQuery_Saanto: ",MediaQuery_Saanto);
                          let n = MediaQuery_Saanto.lastIndexOf("{"); // @media screen and (min-width: 48em) { <- otetaan pois {
                            
                          MediaQuery_Saanto = MediaQuery_Saanto.slice(0,n); //tulostaa @media screen and (min-width: 48em)
                         let TextToClearPosition = MediaRows[k]+n; //media query loppuu t'h'n kohtaan stringissä (numero)
+
+                        let lastIndextOfFullMediaQuery = FullMediaQuery.lastIndexOf("}");
+                        
+                        let LastIndexToClearPosition = MediaRows[k]+lastIndextOfFullMediaQuery;
+                        console.log("LastIndexToClearPosition: "+LastIndexToClearPosition);
                         //console.log(ArrayOfPositons[i][j][0],ArrayOfPositons[i][j][1]); //min-width 83604
                             try{
-                    //TÄRKEÄ POIS KOMMENTTI   tallennaTietokantaanMediaQuerynPosition2(event, ArrayOfCSSFiles[i][0], MediaQuery_Saanto, MediaRows[k],TextToClearPosition);
+                  //TÄRKEÄ  tallennaTietokantaanMediaQuerynPosition2(event, ArrayOfCSSFiles[i][0], MediaQuery_Saanto, MediaRows[k],TextToClearPosition,LastIndexToClearPosition,FullMediaQuery);
                     } catch (e) { 
                         console.log("Error");
                     }
@@ -585,8 +595,9 @@ const testiSQL3 = document.querySelector("#testiSql3");
 function laheta7Useasti(evt) {
     console.log("laheta useasti sasa", ArrayOfCSSFiles.length);
     for (let i = 0; i < ArrayOfCSSFiles.length; i++) {
-        //   console.log("laheta useasti ", i);
+        if(i !== 2){ //Googl fontti, poista kun ei enää testaus modessa
         lahetaLomake7(evt, i);
+        }
     }
 }
 
@@ -594,7 +605,7 @@ function lahetaLomake7(evt, num) {
 
     evt.preventDefault();
     console.log("lähetä lomake 7 ");
-    //console.log("ArrayOfCSSFiles: ",ArrayOfCSSFiles);
+    console.log("ArrayOfCSSFiles: ",ArrayOfCSSFiles);
     const fd = {};
     fd.CssArr = ArrayOfCSSFiles[num];
     console.log(fd);
