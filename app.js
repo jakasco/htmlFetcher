@@ -74,8 +74,8 @@ const SelectCSSFile3 = (data, req, next) => {
   });
 };
 
-const addAutoIncrement = (num,req,next) => {
-  database.addAutoIncrement(data, connection, (results) => {
+const addAutoIncrement = (id, table, tableRows, idName, data, req,next) => {
+  database.addAutoIncrement(id, table, tableRows, idName, data, connection, (results) => {
     req.custom = results;
     next();
   });
@@ -264,8 +264,13 @@ app.post('/tallennaCSStiedosto', (req, res, next) => {
 app.use('/tallennaCSStiedosto', (req, res, next) => {
 
   if (req.custom.length === 0) { //Jos ei ole sisältöä req.customissa, laita sinne
-    let data = [1, req.body.CssArr[0], req.body.CssArr[1],req.body.CssArr[1]];
-    insertCssFile3(data, req, next); //Lisää CSS Tiedosto ja sen nimi tietokantaan, (vanaha pelkkä inserCSSFile functio)
+    let data = [req.body.CssArr[0].toString(), req.body.CssArr[1].toString(),req.body.CssArr[1].toString()];
+//let data = [" ad ", "adsaas ", "lclala'"];
+    let table = "csstiedostot3";
+    let tableRows = ["CSS_Id","nimi","CSS_Tiedosto","Muokattu_Tiedosto"];
+
+    addAutoIncrement(1,table,tableRows,"CSS_Id",data);//id, table, tableRows, idName, data,
+  //  insertCssFile3(data, req, next); //Lisää CSS Tiedosto ja sen nimi tietokantaan, (vanaha pelkkä inserCSSFile functio)
   } else {
     next();
   }

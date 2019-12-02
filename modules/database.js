@@ -156,70 +156,117 @@ const SelectCSSFile = (data, connection, callback) => {
 
 const laitaPilkkuJosEiSanoja = (string, value) => {
   if (string === "") {
-    string += value
+    string += value;
   } else {
     string += ("," + value);
   }
+ // console.log(red,"string: ",string,reset,blue,"value: ",value,reset);
+  return string;
 };
 
-const getTableRows = (table) => { //Laita arrayna tablen nimet
+const getTableRows = (tableRows) => { //Laita arrayna tablen nimet
+  console.log(red,"tableRows: ",tableRows,reset);
   let arr = [];
   let names = "";
   let questionMarks = "";
-  for (let i = 0; i < table.length; i++) {
-    laitaPilkkuJosEiSanoja(names, table[i]);
-    laitaPilkkuJosEiSanoja(questionMarks, "?");
+  for (let i = 0; i < tableRows.length; i++) {
+   // console.log(tableRows[i])
+    names = (laitaPilkkuJosEiSanoja(names, tableRows[i]));
+    questionMarks = (laitaPilkkuJosEiSanoja(questionMarks, "?"));
+   // console.log(tableRows[i], " names: ",red,names,reset);
   }
-  arr.push([names, questionMarks]);
+  //console.log(red,table[i],questionMarks, " , ",names,reset,);
+  arr.push(names, questionMarks);
+ // console.log(red,"arr: ",arr,reset);
+  return arr;
 }
 
-const insertQuery = (autoIncrementNum,table,tableRows) => {
-  let rows = getTableRows(tableRows), query;
-  if(autoIncrementNum !== null){ //jos ei haluta autoincrementtiä
-   query = "INSERT INTO " + table + "(" + rows[0]+ ") VALUES (" + rows[0]+ ");";
-  }else{
-    query = "INSERT INTO " + table + "("+autoIncrementNum+"," + rows[0]+ ") VALUES (? ," + rows[0]+ ");";
+const setValues = (valuesToDB) => {
+  let arr = [];
+  let values = '';
+  for(let i=0; i<valuesToDB.length; i++){
+    if(valuesToDB[i].endsWith("'") === true){
+      console.log(blue," VIIMEINEN PULKKU!",reset);
+      let lastChar = 'X';
+      let firstChar = '"';
+      
+      valuesToDB[i] = valuesToDB[i].concat(lastChar); //Lisätään pilkku string bugin takia
+      values += (',"'+ valuesToDB[i]+'"');
+      arr.push("Ends Error "+i+" , "+valuesToDB[i].slice(0,30));
+      values += (',"'+ valuesToDB[i].toString()+'"');
+    }
+    if(valuesToDB[i].startsWith("'") === true){
+      console.log(blue," Eka PULKKU!",reset);
+      valuesToDB[i].IndexOf(0) += ""; //Lisätään pilkku string bugin takia
+      arr.push("Starts Error "+i+" , "+valuesToDB[i].slice(0,30));
+      values += (',"'+ valuesToDB[i].toString()+'"');
+    }else{
+      values += (',"'+ valuesToDB[i].toString()+'"');
+    }
+
+  };
+  let arr2 = [values,arr];
+  // console.log(red,"values: ",values,reset);
+   return arr2;
+}
+
+const insertQuery = (autoIncrementNum, table, tableRows,values) => {
+  let rows = getTableRows(tableRows);
+  let arr = setValues(values);
+  let value = arr[0];
+  for(let i=0; i<arr[0].length; i++){
+    
   }
-  console.log(blue,query,reset);
+  console.log("arr[1] ",arr[1]);
+  let query = "";
+  if (autoIncrementNum === null) { //jos ei haluta autoincrementtiä
+    query = "INSERT INTO "+table+" ("+rows[0]+") VALUES ("+rows[1]+");";
+ //   console.log(red, query, reset);
+  } else { //manuaalinen lisäys
+    query = "INSERT INTO "+table+" ("+rows[0]+") VALUES ("+autoIncrementNum+value+");";
+    //console.log(red," Autoincrement num: ",autoIncrementNum,blue, " ", query, reset);
+  }
   return query;
 }
 
-const selectQuery = (data,table,where,equals) => {
+const selectQuery = (data, table, where, equals) => {
   let query = "SELECT " + data + " FROM " + table + " WHERE " + where + " = " + equals + ";";
-  console.log(blue,query,reset);
+  console.log(red, query, reset);
   return query;
 }
 //let iquery= "INSERT INTO " + table + "(" + rows[0] + ") VALUES (" + rows[0] + ");";
 //'INSERT INTO cssTiedostot2 (CSS_Id, nimi, CSS_Tiedosto) VALUES (?,?,?); ) as MW2 ,
 ///////////////////////   1, array, array, id rown nimi, data *?, 
 const addAutoIncrement = (id, table, tableRows, idName, data, connection, callback) => {
-  let sq = selectQuery(data,table,idName,id);
-  
+  //let sq = selectQuery(data, table, idName, id);
+  let sq = "SELECT MAX("+idName+") AS tempID from "+table;
+ // let query1 = "SELECT (MAX)" + idName + " as tempID FROM " + table + " WHERE " + idName + " = " + id + ";";
+  console.log(red,sq,reset);
   connection.execute(sq,
     (err, results, fields) => {
       console.log(err);
-      let checkIfIdExist = `results[0].${idName}`;
+      let checkIfIdExist = results[0].tempID;//`results[0].${idName}`;
+      console.log(red," checkIfIdExist: ",reset,checkIfIdExist);
       if (checkIfIdExist === null || typeof checkIfIdExist === 'undefined') {
         checkIfIdExist = 1;
-        let iq = insertQuery(checkIfIdExist,table,tableRows);
-      //  console.log(green, " new autoincrement id added to table " + table + "!", reset);
+        let iq = insertQuery(checkIfIdExist, table, tableRows,null);
+
         connection.execute(iq, function (err, results2, fields) {
           if (err) throw err;
           callback(results2);
         });
       } else {
-        //Ota pienin id taulusta
-        let query2 = "SELECT (MAX)" + checkIfIdExist + "as tempID FROM " + table + " WHERE " + idName + " = " + id + ";";
-        connection.execute(query2, function (err, results2, fields) {
-          if (err) throw err;
-          let newId = results2[0].tempID +1;
-          connection.execute(query2, function (err, results3, fields) {
+
+          let newId = (results[0].tempID + 1);
+          console.log(red,"NEW ID: ",newId);
+          let iq = insertQuery(newId, table, tableRows,data);
+          console.log(data[0]);
+        //  let q = "INSERT INTO csstiedostot3 (CSS_Id,nimi,CSS_Tiedosto,Muokattu_Tiedosto) VALUES (6,?,?,?)";
+          connection.execute(iq, function (err, results3, fields) {
             if (err) throw err;
-            newId = insertQuery(checkIfIdExist,table,tableRows);
-            console.log(green," Uusi Autoincrement lisättty!",reset);
+            console.log(green, " Uusi Autoincrement lisättty!", reset);
             callback(results3);
-          });
-        });
+          }); 
       }
     },
   );
@@ -234,7 +281,6 @@ const SelectCSSFile3 = (data, connection, callback) => {
     },
   );
 };
-//addAutoIncrement
 
 const getUniqueIds = (idArr, distincArray, amount) => {
   let stringToBeReturned = "";
@@ -254,6 +300,7 @@ const SelectCSSFileByID = (idArr, connection, callback) => {
       console.log(err);
       console.log("\x1b[32m", "Query1 Successfully executed, ");
       let amount = results.length;
+      console.log(red, "   idArr: ",idArr,reset);
       let ids = getUniqueIds(idArr, results, amount);
       console.log("ids: " + ids);
       let query2 = 'SELECT CSS_Tiedosto,CSS_Id FROM csstiedostot2 WHERE CSS_Id in (' + ids + ')';
@@ -480,4 +527,5 @@ module.exports = {
   SelectCSSFile3: SelectCSSFile3,
   insertCssFile3: insertCssFile3,
   UpdateCSSFile: UpdateCSSFile,
+  addAutoIncrement: addAutoIncrement,
 };
