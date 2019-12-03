@@ -83,6 +83,7 @@ CREATE TABLE mediaQuerySaannot3
     TextToClearPosition INT,
     LastIndexToClearPosition INT,
     FullMediaQuery TEXT,
+    CssFile_To_Modify TEXT,
     min_width INT,
     max_width INT,
     min_height INT,
@@ -90,6 +91,7 @@ CREATE TABLE mediaQuerySaannot3
 );
 
 ALTER TABLE `mediaQuerySaannot3` MODIFY `FullMediaQuery` LONGTEXT
+ALTER TABLE `mediaQuerySaannot3` MODIFY `CssFile_To_Modify` LONGTEXT
 
 
 ALTER TABLE `mediaQuerySaannot` MODIFY `MediaQuery_Saanto` LONGTEXT
@@ -112,5 +114,8 @@ CREATE TABLE cssTiedostot3
   Muokattu_Tiedosto TEXT,
   PRIMARY KEY (CSS_Id)
 );
-ALTER TABLE `cssTiedostot3` MODIFY `CSS_Tiedosto` LONGTEXT
-ALTER TABLE `cssTiedostot2` MODIFY `Muokattu_Tiedosto` LONGTEXT
+ALTER TABLE `cssTiedostot3` MODIFY `CSS_Tiedosto` LONGTEXT;
+ALTER TABLE `cssTiedostot3` MODIFY `Muokattu_Tiedosto` LONGTEXT;
+
+
+ALTER TABLE `cssTiedostot2` ADD `Muokattu_Tiedosto` TEXT;

@@ -101,48 +101,6 @@ function refactorArr(arr) {
     }
 }
 
-/* 17 tai 18 RIkkoo
-0 = min width
-1 = positon
-2 = saanto
-3 = toinen saanto
-*/
-
-const tallennaTietokantaanMediaQuerynPosition = (evt, cssTiedosto, arr) => {
-    evt.preventDefault;
-    //  console.log("Arr: ",arr);
-    //console.log("tallennaTietokantaanMediaQuerynPosition cssTiedosto: ", cssTiedosto, " , mediaQueryPosition: ", mediaQueryPosition);
-/*
-    for (let i = 0; i < arr.length; i++) {
-        const fd = {};
-        fd.cssTiedosto = cssTiedosto;
-        fd.mediaQuerySaanto1 = arr[2][i];//refactorArr("saanto1_", arr, 2);
-        fd.mediaQuerySaanto2 = arr[3][i];//refactorArr("saanto2_", arr, 3);
-        fd.mediaQueryPosition = arr[1][i];//refactorArr("position", arr, 1);
-        fd.lengthType = arr[0][i];//refactorArr("lengthType", arr, 0);
-        fd.width = $("#fetchatti").width();
-        fd.height = $("#fetchatti").height();
-        const asetukset = {
-            method: 'post',
-            body: JSON.stringify(fd),
-            headers: {
-                'Content-type': 'application/json',
-            },
-        };
-    //    console.log("Asetukset: ", fd);
-        fetch('/tallennaTietokantaanMediaQuerynPosition', asetukset).then((response) => {
-            return response.json();
-        }).then((json) => {
-            try {
-                //  console.log("json frontend lomake 7: ", json);
-            } catch (e) {
-                console.log("ERRR ", e);
-            }
-
-        });
-    }*/
-};
-
 const tallennaTietokantaanMediaQuerynPosition2 = 
 (evt, cssTiedostoNimi, MediaQuery_Saanto, Position,TextToClearPosition,LastIndexToClearPosition,FullMediaQuery) => {
 
@@ -310,7 +268,7 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                         let lastIndextOfFullMediaQuery = FullMediaQuery.lastIndexOf("}");
                         
                         let LastIndexToClearPosition = MediaRows[k]+lastIndextOfFullMediaQuery;
-                        console.log("LastIndexToClearPosition: "+LastIndexToClearPosition);
+                    //    console.log("LastIndexToClearPosition: "+LastIndexToClearPosition);
                         //console.log(ArrayOfPositons[i][j][0],ArrayOfPositons[i][j][1]); //min-width 83604
                             try{
                   //TÄRKEÄ  tallennaTietokantaanMediaQuerynPosition2(event, ArrayOfCSSFiles[i][0], MediaQuery_Saanto, MediaRows[k],TextToClearPosition,LastIndexToClearPosition,FullMediaQuery);
