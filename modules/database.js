@@ -498,6 +498,16 @@ const UpdateMediaQuery = (data, connection, callback) => {
 }*/
 //csstiedostot2
 
+const resetCssFiles = (connection,callback) => {
+  let query = "UPDATE `cssTiedostot2` SET `Muokattu_Tiedosto` =  `CSS_Tiedosto`;";
+  connection.execute(query,
+  (err, results, fields) => {
+    console.log(err);
+    callback(results);
+  },
+);
+}
+
 const UpdateCSSFile = (id, data, Muokattu_Tiedosto, connection, callback) => {
  //console.log(Muokattu_Tiedosto, "  <---- Muokattu_Tiedosto");
   let replaceString = Muokattu_Tiedosto.split(data).join("");
@@ -590,4 +600,5 @@ module.exports = {
   UpdateCSSFile: UpdateCSSFile,
   addAutoIncrement: addAutoIncrement,
   SelectCSSFileByID2: SelectCSSFileByID2,
+  resetCssFiles:resetCssFiles,
 };

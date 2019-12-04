@@ -12,6 +12,8 @@ const testiSQL = document.querySelector("#testiSql");
 
 const testisql2 = document.querySelector("#testisql2");
 
+const testisql4 = document.querySelector("#testisql4");
+
 const colorPicker = document.querySelector("#colorPicker");
 
 const ulList3 = document.querySelector("#ulList3");
@@ -152,6 +154,33 @@ function lahetaLomake4(evt) {
 		console.log("Finished CSS")
 	});
 };
+
+
+function resetCssFiles(evt) {
+
+	evt.preventDefault();
+	console.log("testiSql4");
+	const fd = {};
+	fd.width = $("#fetchatti").width(); //Myöhemmin, databaseen menee inttinä + "px";
+	fd.height = $("#fetchatti").height(); // + "px";
+	const asetukset = {
+		method: 'post',
+		body: JSON.stringify(fd),
+		headers: {
+			'Content-type': 'application/json',
+		},
+	};
+	console.log(asetukset);
+	fetch('/resetCssFiles', asetukset).then((response) => {
+		return response.json();
+	}).then((json) => {
+		console.log("json frontend resetCSS: ", json);
+		
+	}).then(() => {
+		console.log("Finished CSS")
+	});
+};
+testiSql4.addEventListener("click", function (e) { resetCssFiles(e); });
 
 testiSql2.addEventListener("click", function (e) { lahetaLomake4(e); });
 
