@@ -84,7 +84,7 @@ const SelectCSSFile3 = (data, req, next) => {
   });
 };
 
-const addAutoIncrement = (id, table, tableRows, idName, data, req,next) => {
+const addAutoIncrement = (id, table, tableRows, idName, data, req, next) => {
   database.addAutoIncrement(id, table, tableRows, idName, data, connection, (results) => {
     req.custom = results;
     next();
@@ -104,6 +104,14 @@ const SelectCSSFilesID = (data, req, next) => {
     next();
   });
 };
+
+const cutAllMediaQueriesByCssFileID = (j,id, FullMq, Muokattu_Tiedosto, cutStart, cutEnd, req, next) => {
+  database.cutAllMediaQueriesByCssFileID(j,id, FullMq,Muokattu_Tiedosto, cutStart, cutEnd, connection, (results) => {
+    req.CutAll.push([id, results]);
+    next();
+  });
+};
+
 
 const SelectCSSFile2 = (data, req, next) => {
   database.SelectCSSFile(data, connection, (results) => {
@@ -133,7 +141,7 @@ const SelectCSSFileByID2 = (idArr, req, next) => {
 
 };
 
-const resetCssFiles = (req,next) => {
+const resetCssFiles = (req, next) => {
 
   database.resetCssFiles(connection, (results) => {
     req.custom = results;
@@ -143,29 +151,38 @@ const resetCssFiles = (req,next) => {
 
 };
 
-const readFile = (name,req) => {
-fs.readFile('./public/css/' + name, "utf8",  function read(err, data) {
+const readFile = (name, req) => {
+  fs.readFile('./public/css/' + name, "utf8", function read(err, data) {
     if (err) {
-        throw err;
+      throw err;
     }
     let content = data;
     req.custom7.push(content);
-   return content;        
-});
-console.log(" req.custom7:", req.custom7.length);
+    return content;
+  });
+  console.log(" req.custom7:", req.custom7.length);
 }
 
 
-const UpdateCSSFile = (cssName, id, data,Muokattu_Tiedosto, req, next) =>
-database.UpdateCSSFile(id, data,Muokattu_Tiedosto, connection, (results) => {
-  //req.custom6 = results;
- // req.custom6[id-1].push(results);
- saveCSSFiles(cssName, results[0].Muokattu_Tiedosto);
+const UpdateCSSFile = (cssName, id, data, Muokattu_Tiedosto, req, next) =>
+  database.UpdateCSSFile(id, data, Muokattu_Tiedosto, connection, (results) => {
+    //req.custom6 = results;
+    // req.custom6[id-1].push(results);
+    saveCSSFiles(cssName, results[0].Muokattu_Tiedosto);
 
- req.custom6[id-1] = (results[0].Muokattu_Tiedosto);
-  console.log("id: ",id," req.custom6["+id+"] ",req.custom6[id-1].length);
-  next();
-});
+    req.custom6[id - 1] = (results[0].Muokattu_Tiedosto);
+    console.log("id: ", id, " req.custom6[" + id + "] ", req.custom6[id - 1].length);
+    next();
+  });
+
+
+
+const UpdateCSSFile2 = (Muokattu_Tiedosto, req, next) =>
+  database.UpdateCSSFile2(Muokattu_Tiedosto, connection, (results) => {
+
+    req.custom8 = results;
+    next();
+  });
 
 const checkIfDatabaseWontWriteTablesMoreThanOnce = (data, req, next) =>
   database.checkIfDatabaseWontWriteTablesMoreThanOnce(data, connection, (results) => {
@@ -269,7 +286,7 @@ const saveCSSFiles = (name, value) => {
     if (err) throw err;
     console.log('Saved!');
   });
-  console.log(value," <----- Value");
+ // console.log(value, " <----- Value");
 
   fs.appendFile('./public/css/' + name, value, function (err) { //Lisää CSS tiedoston sisään
     if (err) throw err;
@@ -408,18 +425,18 @@ const modifyCSSFile = (CssFile, cut) => {
 };
 
 const modifyCSSFile2 = (CssFile, position, cut) => {
-  let AmountCut = cut-position;
- // CssFile.replace(mediaQuery,"");
-  console.log("AmountCut: ",AmountCut);
+  let AmountCut = cut - position;
+  // CssFile.replace(mediaQuery,"");
+  console.log("AmountCut: ", AmountCut);
   let newCss = CssFile.slice(position, cut);
   return newCss;
 };
 
 const modifyCSSFile3 = (CssFileString, mediaQuery) => {
- 
+
   let replaceString = CssFileString.split(mediaQuery).join("");
- // replaceString = replaceString.split('"').join("");
- console.log(replaceString," <--- replaceString modifyCSSFile3");
+  // replaceString = replaceString.split('"').join("");
+  console.log(replaceString, " <--- replaceString modifyCSSFile3");
   return replaceString;
 };
 
@@ -427,8 +444,8 @@ const modifyCSSFile3 = (CssFileString, mediaQuery) => {
 const modifyCSSFile4 = (CssFileString, mediaQuery) => {
   let re = '#container[data-size="small"] #fetchatti { ';
   let replaceString = CssFileString.split(mediaQuery).join(re);
- // replaceString = replaceString.split('"').join("");
- console.log(replaceString," <--- replaceString modifyCSSFile4");
+  // replaceString = replaceString.split('"').join("");
+  console.log(replaceString, " <--- replaceString modifyCSSFile4");
   return replaceString;
 };
 
@@ -450,6 +467,7 @@ app.post('/checkScreenSize', (req, res, next) => {
   req.custom = [];
   req.custom6 = [];
   req.custom7 = [];
+  req.CutAll = [];
   // PalautaFrontendiin(data, req, next);
   next();
 });
@@ -472,102 +490,299 @@ app.use('/checkScreenSize', (req, res, next) => {
 app.use('/checkScreenSize', (req, res, next) => {
   console.log("");
   console.log("_______________");
-  console.log("req.custom4 ", req.custom4);
+ //// console.log("req.custom4 ", req.custom4);
   console.log("");
   console.log("_______________");
   //console.log("req.custom ",req.custom);
   //req.custom2.arr = [];
   // console.log(req.custom[0].TextToClearPosition);
   let arrOfId = [];
+  let secondArr = [];
   for (let i = 0; i < req.custom4.length; i++) {
-    console.log("SelectCSSFile(req.custom4[" + i + "].CSS_File, req, next);")
+  // console.log("SelectCSSFile(req.custom4[" + i + "].CSS_File, req, next);")
     if (!arrOfId.includes(req.custom4[i].CSS_File_ID)) {
       arrOfId.push(req.custom4[i].CSS_File_ID);
     }
-    console.log("arrOfId: ", arrOfId);
+    secondArr.push(req.custom4[i].CSS_File_ID);
+    
   }
- 
-  SelectCSSFileByID(arrOfId, req, next);
+  console.log("arrOfId: ", arrOfId);
+  console.log("secondArr: ", secondArr);
+
+  SelectCSSFileByID(arrOfId, req, next); //Ota kaikki Idt talteen req.custom[5].CSS_Id
   //  next();
 });
 
 app.use('/checkScreenSize', (req, res, next) => {
   let n = req.custom5.length;
-  for(let i=1; i<n+1; i++){
+  for (let i = 1; i < n + 1; i++) {
     req.custom6.push([""]);
   }
- 
+
   next();
-  });
+});
+
+function sliceString(str,start,end,amounttimes){ //cssfile, arr,arr,j
+ 
+ // console.log();
+
+  console.log("SLICE STRING start:",start);
+//  console.log(red,start);
+//  console.log(yellow,end);
+  console.log(blue,amounttimes,reset);
+  let newStart = start; //arr
+  let newEnd = end;
+  let amountCut = 0;
+  let amountCutArr = [];
+  for(let i=0; i<amounttimes;i++){
+  //  console.log("str PITUUS ",str.length);
+  let subString = str.substr(newStart[i],newEnd[i]);
+  amountCut = (newEnd[i]-newStart[i]);
+  amountCutArr.push(amountCut);
+   // console.log("newStart",newStart[i]," newEnd",newEnd[i]," subString.pituus: ",subString.length, " amountCut ",amountCut);
+  
+   str = str.slice(newStart[i],newEnd[i]);
+
+ console.log("amountCut: ",amountCut);
+    if(i <amounttimes){
+  //  console.log(yellow,"newStart",newStart[i+1]," newEnd",newEnd[i+1]," subString.pituus: ",subString.length, " amountCut ",amountCut,reset);
+//    newStart[i+1] -= amountCut; //Seuraava
+  //  newEnd[i+1] -= amountCut;
+    
+   // console.log("newStart"+newStart[i], " next: ",newStart[i+1]);
+  //  console.log("newEnd"+newEnd[i], " next: ",newEnd[i+1]);
+    }
+  }
+//  console.log("amountCutArr ",amountCutArr);
+  return str;
+}
+
+function createLoop(id,n){
+  console.log("id: ",id," n: ",n);
+  let newId = id;
+  let arrOfNums = [];
+  arrOfNums.push(["Arr"+0]);
+  for(let i=0; i<n;i++){
+    if(newId[i]==id[i+1]){
+      arrOfNums.push(["Arr"+(id+1)]);
+    }else{
+      arrOfNums[i].push([id[i]])
+    }
+  }
+ // console.log("arrOfNums ",arrOfNums);
+  return arrOfNums;
+}
+
+function onlyUnique(value, index, self) { 
+  return self.indexOf(value) === index;
+}
+
 
 app.use('/checkScreenSize', (req, res, next) => {
-  // console.log("req.arr.length ",req.arr.length);
-  //console.log("req.arr ",req.arr);
-  //console.log("req.arr ",req.arr[0][0].nimi);
-  //console.log("Req.custom2 ",req.custom2[0].nimi);
-  //console.log("Req.custom3 ",req.custom3[0].nimi);
-  //req.arr[0].NewCss = [];
-  for (let i = 0; i < req.custom4.length; i++) {
-    //  console.log(i+": ",req.custom4[i]); //Pitkä lista
+  
+  let startArr = [];
+  let endArr = [];
+
+  let arrOfId = [];
+  let secondArr = [];
+for (let i = 0; i < req.custom4.length; i++) {
+  startArr.push([]);
+  endArr.push([]);
+ // console.log("SelectCSSFile(req.custom4[" + i + "].CSS_File, req, next);")
+   if (!arrOfId.includes(req.custom4[i].CSS_File_ID)) {
+     arrOfId.push(req.custom4[i].CSS_File_ID);
+   }
+   secondArr.push(req.custom4[i].CSS_File_ID);
+   startArr[i].push([req.custom4[i].CSS_File_ID,req.custom4[i].Position]);
+   endArr[i].push([req.custom4[i].CSS_File_ID,req.custom4[i].Position]);
+ }
+ let num = 1;
+ let resset = false;
+ for (let i = 0; i < secondArr.length; i++) {
+   if(resset==true){
+    num = i+1;
+    resset = false;
+    console.log("RESET NUM",num);
+   }
+   
+  if (startArr[i][0][0] == num) {
+    console.log("SISÄLTÄÄÄ  ",startArr[i][0][0]);
+    secondArr.push([startArr[i][0][0]]);
+  }else{
+    console.log("Ei ",startArr[i][0][0]);
+    resset = true;
   }
-  let custom4pituus = req.custom4.length;
-  console.log("\x1b[37m", "req.custom4.LENGTH ", req.custom4.length);
-  console.log("req.custom5.length: " + req.custom5.length);
+ }
+
+  console.log("secondArr",secondArr);
+  let lastNum = startArr[0][0][0];
+  let pituudet = [];
+  let lastNumLength = 0;
+  let bool = false;
+
+  
+
+  for(let i=0; i<startArr.length; i++){
+    if(i<req.custom5.length){
+      //pituudet.push([i]);
+    }
+    for(let j=0; j<startArr[i].length;j++){
+      console.log("startArr["+i+"]["+j+"]",startArr[i][j][1]);
+
+     
+  
+      lastNumLength = i;
+     
+      if(startArr[i][j][0] > lastNum){
+        lastNumLength -= 1;
+        pituudet.push([lastNumLength]);
+        lastNum = startArr[i][j][0];
+        lastNumLength = 0; 
+    }
+  }
  
-  let diffCssFilesLength = req.custom5.length;
-  //let updatedFile = "";
+ 
+
+  }
+  let nums = [];
+  let last = 0;
+  for(let p=0; p<startArr.length; p++){
+  // console.log("startArr[p][0]",startArr[p][0][0]);
+ //   Math.max(5, 10);
+ nums.push(startArr[p][0][0]);
+ last = startArr[p][0][0];
+  }
+
+  var unique = nums.filter( onlyUnique );
+  console.log("unique unique unique",unique, "  last: ",last);
+
+  for(let p=0; p<unique.length; p++){
+   
+   // if()
+   // console.log(unique[p]);
+  // nums.push(startArr[p][0][0]);
+ //  last = startArr[p][0][0];
+    }
+  
+
+  let m = sliceString(req.custom5[0].Muokattu_Tiedosto,startArr,endArr,3);
+  let name = "UUSIIIIII";//+i
+ saveCSSFiles(name,m);
+  for(let i=0; i<req.custom5.length; i++){
+//    let m = sliceString(req.custom5[i].Muokattu_Tiedosto,startArr,endArr,3);
+  //   let name = "UUSI"+i;
+//     saveCSSFiles(name,m);
+}
+  
+  /*
+  let TempStart = [];
+  let TempEnd = [];
+  let p = 0;
+  let latestL = 0;
+  for(let k=0; k<pituudet.length; k++){
+    let reset = false;
+  //  console.log("ptiuudet k; ",pituudet[k]);
+    console.log("ptiuudet k[0]; ",pituudet[k][0]);
+    p = pituudet[k][0];
+    console.log("k: ",k);
+    for(let z=0;z<pituudet[k][0]; z++){
+      TempStart.push([z]);
+      k<0;
+      latestL++;
+//      console.log("ptiuudet k[z]; ",pituudet[z][0]);
+      console.log("z: ",z);
+      if(z<pituudet[k][0]){
+     //   console.log("p : ",p, "latestL: ",latestL);
+        TempStart[z].push(startArr[z]);
+        TempEnd.push(startArr[z])
+      }else{
+        console.log("LAST")
+      }
+    }
+    console.log("letTempStart",TempStart);
+  //  let m = sliceString(req.custom5[pituudet[k][0]].Muokattu_Tiedosto,startArr,endArr,3);
+    //    let name = "UUSI"+i;
+    //    saveCSSFiles(name,m);
+  }*/
+
+/////////////////////////////////////
+
+  let n = req.custom5.length;
+  let temp = [];
+ 
+  for (let i = 0; i < n; i++) {
+    let Muokattu_Tiedosto2 = req.custom5[i].Muokattu_Tiedosto;
+    let pituus = 0;
+    let n2 = req.custom4.length;
+    
+ //   console.log("n2: ",n2);
+ //   console.log("CSS_File_ID: ",req.custom4[i].CSS_File_ID);
+ 
+    for (let j = 0; j < n2; j++) {
+      temp.push(req.custom4[j].CSS_File_ID);
+     
+      let cutStart= req.custom4[j].Position;
+      let cutEnd = req.custom4[j].LastIndexToClearPosition;
+      let fullMq = req.custom4[j].FullMediaQuery;
+      let id = req.custom5[i].CSS_Id;
+      let Muokattu_Tiedosto = req.custom5[i].Muokattu_Tiedosto
+
+      startArr[i].push(req.custom4[j].Position);
+      endArr.push(req.custom4[j].LastIndexToClearPosition);
+    //  console.log(blue, id, " <- CSS_Id, cutEnd: ",cutEnd," cutStart: ",cutStart, reset);
+     // cutAllMediaQueriesByCssFileID(j,id,fullMq, Muokattu_Tiedosto, cutStart, cutEnd, req, next);
+     pituus++;
+    }
+    let custom4pituus = req.custom4.length;
+    console.log("pituus",pituus);
+  //  let m = sliceString(req.custom5[i].Muokattu_Tiedosto,startArr,endArr,pituus);
+   
+   // UpdateCSSFile2(m,req,next);
+   
+
+  }
+
+
+   next();
+});
+app.use('/checkScreenSize', (req, res, next) => {
+
+  let custom4pituus = req.custom4.length;
+  let tempArrOfMuokatut = []; //loopin aikaan laita css tiedostojen tiedot joita muokataan
+  let diffCssFilesLength = req.custom5.length; //kaikki css tiedostot joissa on mediaqueryja
   for (let i = 0; i < custom4pituus; i++) {
-
-
     for (let j = 0; j < diffCssFilesLength; j++) {
       req.custom7.push([j]);
       if (req.custom5[j].CSS_Id === req.custom4[i].CSS_File_ID) {
-        try{
-        let cssName = req.custom4[i].CSS_File; //Css tiedoston nimi
-    //    console.log("\x1b[41m"+ "cssname: " + cssName+"\x1b[0m" + " ....");
-    //    let cut = req.custom4[i].TextToClearPosition; vanha
-     //   console.log("Cut: " + cut);
- //Muokattu_Tiedosto
-     
-      
+        try {
+          /*
+                    let cutStart = req.custom4[i].Position;
+                    let cutEnd = req.custom4[i].LastIndexToClearPosition; //FullMediaQuery; voi olla myös
+          */
+          let cssName = req.custom4[i].CSS_File; //Css tiedoston nimi
+          /*
+                   diffCssFilesLength.push([j,[cutStart,cutEnd]]);
+              
+        
+            let cut2 = req.custom4[i].FullMediaQuery;
+            cssName = refactorCssFileName(cssName, j);
+           let mq2 =req.custom4[i].MediaQuery_Saanto
+            */
+          //var content = fs.readFileSync('./public/css/' + cssName, 'utf8');
+          //  let cssFile = readFile(cssName,req);
+          //  console.log(req.custom7);
+          // console.log(cssFile," <-- CSS FILE");
+          // let upFile = modifyCSSFile4(content, mq2);
+          // console.log(cssFile);
+          //  saveCSSFiles(cssName, upFile);
 
-    //    let id = req.custom5[j].CSS_Id;
-     //   let mt = req.custom5[j].Muokattu_Tiedosto;
-   //    console.log("App.js, ",red," id: ",reset,id);
-      // UpdateCSSFile(id,cut,req.custom5[j].Muokattu_Tiedosto,req,next); VANHA
-     
-     // if(req.custom6[j] !== ""){
-     //   UpdateCSSFile(cssName,id,cut,req.custom5[j].Muokattu_Tiedosto,req,next);
-     
-    //  }else{
-      //  UpdateCSSFile(cssName,id,cut,req.custom6[j],req,next);
-    //  }
-     //   let newCss2 = modifyCSSFile2(req.custom5[j].Muokattu_Tiedosto, cutStart, cutMedia);
-
-    //    let newCss = modifyCSSFile(req.custom5[j].CSS_Tiedosto, cut); //CSStiedostot2 taulusta haetun pitkän tiedoston muokkaus
-    //   saveCSSFiles(cssName, updatedFile);
-    //    console.log(req.custom6," <--- req.custom6");
-    //   updatedFile
-    let cut2 = req.custom4[i].FullMediaQuery;
-    cssName = refactorCssFileName(cssName, j);
-   let mq2 =req.custom4[i].MediaQuery_Saanto
-    let cutStart = req.custom4[i].Position;
-    let cutMedia = req.custom4[i].LastIndexToClearPosition; //FullMediaQuery; voi olla myös
- var content = fs.readFileSync('./public/css/' + cssName, 'utf8');
-  //  let cssFile = readFile(cssName,req);
-  //  console.log(req.custom7);
-// console.log(cssFile," <-- CSS FILE");
-   /// let upFile = modifyCSSFile2(content, cutStart,cutMedia);
-   let upFile = modifyCSSFile4(content, mq2);
-   // console.log(cssFile);
-    saveCSSFiles(cssName, upFile);
-
-   //    saveCSSFiles(cssName, updatedFile);
-        console.log("cssName: ", cssName);
-        console.log("______________________");
-        console.log(" ");
-        req.custom4[i].NewCss = cssName; //Lähetä uusi muokattu CSS filen nimi frontendiin
-      }catch(e){console.log("ERROR ",e)}
+          //    saveCSSFiles(cssName, updatedFile);
+      /*    console.log("cssName: ", cssName);
+          console.log("______________________");
+          console.log(" ");
+          console.log("req.CutAll", req.CutAll.length);*/
+          req.custom4[i].NewCss = cssName; //Lähetä uusi muokattu CSS filen nimi frontendiin
+        } catch (e) { console.log("ERROR ", e) }
       }//jos on oikea id
     }//j looppi
   }

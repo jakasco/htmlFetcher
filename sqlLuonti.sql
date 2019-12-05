@@ -119,3 +119,11 @@ ALTER TABLE `cssTiedostot3` MODIFY `Muokattu_Tiedosto` LONGTEXT;
 
 
 ALTER TABLE `cssTiedostot2` ADD `Muokattu_Tiedosto` TEXT;
+UPDATE `cssTiedostot2` SET `Muokattu_Tiedosto` =  `CSS_Tiedosto`;
+
+
+SELECT (Min)Position,(MAX)LastIndexToClearPosition FROM mediaQuerySaannot3 WHERE CSS_File_ID = "+id+"
+SELECT Min(Position),MAX(LastIndexToClearPosition) FROM mediaQuerySaannot3 WHERE CSS_File_ID = 1
+
+
+'UPDATE cssTiedostot2 SET Muokattu_Tiedosto = '+cut+';'

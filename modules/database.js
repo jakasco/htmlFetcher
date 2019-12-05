@@ -2,6 +2,8 @@
 // get the client
 const mysql = require('mysql2');
 
+const fs = require('fs');
+const path = require('path');
 //Värit Debuggaukseen console.log
 const reset = "\x1b[0m";
 
@@ -293,22 +295,22 @@ const getUniqueIds = (idArr, distincArray, amount) => {
 };
 
 const SelectCSSFileByID = (idArr, connection, callback) => {
-  let query1 = "SELECT DISTINCT CSS_Id FROM csstiedostot2";
-  console.log("\x1b[33m", query1);
+  let query1 = "SELECT DISTINCT CSS_Id,Muokattu_Tiedosto FROM csstiedostot2";
+  // console.log("\x1b[33m", query1);
   connection.execute(query1,
     (err, results, fields) => {
-      console.log(err);
-      console.log("\x1b[32m", "Query1 Successfully executed, ");
+      //  console.log(err);
+      //  console.log("\x1b[32m", "Query1 Successfully executed, ");
       let amount = results.length;
-      console.log(red, "   idArr: ", idArr, reset);
+      //    console.log(red, "   idArr: ", idArr, reset);
       let ids = getUniqueIds(idArr, results, amount);
-      console.log("ids: " + ids);
-      let query2 = 'SELECT CSS_Tiedosto,Muokattu_Tiedosto,CSS_Id FROM csstiedostot2 WHERE CSS_Id in (' + ids + ')';
-      console.log("\x1b[33m", query2);
-      console.log(query2);
+      //   console.log("ids: " + ids);
+      let query2 = 'SELECT * FROM csstiedostot2 WHERE CSS_Id in (' + ids + ')';
+      //   console.log("\x1b[33m", query2);
+      //   console.log(query2);
       connection.execute(query2, (err, results2, fields) => {
         if (err) throw err;
-        console.log("results2.length: ", results2.length);
+        //     console.log("results2.length: ", results2.length);
         callback(results2);
       });
     },
@@ -419,7 +421,7 @@ const SelectCSSMediaQueryPositions3_2 = (data, connection, callback) => {
   let query = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width < ' + data[0] + ' OR max_height < ' + data[1] + ';';
   connection.execute(query,
     (err, results, fields) => {
-      console.log(err);
+      //    console.log(err);
       callback(results);
     },
   );
@@ -431,7 +433,7 @@ const SelectCSSMediaQueryPositions4 = (data, connection, callback) => {
   let query = 'SELECT * FROM mediaQuerySaannot3 WHERE min_width > ' + data[0] + ' OR min_height > ' + data[1] + ';'
   connection.execute(query,
     (err, results, fields) => {
-      console.log(err);
+      ///   console.log(err);
       callback(results);
     },
   );
@@ -498,35 +500,35 @@ const UpdateMediaQuery = (data, connection, callback) => {
 }*/
 //csstiedostot2
 
-const resetCssFiles = (connection,callback) => {
+const resetCssFiles = (connection, callback) => {
   let query = "UPDATE `cssTiedostot2` SET `Muokattu_Tiedosto` =  `CSS_Tiedosto`;";
   connection.execute(query,
-  (err, results, fields) => {
-    console.log(err);
-    callback(results);
-  },
-);
+    (err, results, fields) => {
+      console.log(err);
+      callback(results);
+    },
+  );
 }
 
 const UpdateCSSFile = (id, data, Muokattu_Tiedosto, connection, callback) => {
- //console.log(Muokattu_Tiedosto, "  <---- Muokattu_Tiedosto");
+  //console.log(Muokattu_Tiedosto, "  <---- Muokattu_Tiedosto");
   let replaceString = Muokattu_Tiedosto.split(data).join("");
   replaceString = replaceString.split('"').join("");
   let query = 'UPDATE csstiedostot2 SET Muokattu_Tiedosto = "' + replaceString + '" WHERE CSS_Id = ' + id + ';';
   connection.execute(query,
     (err, results, fields) => {
       console.log(err);
-  //    console.log("Results: ",results);
+      //    console.log("Results: ",results);
       let query2 = 'SELECT Muokattu_Tiedosto FROM csstiedostot2 WHERE CSS_Id = ' + id + ';';
       connection.execute(query2, function (err, results3, fields) {
         if (err) throw err;
-       
-       // console.log(results3);
-  //      console.log(red, "After update: ", results3[0].Muokattu_Tiedosto.length, reset);
+
+        // console.log(results3);
+        //      console.log(red, "After update: ", results3[0].Muokattu_Tiedosto.length, reset);
         callback(results3);
       });
-      },
-    );
+    },
+  );
 };
 
 /*
@@ -579,6 +581,157 @@ const SelectCSSFileByID2 = (id, connection, callback) => {
   );
 };
 
+const UpdateCSSFile2 = (Muokattu_Tiedosto, connection, callback) => {
+  let query = 'UPDATE csstiedostot2 SET Muokattu_Tiedosto = ' + Muokattu_Tiedosto + ';';
+  connection.execute(query,
+    (err, results, fields) => {
+      console.log(err);
+      console.log(red, "Muokattu_Tiedosto UPDATED", reset);
+      callback(results);
+    },
+  );
+};
+/*
+const cutAllMediaQueriesByCssFileID = (id, connection, callback) => {
+  console.log("ID ENNEN QUEYRA: ",yellow,id,reset);
+  let  query = 'SELECT Min(Position) as minP,MAX(LastIndexToClearPosition) as maxP FROM mediaQuerySaannot3 WHERE CSS_File_ID = '+id+';';
+  console.log("");
+  console.log(red,"QUERY:",reset);
+  console.log(green,query,reset);
+  console.log("");
+  connection.execute(query,
+     (err, results, fields) => {
+       console.log(red,"ERROR AT cutAllMediaQueriesByCssFileID,",reset);
+       console.log(err);
+       let arrOfMinAndMax = [results[0].minP,results[0].maxP];
+      // console.log("Resutlts: minP",red,results[0].minP," , ",red,results[0].maxP,reset);
+       callback(arrOfMinAndMax);
+     },
+   ); //ALKUPEÄINEN
+ };*/
+
+const saveCSSFiles = (name, value) => {
+  const nameOfCss = name + ".css";
+  const cssPath = path.join(__dirname, '../public', 'css', nameOfCss);
+  console.log(yellow, "CSS PATH: ", cssPath);
+
+
+  fs.open(cssPath, "w", function (err, file) {
+    if (err) throw err;
+    console.log("file? ", blue, file); //file on int
+    console.log(nameOfCss + ' Saved!');
+  });
+  // console.log(value," <----- Value");
+
+  fs.appendFile(cssPath, value, function (err) { //Lisää CSS tiedoston sisään
+    if (err) throw err;
+    console.log('Saved and Added Content to ' + nameOfCss);
+  });
+};
+function replaceMiddle(string, n) {
+  var rest = string.length - n;
+  return string.slice(0, Math.ceil(rest / 2) + 1) + '*'.repeat(n) + string.slice(-Math.floor(rest / 2) + 1);
+};
+const cutAllMediaQueriesByCssFileID = (j, id, replaceQuery, Muokattu_Tiedosto, cutStart, cutEnd, connection, callback) => {
+
+  // let cssName = "tempDB"+id;
+  //Muokattu_Tiedosto = Muokattu_Tiedosto.toString();
+  // let cut = 
+  // Muokattu_Tiedosto.split(replaceQuery).join(" 'MEDIAQUERY OTETTU POIS'");
+  // cut = cut.split('"').join("");
+  //OTA STRINGISTÄ POIS KOHDAT X:stä Y:n.
+  // let cut = Muokattu_Tiedosto.slice(cutStart,cutEnd);
+  //cut = "asd "+id;
+  //tallenna tämä muutos css tiedostona
+  // saveCSSFiles(cssName,cut);
+  //ota tämä uusi tallennettu tiedosto
+  //let minusJ = j;
+ /* let temp2 = "tempDB_" + id + "_" + j + ".css";
+  let rep = Muokattu_Tiedosto.replace(replaceQuery, "POISTETTU");
+  rep = rep.split('"').join("");
+
+  //let replaceString = CssFileString.split(mediaQuery).join(re);
+
+  let content = "EMpty";
+  // if(j>0){
+  const cssPath = path.join(__dirname, '../public', 'css', temp2);
+  content = fs.readFileSync(cssPath, 'utf8');
+  let finalContent = content.replace('/\?' + replaceQuery + '\d+\z/', 'poistettu');
+  saveCSSFiles(temp2, finalContent);*/
+  //  let re = 'POISTT ';
+  //  content = content.split(replaceQuery).join(re);
+  //  content = content.split('"').join("");
+  // }else{
+  //  content = "EMPTY";
+  // }
+  let query = 'SELECT Muokattu_Tiedosto FROM csstiedostot2  WHERE CSS_Id = ' + id + ';';
+  //console.log(replaceQuery," <---replaceQuery");
+  //päivitä tietokannassa tämä tiedosto
+  //let query2 = 'UPDATE cssTiedostot2 SET Muokattu_Tiedosto = "' + finalContent + '" WHERE CSS_Id = ' + id + ';';
+  //let  query = 'SELECT Position as minP,LastIndexToClearPosition as maxP FROM mediaQuerySaannot3 WHERE CSS_File_ID = '+id+';';
+  // console.log("");
+  //  console.log(red,"QUERY:",reset);
+  // console.log(green,query2.length,reset);
+  // console.log("");
+  connection.execute(query,
+    (err, results, fields) => {
+      //   console.log(green,query2,reset);
+      if (err) {
+        console.log(red, "ERROR AT cutAllMediaQueriesByCssFileID,", reset);
+        console.log(err);
+      } else {
+        //    console.log(results);
+        //    let cut5 = Muokattu_Tiedosto.replace(replaceQuery);
+        //   let cut4 = Muokattu_Tiedosto.split(replaceQuery).join(" 'MEDIAQUERY OTETTU POIS'");
+        //    cut = cut.split('"').join("");
+        //  let cut2 = Muokattu_Tiedosto.slice(cutStart,cutEnd);
+        //   let cut3 = Muokattu_Tiedosto.slice(0,5);
+        //   let regex2 = new RegExp("\\\\["+"asdsdasd"+"\\\\]",'ig');
+        //   let regex = new RegExp("/(\+\d{"+cutStart+"})\d{"+cutEnd+"}/",'ig');
+        //    let patt1 = /\(.*@\)/i;"/(\+?\d{"+cutStart+"})(\d+)(\d{"+cutEnd+"})/g"
+        //   let cut8 = Muokattu_Tiedosto.replace(regex,'[newVar]');
+        //   let str = Muokattu_Tiedosto.replace("/(\+?\d{"+cutStart+"})(\d+)(\d{"+cutEnd+"})/g", "POISTETTU MEDIAQUERY");
+        //  let regex3 = new RegExp("\\\\["+var1+"\\\\]",'ig');
+        //  let cut8 = Muokattu_Tiedosto.replace(/(\+?\d{})(\d+)(\d{2})/g, function(match, start, middle, end) {
+        // let subString =  Muokattu_Tiedosto.substr(cutStart,cutEnd);
+        //  let  subString2 = replaceQuery.lastChar
+        //  console.log(cut2," <--- cut");
+
+        //   console.log(Muokattu_Tiedosto,red," <--- Muokattu_Tiedosto",reset);
+        //   saveCSSFiles(temp,replaceQuery);TOIMIVA
+
+        //     console.log(blue,"NO ERROR in SQL query :",reset," cutAllMediaQueriesByCssFileID");
+        //    console.log("cutStart ENNEN QUEYRA: ",yellow,cutStart," , cutEnd: ",cutEnd, " , Muokattutiedosto pituus: ",Muokattu_Tiedosto.length,reset);
+
+        ////////////  callback(results);
+
+     //   results[0].Muokattu_Tiedosto;
+    
+        let finalContent = results[0].Muokattu_Tiedosto.slice(cutStart, cutEnd);
+        finalContent = finalContent.split('"').join("");
+        let query2 = 'UPDATE cssTiedostot2 SET Muokattu_Tiedosto = "' + finalContent + '" WHERE CSS_Id = ' + id + ';';
+      
+        connection.execute(query2, function (err, results3, fields) {
+          if (err) throw err;
+          //   console.log("Results3: ",results3);
+          let query3 = 'SELECT Muokattu_Tiedosto FROM csstiedostot2  WHERE CSS_Id = ' + id + ';';
+          connection.execute(query3, function (err, results3, fields) {
+            if (err) throw err;
+            //   console.log("Results3: ",results3);
+            let rep = results3[0].Muokattu_Tiedosto.replace(replaceQuery, "POISTETTU");
+            let temp = "tempDB_" + id + "_" + j;
+            console.log("(cutStart, cutEnd);",green,cutStart, cutEnd,reset);
+            saveCSSFiles(temp, rep);
+            callback(results3);
+          });
+        });
+
+      }
+    },
+  );
+};
+
+
 module.exports = {
   connect: connect,
   select: select,
@@ -600,5 +753,7 @@ module.exports = {
   UpdateCSSFile: UpdateCSSFile,
   addAutoIncrement: addAutoIncrement,
   SelectCSSFileByID2: SelectCSSFileByID2,
-  resetCssFiles:resetCssFiles,
+  resetCssFiles: resetCssFiles,
+  UpdateCSSFile2: UpdateCSSFile2,
+  cutAllMediaQueriesByCssFileID: cutAllMediaQueriesByCssFileID,
 };
