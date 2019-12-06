@@ -1,0 +1,330 @@
+body {
+  /*  background-color: #6d418e;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    padding-left: 15px;
+    padding-right: 15px; */
+  }
+  
+  html {
+    height: 100%;
+  }
+  
+  #custom_width {
+    margin-top: 40px;
+    text-align: center;
+  }
+  
+  #custom_width input {
+    border: none;
+    height: 40px;
+    width: 85px;
+    padding: 8px;
+    box-sizing: border-box;
+    font-size: 18px;
+    border-radius: 3px;
+    vertical-align: middle;
+  }
+  
+  #custom_width button#button {
+    border: none;
+    background-color: #f13379;
+    height: 40px;
+    color: #fff;
+    box-sizing: border-box;
+    vertical-align: middle;
+    border-radius: 2px;
+    padding: 0 15px;
+    cursor: pointer;
+  }
+  
+  #custom_width button#reset {
+    border: none;
+    background-color: transparent;
+    color: #fff;
+    margin-top: 15px;
+    cursor: pointer;
+  }
+  
+  #container {
+    overflow: hidden;
+    max-width: 500px;
+    width: 100%;
+    margin: auto;
+  }
+  
+  @media screen and (min-width: 700px) {
+    #container {
+      max-width: 700px;
+    }
+  }
+  
+  #container[data-size="small"] .block {
+    width: 100%;
+  }
+  
+  #container .big_block {
+    width: 100%;
+    padding: 40px;
+    text-align: center;
+    color: #fff;
+    font-family: arial;
+    box-sizing: border-box;
+  }
+  /*
+  #container[data-size="large"] .big_block:after {
+    content: 'My Width is 700px or larger.';
+  }
+  
+  #container[data-size="medium"] .big_block:after {
+    content: 'My Width is between 400px and 700px';
+  }
+  
+  #container[data-size="small"] .big_block:after {
+    content: 'My Width is less than 400px';
+  }
+  
+  #container[data-size="small"] .big_block h1:after {
+      font-size: 12px;
+  }
+  */
+  /*
+  #container[data-size="small"] body,
+      button,
+      input,
+      select,
+      textarea {
+          font-size: 18px;
+          font-size: 1.125rem;
+      }
+  
+      #container[data-size="small"]	h1 {
+          font-size: 30px;
+          font-size: 1.875rem;
+      }*/
+      #container[data-size="small"]	h2,
+      .home.blog .entry-title,
+      .page .panel-content .recent-posts .entry-title {
+          font-size: 26px;
+          font-size: 1.625rem;
+      }
+  
+      #container[data-size="small"]	h3 {
+          font-size: 22px;
+          font-size: 1.375rem;
+      }
+  
+      #container[data-size="small"]	h4 {
+          font-size: 18px;
+          font-size: 1.125rem;
+      }
+  
+      #container[data-size="small"]	h5 {
+          font-size: 13px;
+          font-size: 0.8125rem;
+      }
+  
+      #container[data-size="small"]	h6 {
+          font-size: 16px;
+          font-size: 1rem;
+      }
+  
+      #container[data-size="small"]	.entry-content blockquote.alignleft,
+      #container[data-size="small"]	.entry-content blockquote.alignright {
+          font-size: 14px;
+          font-size: 0.875rem;
+      }
+  
+      /* Fix image alignment */
+      #container[data-size="small"]	img.alignleft {
+          float: left;
+          margin-right: 1.5em;
+      }
+  
+      #container[data-size="small"]	img.alignright {
+          float: right;
+          margin-left: 1.5em;
+      }
+  
+      /* Site Branding */
+  
+      #container[data-size="small"]	.site-branding {
+          padding: 3em 0;
+      }
+  
+      /* Front Page */
+  
+      #container[data-size="small"]	.panel-content .wrap {
+          padding-bottom: 2em;
+          padding-top: 3.5em;
+      }
+  
+      #container[data-size="small"]	.page-one-column .panel-content .wrap {
+          max-width: 740px;
+      }
+  
+      #container[data-size="small"]	.panel-content .entry-header {
+          margin-bottom: 4.5em;
+      }
+  
+      #container[data-size="small"]	.panel-content .recent-posts .entry-header {
+          margin-bottom: 0;
+      }
+  
+      /* Blog Index, Archive, Search */
+  
+      #container[data-size="small"]	.taxonomy-description {
+          font-size: 14px;
+          font-size: 0.875rem;
+      }
+  
+      #container[data-size="small"]	.page-numbers.current {
+          font-size: 16px;
+          font-size: 1rem;
+      }
+  
+      /* Site Footer */
+  
+      #container[data-size="small"]	.site-footer {
+          font-size: 16px;
+          font-size: 1rem;
+      }
+  
+      /* Gallery Columns */
+  
+      #container[data-size="small"]	.gallery-item {
+          max-width: 25%;
+      }
+  
+      #container[data-size="small"]	.gallery-columns-1 .gallery-item {
+          max-width: 100%;
+      }
+  
+      #container[data-size="small"]	.gallery-columns-2 .gallery-item {
+          max-width: 50%;
+      }
+  
+      #container[data-size="small"]	.gallery-columns-3 .gallery-item {
+          max-width: 33.33%;
+      }
+  
+      #container[data-size="small"]	.gallery-columns-4 .gallery-item {
+          max-width: 25%;
+      }
+  
+  /*
+    .wp-block-media-text.is-stacked-on-mobile{
+        grid-template-columns:100%!important;grid-template-areas:"media-text-media" "media-text-content"
+      }
+      .wp-block-media-text.is-stacked-on-mobile.has-media-on-the-right{
+          grid-template-areas:"media-text-content" "media-text-media"
+      }/*}*/
+      /*
+      .is-small-text{font-size:14px}
+      .is-regular-text{font-size:16px}
+      .is-large-text{font-size:36px}
+      .is-larger-text{font-size:48px}
+      .has-drop-cap:not(:focus):first-letter{
+          float:left;font-size:8.4em;line-height:.68;font-weight:100;margin:.05em .1em 0 0;text-transform:uppercase;font-style:normal
+      }
+      .has-drop-cap:not(:focus):after{
+          content:"";display:table;clear:both;padding-top:14px
+      }
+      p.has-background{padding:20px 30px}
+      p.has-text-color a{color:inherit}
+      .wp-block-pullquote{padding:3em 0;margin-left:0;margin-right:0;text-align:center}
+      .wp-block-pullquote.alignleft,.wp-block-pullquote.alignright{max-width:305px}
+      .wp-block-pullquote.alignleft p,.wp-block-pullquote.alignright p{font-size:20px}
+      .wp-block-pullquote p{font-size:28px;line-height:1.6}
+      .wp-block-pullquote cite,.wp-block-pullquote footer{position:relative}
+      .wp-block-pullquote .has-text-color a{color:inherit}
+      .wp-block-pullquote:not(.is-style-solid-color){background:none}
+      .wp-block-pullquote.is-style-solid-color{border:none}
+      .wp-block-pullquote.is-style-solid-color blockquote{margin-left:auto;margin-right:auto;text-align:left;max-width:60%}
+      .wp-block-pullquote.is-style-solid-color blockquote p{margin-top:0;margin-bottom:0;font-size:32px}
+      .wp-block-pullquote.is-style-solid-color blockquote cite{text-transform:none;font-style:normal}
+      .wp-block-pullquote cite{color:inherit}.wp-block-quote.is-large,.wp-block-quote.is-style-large{margin:0 0 16px;padding:0 1em}
+      .wp-block-quote.is-large p,.wp-block-quote.is-style-large p{font-size:24px;font-style:italic;line-height:1.6}
+      .wp-block-quote.is-large cite,.wp-block-quote.is-large footer,.wp-block-quote.is-style-large cite,.wp-block-quote.is-style-large footer{
+          font-size:18px;text-align:right
+      }
+      .wp-block-rss.alignleft{margin-right:2em}
+      .wp-block-rss.alignright{margin-left:2em}
+      .wp-block-rss.is-grid{display:flex;flex-wrap:wrap;padding:0;list-style:none}
+      .wp-block-rss.is-grid li{margin:0 16px 16px 0;width:100%}
+          */            
+  
+  
+  #container .block {
+    width: 50%;
+    float: left;
+    height: 100px;
+  }
+  .clearfix:after {
+      content: '';
+      display: table;
+      clear: both;
+     
+  }
+  #main{
+     background-color: BurlyWood;
+     float: right;
+     height:200px;
+      width: 75%;
+      display: none;
+  }
+  #main2{
+     background-color: BurlyWood;
+     height: 200px;
+      width: 100%;
+      float: right;
+      display: none;
+  }
+  #sidebar{
+     background-color: IndianRed;
+     width:320px;
+     float: left;
+     height:568px;
+     overflow: scroll;  
+     border: solid 1px black;
+  }
+  
+  #dragbar{
+     background-color:black;
+     height:100%;
+     float: right;
+     width: 3px;
+     cursor: col-resize;
+     z-index:9999;
+  }
+  #dragbar2{
+      background-color: rgb(90, 74, 74);
+      width: 100%;
+      height: 5px;
+      cursor: col-resize;
+      z-index: 9999;
+      margin-top: 180px;
+  }
+  #tempBar{
+      width:3px;
+      background-color:#000;
+      opacity:0.5;
+      position:absolute;
+      cursor: col-resize;
+      z-index:999
+      }
+  
+  
+      #fetchatti {
+       /*   height: 200px; */
+          overflow: scroll;
+      }
+  
+  #container[data-size="small"] #fetchatti {
+      font-size: 25px;
+  }
+  #container[data-size="small"] #fetchatti h1:after {
+      font-size: 12px !important;
+  }
+

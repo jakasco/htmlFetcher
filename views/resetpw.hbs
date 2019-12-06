@@ -1,0 +1,24 @@
+{{> header }}
+<div class="container">
+<h1>{{title}}</h1>
+
+<form method="POST" action="/resetpw">
+
+    <div class="form-group">
+        <label for="password">Type in new password</label>
+        <input type="password" name="password" class="form-control" placeholder="password">
+
+
+    </div>
+    <div class="form-group">
+        <label for="passwordMatch">Re-Enter Password</label>
+        <input type="password" name="passwordMatch" class="form-control" placeholder="password">
+
+
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    <div class="form-group">
+    </div>
+</form>
+</div>
+{{> footer-end }}
