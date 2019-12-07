@@ -51,10 +51,6 @@
             margin-top: 10%;
             margin-left: 10%;
         }
-
-        ul {
-            list-style-type: none;
-        }
     </style>
 </head>
 <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> -->
@@ -74,25 +70,11 @@
                         <p>Total amount of Images saved:</p>
                     </div>
                 </div>
-                <div class="boxChildContent">
-                    <ul>
-                        <li id="amountImages">
-
-                        </li>
-                    </ul>
-                </div>
             </div>
             <div class="boxChild">
                 <div class="boxChildHeader">
                     <div class="boxTextContainer">
                         <p>Total amount of Source Code files saved:</p>
-                    </div>
-                    <div class="boxChildContent">
-                        <ul>
-                            <li id="totalSc">
-
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -100,16 +82,6 @@
                 <div class="boxChildHeader">
                     <div class="boxTextContainer">
                         <p>Total size of your data:</p>
-                    </div>
-                    <div class="boxChildContent">
-                        <ul>
-                            <li id="totaldata">
-
-                            </li>
-                            <li id="dataRemain">
-
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -125,44 +97,16 @@
         </div>
     </div>
     <script>
-
-        const totalImages = document.querySelector("#amountImages");
-        const totalSc = document.querySelector("#totalSourceCode");
-        const totalData = document.querySelector("#totaldata");
-        const dataRemain = document.querySelector("#dataRemain");
-
-        const checkImages = (arr) => {
-
-        }
-
-        const checkSourceCode = (arr) => {
-
-        }
-
-
-        const checkTotalData = (arr) => {
-
-        }
-
         const lahetaLomake = (evt) => {
             console.log("lähetä lomake");
             evt.preventDefault();
             const asetukset = {
-                method: 'get',
+                method: 'post',
             };
-            fetch('/getUserInformation', asetukset).then((response) => {
+            fetch('/getUserInformation').then((response) => {
                 return response.json();
             }).then((json) => {
                 console.log(json);
-                if (json.length === 0) {
-                    console.log("Json pituus 0");
-                    totalImages.innerHTML = "Images: 0";
-                } else {
-                    totalImages.innerHTML = "Images: " + json.length;
-                    for (let i = 0; i < json.length; i++) {
-                        console.log("json[" + i + "]: ", json);
-                    }
-                }
             });
         };
         // lomake.addEventListener('submit', function(e){lahetaLomake(e)});

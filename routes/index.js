@@ -32,6 +32,12 @@ router.get('/profileHomePage',authenticationMiddleware(), function (req, res){
   res.render('profileHomePage',{ title: 'Moblile Customize'})
 });
 
+
+router.get('/mobileCustomize',authenticationMiddleware(), function (req, res){
+  res.render('mobileCustomize',{ title: 'Moblile Customize'})
+});
+
+
 router.get('/resetpw', authenticationMiddleware(), function(req, res){
   res.render('resetpw', {title:'Reset password'})
 });
@@ -152,7 +158,7 @@ const haeKayttajaId = (user) =>{
 
 router.post('/upload', upload.single('kuva'), (req, res, next) => {
 
-  //console.log("FILE NAME:",req.file.filename);
+  console.log("FILE NAME:",req.file.filename);
   next();
 });
 router.use('/upload', (req, res, next) => {
@@ -227,6 +233,37 @@ router.post('/resetpw', (req, res, next)=>
         })
   });
 
+
+router.get('/getUserInformation', (req, res, next) => {
+  console.log("post '/getUserInformation' successfull");
+  let id = haeKayttajaId(req.session.passport.user);
+
+  const db = require('../db.js');
+  function haeKuvat() {
+    let query = 'SELECT kuva_Nimi FROM kuvat WHERE User_id = ' +id+ ';';
+    db.query(query,
+        function(error, results, fields) {
+          if (error) throw error;
+
+          let sizeArr = [];
+
+          for(let i=0; i<results; i++){
+            sizeArr.push(result[i]);
+          }
+          let images = {
+            size: sizeArr,
+          }
+          req.custom = images;
+          console.log("req.custom:",req.custom);
+          next();
+        });
+  }
+  haeKuvat();
+});
+
+router.use('/getUserInformation', (req, res, next) => {
+  res.send(req.custom);
+});
 
 
 module.exports = router;

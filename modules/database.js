@@ -16,29 +16,6 @@ const BgRed = "\x1b[41m";
 const BgGreen = "\x1b[42m";
 const BgYellow = "\x1b[43m";
 
-const connectToDb = () => {
-
-  // create the connection to database
-
-  const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database : process.env.DB_NAME
-  })
-
-  //Tarkastetaan saadaanko MySql yhteys
-  connection.connect(function (error) {
-    if (!!error) {
-
-      console.log("\x1b[31m", "Error to connect mySQL!");
-    } else {
-
-      console.log("\x1b[36m", "Connected to MySQL Successfully!", reset);
-    }
-  });
-  return connection;
-};
 
 var connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -47,7 +24,7 @@ var connection = mysql.createConnection({
     database : process.env.DB_NAME
   })
   
-connection.connect();
+//connection.connect();
 
 const checkIfDatabaseWontWriteTablesMoreThanOnce = (name, id) => {
   connection.execute('Select count(*) from csstiedostot2 where ' + name + ' = @' + name + ' and ' + id + ' = @' + CSS_Id, //IF count = 0 = true
@@ -742,7 +719,7 @@ const cutAllMediaQueriesByCssFileID = (j, id, replaceQuery, Muokattu_Tiedosto, c
 
 
 module.exports = {
-  connection: connection,
+  //connection: connection,
   select: select,
   selectScreenSize: selectScreenSize,
   selectMediaQuery2: selectMediaQuery2,

@@ -1,0 +1,77 @@
+
+{{> header}}
+
+<div class="container">
+<h2>Profile Homepage</h2>
+</div>
+
+<form action="/upload" method="post" enctype="multipart/form-data" id="lomake">
+    <label>Kuva, ääni tai video
+        <input type="file" name="kuva" accept="audio/,video/,image/*">
+    </label>
+
+    <button type="submit">Lähetä</button>
+
+
+</form>
+
+
+<h3>== Base64 to Image ==</h3>
+
+<div id="main"></div>
+
+<textarea id="log"></textarea>
+
+<script>
+    'use strict';
+    const lomake = document.querySelector('#lomake');
+
+    function Base64ToImage(base64img, callback) {
+        var img = new Image();
+        img.onload = function() {
+            callback(img);
+        };
+        img.src = base64img;
+    }
+
+    const lahetaLomake = (evt) => {
+        evt.preventDefault();
+        const fd = new FormData(lomake);
+        console.log(fd.values);
+        const asetukset = {
+            method: 'post',
+            body: fd,
+        };
+        fetch('/upload', asetukset).then((response) => {
+            return response.json();
+        }).then((json) => {
+            console.log(json);
+            console.log(json[0].Base64);
+          //  base64ToString(json[0].Base64)
+
+            let base64img = json[0].Base64;
+
+            Base64ToImage(base64img, function(img) {
+
+                document.getElementById('main').appendChild(img);
+                var log = "w=" + img.width + " h=" + img.height;
+                document.getElementById('log').value = log;
+            });
+
+          /*  lista.innerHTML = '';
+            console.log(json.length);
+            json.forEach(item => {
+
+               const li = document.createElement('li');
+                const kuva = document.createElement('img');
+                kuva.src = polku + item.ufile;
+                li.appendChild(kuva);
+                lista.appendChild(li);*/
+
+            });
+
+       // });
+    };
+
+    lomake.addEventListener('submit', function(e){lahetaLomake(e)});
+</script>

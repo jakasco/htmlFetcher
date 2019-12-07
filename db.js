@@ -1,21 +1,69 @@
-var mysql = require('mysql')
-var connection2 = mysql.createConnection({
+'use strict';
+const mysql = require('mysql');
+
+const fs = require('fs');
+const path = require('path');
+//Värit Debuggaukseen console.logconnection.connect();
+
+const reset = "\x1b[0m";
+
+const red = "\x1b[31m";
+const green = "\x1b[32m";
+const yellow = "\x1b[33m";
+const blue = "\x1b[34m";
+
+const BgRed = "\x1b[41m";
+const BgGreen = "\x1b[42m";
+const BgYellow = "\x1b[43m";
+
+/*
+const con  = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database : process.env.DB_NAME
+});
+
+let connection2 = mysql.connect(con,err => {
+  if (err)
+   {throw err}else{
+     console.log("\x1b[36m", "Connected to MySQL Successfully!", reset);
+   }
+   return con;
+});*/
+
+const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database : process.env.DB_NAME
 })
 
-const connect = () => {
+connection.connect();
+/*
+const connection = con.connect(function (error) {
+  console.log("Connection:");
+  if (!!error) {
+    console.log("\x1b[31m", "Error to connect mySQL!");
+  } else {
+    console.log("\x1b[36m", "Connected to MySQL Successfully!", reset);
+  }
+  return connection;
+});
+
+connection();
+
+const connectToDb = () => {
 
   // create the connection to database
 
-  const connection  = mysql.createConnection({
+  const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database : process.env.DB_NAME
   })
+
   //Tarkastetaan saadaanko MySql yhteys
   connection.connect(function (error) {
     if (!!error) {
@@ -29,30 +77,10 @@ const connect = () => {
   return connection;
 };
 
-connection.connect();
+const connection = connectToDb();
+*/
 
-
-module.exports = connection;
-
-'use strict';
-// get the client
-const mysql = require('mysql2');
-
-const fs = require('fs');
-const path = require('path');
-//Värit Debuggaukseen console.log
-const reset = "\x1b[0m";
-
-const red = "\x1b[31m";
-const green = "\x1b[32m";
-const yellow = "\x1b[33m";
-const blue = "\x1b[34m";
-
-const BgRed = "\x1b[41m";
-const BgGreen = "\x1b[42m";
-const BgYellow = "\x1b[43m";
-
-
+///////////////
 const checkIfDatabaseWontWriteTablesMoreThanOnce = (name, id) => {
   connection.execute('Select count(*) from csstiedostot2 where ' + name + ' = @' + name + ' and ' + id + ' = @' + CSS_Id, //IF count = 0 = true
     (err, results, fields) => {
@@ -743,8 +771,7 @@ const cutAllMediaQueriesByCssFileID = (j, id, replaceQuery, Muokattu_Tiedosto, c
 };
 
 
-module.exports = {
-  connect: connect,
+module.exports = connection,{
   select: select,
   selectScreenSize: selectScreenSize,
   selectMediaQuery2: selectMediaQuery2,
