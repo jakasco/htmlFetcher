@@ -98,6 +98,24 @@ function poistaCSS2(cssFileName, newCssFile, num) {
 
 }
 
+function laitaCSS(){
+	let html = div3.innerHTML;
+
+	let css1 = "1.css";
+	let css2 = "2.css";
+	let css3 = "3.css";
+	let c1 = "http://localhost/wp2/wp-includes/css/dist/block-library/style.min.css?ver=5.2.4'";
+	let c2 = "http://localhost/wp2/wp-includes/css/dist/block-library/theme.min.css?ver=5.2.4'";
+	let c3 = "http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4'";
+	cssName = cssFileName.replace("'", ""); //ylimääräinen pilkku pois lopusta
+	var ret = html.replace(cssName, 'css/' + newCssFile); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
+
+	div3.innerHTML = ret; //divin sisään wp content
+	console.log(div3.innerHTML);
+	cssTallennusInput.value = ret;
+}
+
+
 function laitaTakaisinCSS3(OldCSS,New_CSS_File) {
 
 	var str = div3.innerHTML;

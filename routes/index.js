@@ -6,7 +6,7 @@ var passport = require('passport');
 const bcrypt = require('bcrypt');
 const base64Img = require('base64-img');
 
-
+const path = require('path');
 
 const multer = require('multer');
 const upload = multer({dest: 'images/'});
@@ -158,19 +158,27 @@ const haeKayttajaId = (user) =>{
 
 router.post('/upload', upload.single('kuva'), (req, res, next) => {
 
-  console.log("FILE NAME:",req.file.filename);
+  //console.log("FILE NAME:",req.file.filename);
   next();
 });
 router.use('/upload', (req, res, next) => {
 //  console.log("FILE NAME2:",req.file.filename);
   let id = haeKayttajaId(req.session.passport.user)
-let kuva_nimi = req.file.filename;
- let base64string = kuva(req.file.filename);
+  let kuva_nimi = req.file.filename;
+  let base64string = kuva(req.file.filename);
+  console.log("req.file",req.file);
+
+  let originalname = req.file.originalname;
+  let encoding = req.file.encoding;
+  let mimetype = req.file.mimetype;
+  let dest = req.file.destination;
+  let path = req.file.path;
+  let size = req.file.size;
 
   //TEE Functio millä haet kuvan kansiosta "./images/+"req.body.filename
 
-  const data = [kuva_nimi,base64string, id];
-  const query = 'INSERT INTO kuvat (kuva_Nimi, Base64, User_id) VALUES (?, ?, ?)';
+  const data = [kuva_nimi,base64string, id, originalname, encoding, mimetype, dest, path, size];
+  const query = 'INSERT INTO kuvat (kuva_Nimi, Base64, User_id, originalname, encoding, mimetype, destination, path, size) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   const db = require('../db.js');
 
@@ -179,7 +187,7 @@ let kuva_nimi = req.file.filename;
     db.query(query, data, function(error, results, fields) {
       console.log(query);
       if (error) throw error;
-       next();
+      next();
     }); //SQL LAUSE LOPPUU
   }
   test();
@@ -240,21 +248,22 @@ router.get('/getUserInformation', (req, res, next) => {
 
   const db = require('../db.js');
   function haeKuvat() {
-    let query = 'SELECT kuva_Nimi FROM kuvat WHERE User_id = ' +id+ ';';
+    let query = 'SELECT size FROM kuvat WHERE User_id = ' +id+ ';';
     db.query(query,
         function(error, results, fields) {
           if (error) throw error;
 
           let sizeArr = [];
-
-          for(let i=0; i<results; i++){
-            sizeArr.push(result[i]);
+          console.log("results.length:",results.length);
+          for(let i=0; i<results.length; i++){
+            console.log(i+":",results[0]);
+            sizeArr.push(results[i]);
           }
           let images = {
             size: sizeArr,
           }
-          req.custom = images;
-          console.log("req.custom:",req.custom);
+          req.images = images;
+          console.log("req.images:",req.images);
           next();
         });
   }
@@ -262,6 +271,43 @@ router.get('/getUserInformation', (req, res, next) => {
 });
 
 router.use('/getUserInformation', (req, res, next) => {
+  let id = haeKayttajaId(req.session.passport.user);
+  const db = require('../db.js');
+  function haeKayttajaNimi() {
+    let query = 'SELECT username FROM users WHERE id = ' +id+ ';';
+    db.query(query,
+        function(error, results, fields) {
+          if (error) throw error;
+          let username = results[0].username;
+          req.username = username;
+          console.log("req.username:",req.username);
+          next();
+        });
+  }
+  haeKayttajaNimi();
+});
+/*
+router.use('/getUserInformation', (req, res, next) => {
+  const urlPath = path.dirname();
+        console.log(urlPath);
+  switch (req.path) {
+      case '/':
+          res.locals.title = 'Index Test';
+          break;
+      case '/login':
+          res.locals.title = 'Login Test';
+          break;
+      default:
+          res.locals.title = 'No Meta Tag';
+  }
+  next();
+});*/
+router.use('/getUserInformation', (req, res, next) => {
+
+  let json = [req.images,req.username];
+
+  req.custom = json;
+  console.log("req.custom: ",req.custom);
   res.send(req.custom);
 });
 

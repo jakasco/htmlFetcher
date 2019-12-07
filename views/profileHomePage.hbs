@@ -8,6 +8,7 @@
     <!--  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/pick-a-color-1.2.3.min.css">
     <link rel="stylesheet" href="css/main.css">
+
     
     <title>Testing</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -20,6 +21,7 @@
 
         .userDetailsBox {
             display: flex;
+            margin-left: 20%
         }
 
         .boxChild {
@@ -63,7 +65,7 @@
 
     <div class="container">
         <h2>Profile Homepage</h2>
-        <h3>Hello, User!</h3>
+        <h3 id="hello"></h3>
     </div>
 
     <div class="userDetails">
@@ -92,6 +94,15 @@
                             <li id="totalSc">
 
                             </li>
+                            <li id="cssFiles">
+
+                            </li>
+                            <li id="htmlFiles">
+
+                            </li>
+                            <li id="jsFiles"> 
+
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -114,7 +125,9 @@
                 </div>
             </div>
         </div>
-
+        <div style="width:100px;height:100px">
+            <img id="kuva" src="kissa.JPG" width="100%" height="100%">
+        </div>
     </div>
 
     <div id="destroyAllData">
@@ -130,18 +143,66 @@
         const totalSc = document.querySelector("#totalSourceCode");
         const totalData = document.querySelector("#totaldata");
         const dataRemain = document.querySelector("#dataRemain");
+        const hello = document.querySelector("#hello");
+        const kuva = document.querySelector("#kuva");
+          
+        const jsFiles = document.querySelector("#jsFiles");
+        const htmlFiles = document.querySelector("#htmlFiles");
+        const cssFiles = document.querySelector("#cssFiles");
 
         const checkImages = (arr) => {
 
         }
 
         const checkSourceCode = (arr) => {
-
+            
         }
 
+        const parseDecimal = (num, amount) => {
+            return (num / 100).toFixed(amount); //numero, mones desimaali
+        }
 
-        const checkTotalData = (arr) => {
+        const toMb = (num) => {
+            let n = "00." + num.toString();
+        }
 
+        const sliceDecimal = (num, amount) => {
+            return num.substr(0, amount); //xx.{num}
+        }
+
+        const toDecimal = (num) => {
+            let pituus = num.toString().length;
+            switch (pituus) {
+                case pituus = 4: //kb
+                    return (sliceDecimal("0." + num.toString(), 3));
+                    break;
+                case pituus = 5: //kb
+                    return (sliceDecimal("00." + num.toString(), 4));
+                    break;
+                case pituus = 6: //mb
+                    return (sliceDecimal("000." + num.toString(), 5));
+                    break;
+                case pituus = 7: //gb
+                    return sliceDecimal("0000." + num.toString(), 6);
+                    break;
+            }
+        }
+
+        const addDataToRemain = (num) => {
+            let remain = 30 - parseFloat(num)
+            dataRemain.innerHTML = "Data remain: " + remain;
+        }
+
+        const checkTotalData = (json) => {
+            let totalSizeOfImages = 0;
+            for (let i = 0; i < json.length; i++) {
+                console.log("json[" + i + "]: ", json[i].size);
+                totalSizeOfImages += json[i].size; //kb
+            }
+            let n2 = toDecimal(totalSizeOfImages);
+            console.log(n2);
+            addDataToRemain(n2);
+            totaldata.innerHTML = "Total Size of Data: " + n2 + "MB";
         }
 
         const lahetaLomake = (evt) => {
@@ -153,19 +214,24 @@
             fetch('/getUserInformation', asetukset).then((response) => {
                 return response.json();
             }).then((json) => {
-                console.log(json);
-                if (json.length === 0) {
+                console.log("json: ", json);
+                console.log("json[0]: ", json[0]);
+                console.log("json[1]: ", json[1]);
+                if (json[0].size.length === 0) {
                     console.log("Json pituus 0");
                     totalImages.innerHTML = "Images: 0";
                 } else {
-                    totalImages.innerHTML = "Images: " + json.length;
-                    for (let i = 0; i < json.length; i++) {
-                        console.log("json[" + i + "]: ", json);
-                    }
+                    totalImages.innerHTML = "Images: " + json[0].size.length;
+                    checkTotalData(json[0].size);
                 }
+
+                hello.innerHTML = "Hello " + json[1] + "!";
+                console.log(window.location);
             });
         };
         // lomake.addEventListener('submit', function(e){lahetaLomake(e)});
+
+
 
         let e = document.createEvent('Event');
         lahetaLomake(e);

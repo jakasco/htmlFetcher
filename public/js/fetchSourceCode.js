@@ -16,10 +16,6 @@ const fetchConsole = document.querySelector("#fetchConsole");
 
 const cssTallennusInput = document.querySelector("#input2");
 
-function findWord() {
-    let etsittySana = findWord4();
-    console.log("Etsitty sana ", etsittySana);
-}
 function getCSSfiles() { //etsi kaikki css tiedostot lähdekoodista
     $("textarea").on('keyup', function () {
 
@@ -101,10 +97,10 @@ function refactorArr(arr) {
     }
 }
 
-const tallennaTietokantaanMediaQuerynPosition2 = 
-(evt, cssTiedostoNimi, MediaQuery_Saanto, Position,TextToClearPosition,LastIndexToClearPosition,FullMediaQuery) => {
+const tallennaTietokantaanMediaQuerynPosition2 =
+    (evt, cssTiedostoNimi, MediaQuery_Saanto, Position, TextToClearPosition, LastIndexToClearPosition, FullMediaQuery) => {
 
-       evt.preventDefault;
+        evt.preventDefault;
 
         const fd = {};
         fd.CSS_File = cssTiedostoNimi;
@@ -113,8 +109,8 @@ const tallennaTietokantaanMediaQuerynPosition2 =
         fd.TextToClearPosition = TextToClearPosition;//refactorArr("position", arr, 1);
         fd.LastIndexToClearPosition = LastIndexToClearPosition;
         fd.FullMediaQuery = FullMediaQuery;
-     //   fd.width = $("#fetchatti").width();
-    //    fd.height = $("#fetchatti").height();
+        //   fd.width = $("#fetchatti").width();
+        //    fd.height = $("#fetchatti").height();
         const asetukset = {
             method: 'post',
             body: JSON.stringify(fd),
@@ -122,7 +118,7 @@ const tallennaTietokantaanMediaQuerynPosition2 =
                 'Content-type': 'application/json',
             },
         };
-      //  console.log("Asetukset: ", fd);
+        //  console.log("Asetukset: ", fd);
         fetch('/tallennaTietokantaanMediaQuerynPosition', asetukset).then((response) => {
             return response.json();
         }).then((json) => {
@@ -133,16 +129,16 @@ const tallennaTietokantaanMediaQuerynPosition2 =
             }
 
         });
-};
+    };
 
 let t1 = 0;
 
-function checkIfRelatedToMedia (mediaArr,widthArr) {
+function checkIfRelatedToMedia(mediaArr, widthArr) {
     let sum = (widthArr - mediaArr);
-   // console.log("Minus: ",sum);
-    if(sum < 70 && sum >= 0){
+    // console.log("Minus: ",sum);
+    if (sum < 70 && sum >= 0) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
@@ -155,7 +151,6 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
     let ulPituus = document.querySelectorAll("#ulList li").length; //Looppi missä etsitään kaikki Mediaquery listan Stringit
     for (let i = 0; i < ulPituus; i++) {
-        let TextOfLi = $("#ulList li").text();
 
         let li = document.querySelectorAll("#ulList li")[i];
         if (i !== 2) { //Googlen css tulee cors, joten skipataan "#ulList li")[2]
@@ -163,12 +158,9 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                 fetch(li.textContent).then((response) => {
                     return response.text();
                 }).then((text) => { //text = CSS tiedosto
-                    let pituusArr = ArrayOfCSSFiles.length;
-                    //      console.log("ArrayOfCSSFiles[i]: " + i + " , ", ArrayOfCSSFiles[i]);
                     //Tallenna CSS sisältö arrayhyn
                     ArrayOfCSSFiles[i].push(text);
 
-                    //  console.log(ArrayOfCSSFiles);
                     let m = text.match("@media");
                     var res = text.split("@media"); //Jos Css Tiedostossa on @media sana, splitataan string tässä kohtaa
 
@@ -178,25 +170,12 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                     ArrayOfAllMediaQueries.push(res); //Lisätään tämä @media:lla splitattu stringi arrayna tähän listaan
 
                     for (let i = 0; i < res.length; i++) {
-                        // 
-                        //evt, css tiedoston nimi, mediaqueryn positon numerona
-                        let event = document.createEvent('Event');
-                        ///////////////////////////////////////////////////////////////
-                       
-                        //      console.log("indices ....... ", indices);
-                        /////////////////////////////////////////////////////////////
-
-
 
                         var res2 = res[i].split(")");
 
-                        let newCss = res2[1];
-
-                        //Lisää MediaQueryt Scrolldown menuun li:nä
                         $("#ulList2").append(`<li> 
                 ${res[i]}
                     </li></br>`);
-                        //  let csss = res[i].substr(18,res[i].length);  ALKAA MAX WIDTH
                         let csss = res[i].substr(0, res[i].length);
                         $("#mediaNapit").append(`<button onclick='vaihaCss("${csss}",${i})'>
                     ${i}nappi ${res2[0].substr(0, 30)}
@@ -205,19 +184,16 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
                     if (m) { //Turha?
                         m.forEach((match, groupIndex) => {
-                            //   console.log(`Found match in ${li.textContent}, group ${groupIndex}: ${match}`);
                             let m = match.match(/{[\w\d]+}/g);
                         });
                     }
-                    //      console.log("ArrayOfAllMediaQueries: ", ArrayOfAllMediaQueries);
                     let regex = /@Media/gi, result, indices = [];
-                    
+
                     let regex1 = /min-width/gi, result1;
                     let regex2 = /max-width/gi, result2;
                     let regex3 = /min-height/gi, result3;
                     let regex4 = /max-height/gi, result4;
 
-                    
                     while ((result = regex.exec(text))) {
                         ArrayOfPositons[i].push(["@Media", result.index]);
                     }
@@ -233,68 +209,51 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                     while ((result4 = regex4.exec(text))) {
                         ArrayOfPositons[i].push(["max-height", result4.index]);
                     }
-               //     console.log("ArrayOfPositons",ArrayOfPositons);
-                    
+                    //     console.log("ArrayOfPositons",ArrayOfPositons);
                     let MediaRows = [];
                     let MediaRows2d = [];
 
-                    for(let j=0; j<ArrayOfPositons[i].length;j++){
-                        if(ArrayOfPositons[i][j][0] === "@Media"){
+                    for (let j = 0; j < ArrayOfPositons[i].length; j++) {
+                        if (ArrayOfPositons[i][j][0] === "@Media") {
                             MediaRows.push(ArrayOfPositons[i][j][1]);
                         }
-                      //  checkIfRelatedToMedia (,ArrayOfPositons[i][1]);
                     }
                     MediaRows2d.push(MediaRows);
-               //     console.log("MediaRows",MediaRows2d); TÄRKEÄ
-                    
-                 //   let tempArrForMediaQuery = [];
                     let event = document.createEvent('Event');
-                    for(let j=0; j<ArrayOfPositons[i].length;j++){
-                        for(let k=0; k<MediaRows.length;k++){
-                            if(ArrayOfPositons[i][j][0] !== "@Media"){
-                         let bool = checkIfRelatedToMedia(MediaRows[k],ArrayOfPositons[i][j][1]);
-                       //  console.log("Bool = "+bool);
-                         if(bool===true){
-                            let FullMediaQuery = text.slice(MediaRows[k],MediaRows[k+1]);
-                      //  console.log("FullMediaQuery: ",FullMediaQuery);
-                         
-                        let MediaQuery_Saanto = text.slice(MediaRows[k],(ArrayOfPositons[i][j][1]+20));
-                     //   console.log("MediaQuery_Saanto: ",MediaQuery_Saanto);
-                         let n = MediaQuery_Saanto.lastIndexOf("{"); // @media screen and (min-width: 48em) { <- otetaan pois {
-                           
-                         MediaQuery_Saanto = MediaQuery_Saanto.slice(0,n); //tulostaa @media screen and (min-width: 48em)
-                        let TextToClearPosition = MediaRows[k]+n; //media query loppuu t'h'n kohtaan stringissä (numero)
+                    for (let j = 0; j < ArrayOfPositons[i].length; j++) {
+                        for (let k = 0; k < MediaRows.length; k++) {
+                            if (ArrayOfPositons[i][j][0] !== "@Media") {
+                                let bool = checkIfRelatedToMedia(MediaRows[k], ArrayOfPositons[i][j][1]);
 
-                        let lastIndextOfFullMediaQuery = FullMediaQuery.lastIndexOf("}");
-                        
-                        let LastIndexToClearPosition = MediaRows[k]+lastIndextOfFullMediaQuery;
-                    //    console.log("LastIndexToClearPosition: "+LastIndexToClearPosition);
-                        //console.log(ArrayOfPositons[i][j][0],ArrayOfPositons[i][j][1]); //min-width 83604
-                            try{
-                  //TÄRKEÄ  tallennaTietokantaanMediaQuerynPosition2(event, ArrayOfCSSFiles[i][0], MediaQuery_Saanto, MediaRows[k],TextToClearPosition,LastIndexToClearPosition,FullMediaQuery);
-                    } catch (e) { 
-                        console.log("Error");
-                    }
-                    }
-                        }
+                                if (bool === true) {
+                                    let FullMediaQuery = text.slice(MediaRows[k], MediaRows[k + 1]);
+
+                                    let MediaQuery_Saanto = text.slice(MediaRows[k], (ArrayOfPositons[i][j][1] + 20));
+                                    let n = MediaQuery_Saanto.lastIndexOf("{"); // @media screen and (min-width: 48em) { <- otetaan pois {
+
+                                    MediaQuery_Saanto = MediaQuery_Saanto.slice(0, n); //tulostaa @media screen and (min-width: 48em)
+                                    let TextToClearPosition = MediaRows[k] + n; //media query loppuu t'h'n kohtaan stringissä (numero)
+
+                                    let lastIndextOfFullMediaQuery = FullMediaQuery.lastIndexOf("}");
+
+                                    let LastIndexToClearPosition = MediaRows[k] + lastIndextOfFullMediaQuery;
+                                    try {
+                                        tallennaTietokantaanMediaQuerynPosition2(event, ArrayOfCSSFiles[i][0], MediaQuery_Saanto, MediaRows[k], TextToClearPosition, LastIndexToClearPosition, FullMediaQuery);
+                                    } catch (e) {
+                                        console.log("Error");
+                                    }
+                                }
+                            }
                         }//k looppi
-                       
-                    }
-                   
-                    
+                    }//j looppi
                     return text;
                 }).then((text) => { //Tarkastetaan Min-Width ja Max-Width yms...
 
-
-
                     for (let i = 0; i < ArrayOfAllMediaQueries.length; i++) {
 
-
-
-
                         for (let j = 0; j < ArrayOfAllMediaQueries[i].length; j++) {
-                            let MediaQuery = ArrayOfAllMediaQueries[i][j];
 
+                            let MediaQuery = ArrayOfAllMediaQueries[i][j];
 
                             let m1 = MediaQuery.match("min-width");
                             let m2 = MediaQuery.match("max-width");
@@ -303,7 +262,6 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                             try {
                                 if (m1) {
                                     m1.forEach((match, groupIndex) => {
-
 
                                         let tempString = MediaQuery.split("(" + match + ": ");
                                         let mq1 = MediaQuery.indexOf(":");
@@ -314,19 +272,12 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
                                         let str3 = MediaQuery.substr(mq2 + 1, MediaQuery.lenght); //MediaQuery
 
-
-
-
                                         let Temp = [match, str2, str3];
-
-
 
                                         mediaQueryArrayminW.push(Temp);
                                         if (MinAndMaxOfCssFiles[i][0] === ArrayOfCSSFiles[i][0]) { //Jos on saman CSS tiedoston nimi
                                             MinAndMaxOfCssFiles[i].push(Temp);
                                         }
-
-
                                         // lahetaLomake5(e,Temp); //Lähetä tietokantaan
                                     });
                                 }
@@ -356,7 +307,6 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
                                         let str1 = MediaQuery.substr(0, mq2); //(min-width:600px
                                         let str2 = str1.substr(mq1 + 1, mq2); //600px
-                                        //   let Temp = [match,str2];
 
                                         let str3 = MediaQuery.substr(mq2 + 1, MediaQuery.lenght); //MediaQuery
 
@@ -376,7 +326,6 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
 
                                         let str1 = MediaQuery.substr(0, mq2); //(min-width:600px
                                         let str2 = str1.substr(mq1 + 1, mq2); //600px
-                                        //  let Temp = [match,str2];
 
                                         let str3 = MediaQuery.substr(mq2 + 1, MediaQuery.lenght); //MediaQuery
 
@@ -385,8 +334,6 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                                         mediaQueryArraymaxH.push(Temp);
                                         if (MinAndMaxOfCssFiles[i][0] === ArrayOfCSSFiles[i][0]) { //Jos on saman CSS tiedoston nimi
                                             MinAndMaxOfCssFiles[i].push(Temp);
-                                        } else {
-                                            //    console.log(ArrayOfCSSFiles[i][0]);
                                         }
                                         //lahetaLomake5(e,Temp);
                                     });
@@ -395,8 +342,6 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                             } catch (e) {
                                 console.log("Error in forEach", e);
                             }
-
-
                         }
                     }//j looppi loppuu
                     let event = document.createEvent('Event');
@@ -412,63 +357,27 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                         } else if (ArrayOfPositons[i][j].includes("min-height")) {
                             ArrayOfPositons[i][j].push(mediaQueryArrayminH[0][1], mediaQueryArrayminH[0][2]);
                         }
-
                     }
 
                     for (let j = 0; i < ArrayOfPositons[i].length; j++) {
                         let arr2 = [];
-                        let lengthType2 = [];
-                        /*     lengthType2.push(refactorArr(ArrayOfPositons[j]));
-                             ​
-                             let mediaQueryPosition = refactorArr(ArrayOfPositons[j]);
-                             ​
-                             let mediaQuerySaanto1 = refactorArr(ArrayOfPositons[j]);
-                             ​
-                             let mediaQuerySaanto2 = refactorArr(ArrayOfPositons[j]);
-                          console.log(ArrayOfPositons[j].length);*/
+
                         arr2.push(refactorArr(ArrayOfPositons[j]));
 
                         arr2.push(refactorArr(ArrayOfPositons[i][2]));
                         arr2.push(refactorArr(ArrayOfPositons[i][3]));
                         arr2.push(refactorArr(ArrayOfPositons[i][4]));
-
-                        let lengthType = arr2[0];
-                        let position = arr2[1];
-                        let saanto = arr2[2];
-                        let saanto2 = arr2[3];
-                //        console.log(lengthType,position,saanto,saanto2);
-                        try {
-                           // tallennaTietokantaanMediaQuerynPosition(event, MinAndMaxOfCssFiles[i][0], arr2[j]);
-                        } catch (e) { }
-
-                        //console.log("arr2: ",arr2);
                         t1 = t1 + 1;
-                    //    console.log(t1 + "Looppia");
-                 //       console.log("Arr2 : ", arr2);
                     }
-
-                 //   console.log("MinAndMaxOfCssFiles", MinAndMaxOfCssFiles); TÄRKEÄ
-
-
                 }).catch(err => {
                     console.log("Ei voi fetchaa", err);
                 })
-                /*     console.log( ArrayOfCSSFiles[i][0]," ,",MinAndMaxOfCssFiles[i]);
-     if(ArrayOfCSSFiles[i][0] === MinAndMaxOfCssFiles[i][0]){
-         console.log("TRUE!"+i);
-     }*/
-                // console.log("MinAndMaxOfCssFiles",MinAndMaxOfCssFiles," i: ",i);
-
-                //  console.log("MinAndMaxOfCssFiles,i",i," , ",MinAndMaxOfCssFiles);
-                //    console.log("ArrayOfPostiosn: ",ArrayOfPositons);
-
             } catch (e) {
                 console.log("Error ", e);
             }
 
         }
     } // FOR LOOP
-
 }
 
 function testData(e) {//lähetä data nodeen
@@ -499,8 +408,6 @@ function testData(e) {//lähetä data nodeen
 function lahetaLomake5(evt, array) {
 
     evt.preventDefault();
-    console.log("lähetä lomake 5()");
-    // console.log(array[1], " | ", array[0]);
     const fd = {};
     fd.mediaQuery = array[2];
     fd.widthOrHeight = array[0]; //Myöhemmin, databaseen menee inttinä + "px";
@@ -512,22 +419,19 @@ function lahetaLomake5(evt, array) {
             'Content-type': 'application/json',
         },
     };
- //   console.log("Asetukset: ", fd);
     fetch('/checkScreenSize2', asetukset).then((response) => {
         return response.json();
     }).then((json) => {
-        console.log("json frontend lomake5: ", json);
+        console.log("json", json);
     });
 };
-
-//const testiSQL2 = document.querySelector("#testiSql2");
 
 function lahetaLomake6(evt) {
 
     evt.preventDefault();
 
-    let screenSizeWidth = $("#fetchatti").width();//div3.style.width;
-    let screenSizeHeight = $("#fetchatti").height();//div3.style.width;
+    let screenSizeWidth = $("#fetchatti").width();
+    let screenSizeHeight = $("#fetchatti").height();
     const fd = {};
     fd.width = screenSizeWidth;
     fd.height = screenSizeHeight;
@@ -538,7 +442,6 @@ function lahetaLomake6(evt) {
             'Content-type': 'application/json',
         },
     };
-   // console.log("Asetukset: ", fd);
     fetch('/findMediaQuery', asetukset).then((response) => {
         return response.json();
     }).then((json) => {
@@ -546,15 +449,13 @@ function lahetaLomake6(evt) {
     });
 };
 
-//testiSQL2.addEventListener("click", function (e) { lahetaLomake6(e); });
-
 const testiSQL3 = document.querySelector("#testiSql3");
 
 function laheta7Useasti(evt) {
     console.log("laheta useasti sasa", ArrayOfCSSFiles.length);
     for (let i = 0; i < ArrayOfCSSFiles.length; i++) {
-        if(i !== 2){ //Googl fontti, poista kun ei enää testaus modessa
-        lahetaLomake7(evt, i);
+        if (i !== 2) { //Googl fontti, poista kun ei enää testaus modessa
+            lahetaLomake7(evt, i);
         }
     }
 }
@@ -562,11 +463,9 @@ function laheta7Useasti(evt) {
 function lahetaLomake7(evt, num) {
 
     evt.preventDefault();
-    console.log("lähetä lomake 7 ");
-    console.log("ArrayOfCSSFiles: ",ArrayOfCSSFiles);
+    console.log("ArrayOfCSSFiles: ", ArrayOfCSSFiles);
     const fd = {};
     fd.CssArr = ArrayOfCSSFiles[num];
-    console.log(fd);
     const asetukset = {
         method: 'post',
         body: JSON.stringify(fd),
@@ -574,18 +473,16 @@ function lahetaLomake7(evt, num) {
             'Content-type': 'application/json',
         },
     };
-
     fetch('/tallennaCSStiedosto', asetukset).then((response) => {
         return response.json();
     }).then((json) => {
-        //console.log("json frontend lomake  7: ", json);
+        console.log("json lomake 7: ", json);
     });
 };
 
 testiSQL3.addEventListener("click", function (e) { laheta7Useasti(e); });
 
 function poistaCSS() {
-    console.log("Poista CSS");
 
     let html = div3.innerHTML;
     for (let i = 0; i < ArrayOfCSSFiles.length; i++) {
@@ -593,93 +490,34 @@ function poistaCSS() {
         let cssName = fiveLastChar + '.css';//req.body.CssArr[0]+'.css';
         console.log(ArrayOfCSSFiles[i][0]);
         console.log(cssName);
-        // console.log(div3.innerHTML);
-        var ret = html.replace(ArrayOfCSSFiles[i][0], 'css/' + cssName); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
-        // http://localhost/wp/wp-content/themes/twentyseventeen/assets/images/header.jpg
+        var ret = html.replace(ArrayOfCSSFiles[i][0], 'css/' + cssName);
         div3.innerHTML = ret; //divin sisään wp content
-        // console.log(div3.innerHTML);
         cssTallennusInput.value = ret;
     }
 }
 
-function laitaTakaisinCSS() {
+function laitaTakaisinCSS() { //testaus funktio
 
     var str = div3.innerHTML;
-    console.log(str.includes("<link"));
     var splitInHeadTag = str.split("<link");
-    var splitInHeadTag2 = splitInHeadTag[0].split(">");
-    console.log(splitInHeadTag[0].toString());  // TULOSTAA: <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1">
-    console.log(splitInHeadTag[1].toString());
     console.log(splitInHeadTag);
     let pituus = splitInHeadTag.length;
-    console.log("Pituus: " + pituus);
     //Laita <link> tagi takaisin
     let linkTag = "<link ";
     for (let i = 0; i < pituus; i++) {
         splitInHeadTag[i] = linkTag.concat(splitInHeadTag[i]); //Laita <link tagi takaisin
     }
-
     //LAITA TAKAISIN ENNEN METATIETOJEN LOPPUA: splitInHeadTag[pituus-2]
     let newCSSLink = '<link rel="stylesheet" id="twentyseventeen-style-css" href="css/test.css" type="text/css" media="all"></link>';
     let tempLastString = splitInHeadTag[pituus - 1]; //ota väliaikainen viimeinen arraysta
+
     splitInHeadTag[pituus - 1] = newCSSLink; //laita sen tilalle uusi css linkki
     splitInHeadTag.push(tempLastString); //laajenna arrayta ja laita väliaikinen viimeiseksi uudestaan
 
     let newHTML = splitInHeadTag.join(' '); //Tee ararysta uusi HTML
 
     div3.innerHTML = newHTML;
-    /*
-            console.log(splitInHeadTag[pituus-1].toString()); //VIImeinen kohta mihin loppuu meta tiedot
-            console.log(splitInHeadTag2[0].toString());
-            console.log(splitInHeadTag2[1].toString());
-            var n = str.search("<link");
-        console.log("<link "+n);
-        String.prototype.splice = function(idx, rem, str) {
-            return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
-        };
-    
-        */
-    //  document.body.innerHTML = result; // "foo bar baz"
-
-    //  let html = div3.innerHTML;
-    //    var ret = html.replace('http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4',''); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
-    // div3.innerHTML = ret; //divin sisään wp content
-}
-
-function findWord4() {
-    $("textarea").on('keyup', function () {
-        //  let arrayOfCssLinksPositionInTextArea = [];
-        //let search = false;
-        // var wrongWords = new Array("asd", "I", "won't");
-
-        // console.log(div2.value.search("asd"));
-
-        //   const regex = /((?:https?:|www\.)[^\s]+)/g;
-        const regex = RegExp("[(].css[)]");
-        const str = $(this).val();
-
-        let m = str.match(regex);
-
-        if (m) {
-            m.forEach((match, groupIndex) => {
-                console.log(`Found match, group ${groupIndex}: ${match}`);
-            });
-        } else {
-            console.log("Not found any words");
-        }
-    }).keyup(); // trigger event for demo
-}
-
-function findWord3() {
-    let paragraph = div2.textContent;
-
-    let searchTerm = inputEtsi.value;
-    console.log("Word: " + searchTerm);
-    let indexOfFirst = paragraph.indexOf(searchTerm);
-    console.log('The index of the first "' + searchTerm + '" from the beginning is ' + indexOfFirst);
-    // expected output: "The index of the first "dog" from the beginning is 40"
-
-    console.log('The index of the 2nd "' + searchTerm + '" is ' + paragraph.indexOf(searchTerm, (indexOfFirst + 1)));
+    console.log("CSS Files Changed");
 }
 
 
@@ -687,66 +525,114 @@ function findBodyWord(htmlContent) {
 
     let first = htmlContent.search("<body>");
     let last = htmlContent.search("</body>");
-
     console.log("first: " + first + " | last: " + last);
 }
 
 function getLineBreaks() {
+
     let enteredText = div2.value;
-
     let numberOfLineBreaks = (enteredText.match(/\n/g) || []).length;
-    let characterCount = enteredText.length + numberOfLineBreaks;
-
-    alert('Number of breaks:  ' + numberOfLineBreaks);
+    return numberOfLineBreaks;
 }
 
-function jqueryTest() {
-    $('#divi2:contains("<body>")').html().replace('<body>', '<body><div id="mainContainer">');
+let ArrayOfImages = [];
+let ArrayOfAudio = [];
+let ArrayOfVideos = [];
+
+function getCSSMedia() { //etsi kaikki css tiedostot lähdekoodista
+
+    const regex = /((?:https?:|www\.)[^\s]+)/g; //Etsii kaikki https tiedostot
+    let html = div3.innerHTML;
+    let m = html.match(regex);
+
+    //console.log(html);
+    if (m) {
+        m.forEach((match, groupIndex) => {
+
+            const regex2 = /((?:jpg)[^\s]+)/g; //jpg
+            const regex3 = /((?:png)[^\s]+)/g;//png
+            const regex4 = /((?:gif)[^\s]+)/g;//gif
+            const regex5 = /((?:mp3)[^\s]+)/g;//mp3
+            const regex6 = /((?:mp4)[^\s]+)/g;//mp4
+            const regex7 = /((?:avi)[^\s]+)/g;//avi
+            const str2 = match;
+
+            if (match.match(regex2) || match.match(regex2) || match.match(regex2)) { //Lisää css tiedostot textareaan
+                ArrayOfImages.push([match]);
+                let poistaPilkku = match.slice(0, -1);
+                $("#media").append(`<img
+                src='${poistaPilkku}'
+                width="130px" height="130px"
+                >`);
+                //  html.replace(match,match);
+                //  div3.innerHTML = html;
+            }
+            if (match.match(regex5)) {
+                ArrayOfAudio.push([match]);
+                let poistaPilkku = match.slice(0, -1);
+                $("#media").append(`
+                <audio controls>
+                 <source src=" src='${poistaPilkku}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>`);
+            }
+            if (match.match(regex6) || match.match(regex7)) { //Lisää css tiedostot textareaan
+                ArrayOfVideos.push([match]);
+                let poistaPilkku = match.slice(0, -1);
+                $("#media").append(`
+                <video width="200" height="150" controls>
+                <sourcesrc='${poistaPilkku}' type="video/mp4">
+                Your browser does not support the video tag.
+                </video>`);
+            }
+        });
+    }
+    console.log("ArrayOfImages", ArrayOfImages);
 }
 
 function fetchData() {
-    fetchConsole.innerHTML += "  Fetching Source Code Finished...   ";
-    fetchConsole.style.color = "yellow";
+    document.querySelector("#fetchConsoleSc").innerHTML = "Fetching Source Code...";
+    document.querySelector("#fetchConsoleSc").style.backgroundColor = "yellow";
     console.log("fetch data");
     fetch('http://localhost/wp2/')
         .then(function (response) {
-
             return response.text()
         })
         .then(function (html) {
             let parser = new DOMParser();
-
-            let doc = parser.parseFromString(html, "text/html");
-
-            let docArticle = doc.querySelector('article').innerHTML;
-
-            //    console.log("HTML", html);
             console.log("--------------------------------------------------");
-
-            // div3.innerHTML = ret; //divin sisään wp content
             div3.innerHTML = html; //divin sisään wp content
-            //   console.log("Ret ",ret);
             let lineBreaksToElements = html.replace(/(\S+\s*){1,2}/g, "$&\n"); //VAIHDA TÄHÄN ret
-            //   console.log("LI ", lineBreaksToElements);
             div2.textContent = lineBreaksToElements;
-            //    console.log("div2.textContent = lineBreaksToElements:",lineBreaksToElements);
             findBodyWord(html);
             $("#console3").css("background-color", "white");
-
         })
         .then(() => {
-            fetchConsole.innerHTML += "  Fetching Source Code Finished...   ";
-            fetchConsole.style.color = "green";
+            document.querySelector("#fetchConsoleSc").innerHTML = "Fetching Source Code Finished!";
+            document.querySelector("#fetchConsoleSc").style.backgroundColor = "green";
+            document.querySelector("#fetchConsoleCss").innerHTML = "Fetching CSS Files...";
+            document.querySelector("#fetchConsoleCss").style.backgroundColor = "yellow";
             getCSSfiles();
         })
         .then(() => {
-            fetchConsole.innerHTML += "Fetching CSS Files Finished...   ";
+            document.querySelector("#fetchConsoleCss").innerHTML = "Fetching CSS Files Finished!";
+            document.querySelector("#fetchConsoleCss").style.backgroundColor = "green";
+            document.querySelector("#fetchConsoleMq").innerHTML = "Fetching Mediaqueries...";
+            document.querySelector("#fetchConsoleMq").style.backgroundColor = "yellow";
             fetchMediaQuery();
         })
         .then(() => {
-            fetchConsole.innerHTML += "   Fetching MediaQueries Finished...   ";
+            document.querySelector("#fetchConsoleMq").innerHTML = "Fetching Mediaqueries Finished!";
+            document.querySelector("#fetchConsoleMq").style.backgroundColor = "green";
+            document.querySelector("#fetchConsoleMf").innerHTML = "Fetching Media Files...";
+            document.querySelector("#fetchConsoleMf").style.backgroundColor = "yellow";
+            getCSSMedia();
         })
-        .then(() => { 
+        .then(() => {
+            document.querySelector("#fetchConsoleMf").innerHTML = "Fetching Media Files Finished!";
+            document.querySelector("#fetchConsoleMf").style.backgroundColor = "green";
+            document.querySelector("#fetchConsoleAllDone").innerHTML = "All Data Successfully Fetched!";
+            document.querySelector("#fetchConsoleAllDone").style.backgroundColor = "green";
             let e = document.createEvent('Event');
             lahetaLomake4(e);
         })
@@ -754,12 +640,5 @@ function fetchData() {
             console.log(e);
             errorConsole.innerHTML = "<strong>Error Message:</strong> Wrong URL on localhost or XAMPP is not On. Check .htaccess rules";
             $("#console3").css("background-color", "red");
-            // $("#console3").css("width","45%");
         });
 }
-
-function doWholeLoop() {
-
-}
-
-console.log("Fetchatti height: ", $("#sidebar").height());
