@@ -249,19 +249,14 @@
         justify-content: center; height: 100px;">
             <button id="naytaNapit" onclick="hideShowElement(2,100)" class="buttonsInNavigation">Devices</button>
             <button id="naytaNapit" onclick="hideShowElement(3,200)" class="buttonsInNavigation">Show Source Code</button>
-            <!--  <button id="naytaNapit" onclick="hideShowElement(3)"  class="buttonsInNavigation">CSS Files</button> -->
             <button id="naytaNapit" onclick="hideShowElement(4,200);" class="buttonsInNavigation">CSS Files</button>
             <button id="naytaNapit" class="buttonsInNavigation" onclick="hideShowElement(5,200)"
                 style="background-color:cornsilk;">Show Media Queries</button>
-         <!--   <button id="testiSql3" class="buttonsInNavigation">tallenna css tiedostost</button>
-            <button id="testiSql4" class="buttonsInNavigation">reset Css</button>
-            <button id="testiSql" class="buttonsInNavigation">Testi Sql Tallennus</button>
-            <!-- <button onclick="testData(e)">Testi tallennus</button> -->
-            <button onclick="fetchData()" class="buttonsInNavigation">Fetch Data</button>
-          <!--   <button id="testiSql2" class="buttonsInNavigation">Check ScreenSize</button>
+            <button id="fetchDataButton" onclick="fetchData()" class="buttonsInNavigation">Fetch Data</button>
+            <button id="testiSql2" class="buttonsInNavigation">Check ScreenSize</button>
             <button id="naytaNapit" onclick="hideShowElement(6,100)" class="buttonsInNavigation">Fetch Souce
-                Code</button>-->
-            <button id="naytaNapit" onclick="hideShowElement(11,300)" class="buttonsInNavigation">Show Media
+                Code</button>
+            <button id="naytaNapit" onclick="hideShowElement(8,300)" class="buttonsInNavigation">Show Media
                 Files</button>
             <button id="naytaNapit" onclick="hideShowElement(7,40)" class="buttonsInNavigation">Error Log</button>
         </div>
@@ -311,6 +306,7 @@
                 style="display:none; background-color: #352d2d;border: solid 2px #584d4d;color: #c1bbbb;border-radius: 3px;width: 100px;text-align: center;">Etsi
                 sana</button>
             <button onclick="fetchMediaQuery()" class="buttonsInNavigation">Fetch MediaQueries</button>
+             <button id="testiSql4" class="buttonsInNavigation">Reset Edited CSS File</button>
             <button onclick="poistaCSS()" class="buttonsInNavigation">Remove Current CSS</button>
             <button onclick="getCSSfiles()" class="buttonsInNavigation">Fetch CSS Files</button>
             <button onclick="laitaTakaisinCSS()" class="buttonsInNavigation">Add modified CSS</button>
@@ -322,16 +318,7 @@
         </div>
         <div id="console3"><strong>No Errors</strong></div>
        
-        <input type="text" style="width: 40%; padding-left: 200px;" name="font-color" id="colorPicker"
-            class="pick-a-color form-control">
-        <div id="tyylittely" style="background-color: khaki; color:black">
-            <h1 id="CustomizeTitle">Customize:</h1>
 
-            <ul id="ulList3">
-
-            </ul>
-            <button id="resetColorsButton" onclick="ResetAllColors()">Reset Colors</button>
-        </div>
         <div id="mediaContainer">
             <!-- Media Files-->
             <h2 style="color:#352d2d">List Of Media Files</h2>
@@ -359,11 +346,28 @@
                 <p>All Done</p>
             </div>
         </div>
-    </div>
-    <!--Navigaatio loppuu-->
-    <div id="fetchattuMain" >
-         <div id="mediaNapit">
+
+             <div id="checkScreenDiv" style="overflow: scroll;">
+            <p>Checking Screen Size...</p>
+            <div id="checkScreenSizeTextArea"></div>
         </div>
+    </div>
+
+    <!-- Muokkaus työkalut -->
+            <input type="text" style="width: 40%; padding-left: 200px;" name="font-color" id="colorPicker"
+            class="pick-a-color form-control">
+        <div id="tyylittely" style="background-color: khaki; color:black">
+            <h1 id="CustomizeTitle">Customize:</h1>
+
+            <ul id="ulList3">
+
+            </ul>
+            <button id="resetColorsButton" onclick="ResetAllColors()">Reset Colors</button>
+        </div>
+    <!--Navigaatio loppuu-->
+    <div id="fetchattuMain" > 
+      <!--   <div id="mediaNapit"> MEDIA QUERYT NAPPEINA
+        </div>-->
         <!-- POSITION RELATIVE ALKUPERÄINEN-->
         <div id="container"
             data-sizes='{"small":{"maxWidth": 400}, "medium":{"minWidth": 400}, "large":{"minWidth": 700}}'>

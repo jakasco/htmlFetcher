@@ -449,7 +449,7 @@ function lahetaLomake6(evt) {
     });
 };
 
-const testiSQL3 = document.querySelector("#testiSql3");
+////////const testiSQL3 = document.querySelector("#testiSql3"); Ylimääräinen testi nappi
 
 function laheta7Useasti(evt) {
     console.log("laheta useasti sasa", ArrayOfCSSFiles.length);
@@ -480,7 +480,7 @@ function lahetaLomake7(evt, num) {
     });
 };
 
-testiSQL3.addEventListener("click", function (e) { laheta7Useasti(e); });
+//////testiSQL3.addEventListener("click", function (e) { laheta7Useasti(e); });
 
 function poistaCSS() {
 
@@ -566,6 +566,7 @@ function getCSSMedia() { //etsi kaikki css tiedostot lähdekoodista
                 >`);
                 //  html.replace(match,match);
                 //  div3.innerHTML = html;
+                download(poistaPilkku, poistaPilkku);
             }
             if (match.match(regex5)) {
                 ArrayOfAudio.push([match]);
@@ -590,7 +591,45 @@ function getCSSMedia() { //etsi kaikki css tiedostot lähdekoodista
     console.log("ArrayOfImages", ArrayOfImages);
 }
 
+  
+
+
+function tallennaMediaTietokantaan(evt) {
+
+	evt.preventDefault();
+	console.log("lähetä lomake 4()");
+	const fd = {};
+	fd.width = $("#fetchatti").width(); //Myöhemmin, databaseen menee inttinä + "px";
+	fd.height = $("#fetchatti").height(); // + "px";
+	const asetukset = {
+		method: 'post',
+		body: JSON.stringify(fd),
+		headers: {
+			'Content-type': 'application/json',
+		},
+	};
+	console.log(asetukset);
+	fetch('/checkScreenSize', asetukset).then((response) => {
+		return response.json();
+	}).then((json) => {
+		console.log("json frontend lomake4: ", json);
+		checkScreenSizeTextArea.innerHTML = json;
+		for (let i = 0; i < json.length; i++) {
+			console.log(json[i]);
+			poistaCSS2(json[i].CSS_File,json[i].NewCss,i);
+		}
+	}).then(() => {
+		console.log("Finished CSS");
+	}).catch(function (e) {
+		console.log(e);
+		checkScreenSizeTextArea.innerHTML = "ERROR";
+	});
+}
+
 function fetchData() {
+
+    hideShowElement(9,100);  //Paneeli näkyviin
+
     document.querySelector("#fetchConsoleSc").innerHTML = "Fetching Source Code...";
     document.querySelector("#fetchConsoleSc").style.backgroundColor = "yellow";
     console.log("fetch data");
@@ -627,6 +666,10 @@ function fetchData() {
             document.querySelector("#fetchConsoleMf").innerHTML = "Fetching Media Files...";
             document.querySelector("#fetchConsoleMf").style.backgroundColor = "yellow";
             getCSSMedia();
+
+
+            let e = document.createEvent('Event');
+            tallennaMediaTietokantaan(e);
         })
         .then(() => {
             document.querySelector("#fetchConsoleMf").innerHTML = "Fetching Media Files Finished!";

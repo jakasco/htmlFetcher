@@ -16,38 +16,27 @@ const BgRed = "\x1b[41m";
 const BgGreen = "\x1b[42m";
 const BgYellow = "\x1b[43m";
 
-const connectToDb = () => {
+
+const connect = () => {
 
   // create the connection to database
-
+  
   const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database : process.env.DB_NAME
-  })
-
-  //Tarkastetaan saadaanko MySql yhteys
-  connection.connect(function (error) {
-    if (!!error) {
-
-      console.log("\x1b[31m", "Error to connect mySQL!");
-    } else {
-
-      console.log("\x1b[36m", "Connected to MySQL Successfully!", reset);
-    }
   });
-  return connection;
-};
-
-var connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database : process.env.DB_NAME
-  })
-  
-connection.connect();
+    //Tarkastetaan saadaanko MySql yhteys
+    connection.connect(function(error){
+      if(!!error){
+        console.log("Error to connect mySQL");
+      }else{
+        console.log("Connected to MySQL");
+      }
+    });
+    return connection;
+  };
 
 const checkIfDatabaseWontWriteTablesMoreThanOnce = (name, id) => {
   connection.execute('Select count(*) from csstiedostot2 where ' + name + ' = @' + name + ' and ' + id + ' = @' + CSS_Id, //IF count = 0 = true
@@ -123,7 +112,7 @@ const selectMediaQuery2 = (data, connection, callback) => {
 const insertCssFile = (data, connection, callback) => {
   // console.log("Insert user", data)
   connection.execute(
-    'INSERT INTO cssTiedostot2 (CSS_Id, nimi, CSS_Tiedosto) VALUES (?,?,?);',
+    'INSERT INTO cssTiedostot4 (CSS_Id, User_id, nimi, CSS_Tiedosto) VALUES (?,?,?,?);',
     data,
     (err, results, fields) => {
       console.log("ERROR IN insertCssFile", err);
@@ -742,7 +731,7 @@ const cutAllMediaQueriesByCssFileID = (j, id, replaceQuery, Muokattu_Tiedosto, c
 
 
 module.exports = {
-  connection: connection,
+  connect:connect,
   select: select,
   selectScreenSize: selectScreenSize,
   selectMediaQuery2: selectMediaQuery2,

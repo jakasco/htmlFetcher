@@ -8,7 +8,7 @@ const device7 = document.querySelector("#IphoneX");
 const device8 = document.querySelector("#Ipad");
 const device9 = document.querySelector("#IpadPro");
 
-const testiSQL = document.querySelector("#testiSql");
+//const testiSQL = document.querySelector("#testiSql");
 
 const testisql2 = document.querySelector("#testisql2");
 
@@ -38,7 +38,7 @@ device7.addEventListener("click", function (e) { resizeForDeviceSize(375, 812); 
 device8.addEventListener("click", function (e) { resizeForDeviceSize(768, 1024); lahetaLomake3(e); });
 device9.addEventListener("click", function (e) { resizeForDeviceSize(1024, 1366); lahetaLomake3(e); });
 
-testiSQL.addEventListener("click", function (e) { testData(e); });
+//testiSQL.addEventListener("click", function (e) { testiSQL(e); });
 
 let fullArr = [];
 
@@ -145,6 +145,8 @@ function laitaTakaisinCSS3(OldCSS,New_CSS_File) {
 
 }
 
+const checkScreenSizeTextArea = document.querySelector("#checkScreenSizeTextArea");
+
 function lahetaLomake4(evt) {
 
 	evt.preventDefault();
@@ -164,20 +166,24 @@ function lahetaLomake4(evt) {
 		return response.json();
 	}).then((json) => {
 		console.log("json frontend lomake4: ", json);
+		checkScreenSizeTextArea.innerHTML = json;
 		for (let i = 0; i < json.length; i++) {
 			console.log(json[i]);
 			poistaCSS2(json[i].CSS_File,json[i].NewCss,i);
 		}
 	}).then(() => {
-		console.log("Finished CSS")
+		console.log("Finished CSS");
+	}).catch(function (e) {
+		console.log(e);
+		checkScreenSizeTextArea.innerHTML = "ERROR";
 	});
-};
+}
 
 
 function resetCssFiles(evt) {
 
 	evt.preventDefault();
-	console.log("testiSql4");
+	console.log("testiSql3");
 	const fd = {};
 	fd.width = $("#fetchatti").width(); //Myöhemmin, databaseen menee inttinä + "px";
 	fd.height = $("#fetchatti").height(); // + "px";
@@ -200,14 +206,25 @@ function resetCssFiles(evt) {
 };
 testiSql4.addEventListener("click", function (e) { resetCssFiles(e); });
 
-testiSql2.addEventListener("click", function (e) { lahetaLomake4(e); });
+testiSql2.addEventListener("click", function (e) {hideShowElement(10,100);  lahetaLomake4(e); });
 
 function addEditingToolToElement(element, arr, num) {
+	
 
+	
 	let className2 = $(element).attr('class'); //className2 = se kohta mihin clikataan 
-
+	  // $(element).css("pointer-events","none"); //ei voi klikata, $("#ElementName").css("pointer-events","auto"); voi klikata
+   element.addEventListener("onclick",function() { changeColor();
+    //});
+    
+    $("#ulList2").append(`<li>
+    ${res[i]}
+        </li></br>`);
+        
+   console.log("element: ",element);
+   });
 	$(element).click(function (e) { //KUN painetaan Elementtiä
-
+		alert("CLicked!");
 		arr.push(element);
 		let className = $(element).attr('class');
 

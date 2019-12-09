@@ -16,21 +16,6 @@ const BgRed = "\x1b[41m";
 const BgGreen = "\x1b[42m";
 const BgYellow = "\x1b[43m";
 
-/*
-const con  = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database : process.env.DB_NAME
-});
-
-let connection2 = mysql.connect(con,err => {
-  if (err)
-   {throw err}else{
-     console.log("\x1b[36m", "Connected to MySQL Successfully!", reset);
-   }
-   return con;
-});*/
 
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -40,47 +25,7 @@ const connection = mysql.createConnection({
 })
 
 connection.connect();
-/*
-const connection = con.connect(function (error) {
-  console.log("Connection:");
-  if (!!error) {
-    console.log("\x1b[31m", "Error to connect mySQL!");
-  } else {
-    console.log("\x1b[36m", "Connected to MySQL Successfully!", reset);
-  }
-  return connection;
-});
 
-connection();
-
-const connectToDb = () => {
-
-  // create the connection to database
-
-  const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database : process.env.DB_NAME
-  })
-
-  //Tarkastetaan saadaanko MySql yhteys
-  connection.connect(function (error) {
-    if (!!error) {
-
-      console.log("\x1b[31m", "Error to connect mySQL!");
-    } else {
-
-      console.log("\x1b[36m", "Connected to MySQL Successfully!", reset);
-    }
-  });
-  return connection;
-};
-
-const connection = connectToDb();
-*/
-
-///////////////
 const checkIfDatabaseWontWriteTablesMoreThanOnce = (name, id) => {
   connection.execute('Select count(*) from csstiedostot2 where ' + name + ' = @' + name + ' and ' + id + ' = @' + CSS_Id, //IF count = 0 = true
     (err, results, fields) => {
@@ -163,7 +108,21 @@ const insertCssFile = (data, connection, callback) => {
       callback();
     },
   );
-};
+};/*
+const insertCssFile = (data, connection, callback) => {
+  // console.log("Insert user", data)
+  connection.execute(
+    'INSERT INTO cssTiedostot4 (CSS_Id, User_id, nimi, CSS_Tiedosto) VALUES (?,?,?,?);',
+    data,
+    (err, results, fields) => {
+      console.log("ERROR IN insertCssFile", err);
+      if (!err) {
+        console.log("sql insertCssFile done Successfully");
+      }
+      callback();
+    },
+  );
+};*/
 
 const insertCssFile3 = (data, connection, callback) => {
   console.log(blue, "insertCssFile3 Data[0]: ", reset, data[0]);
@@ -182,6 +141,7 @@ const insertCssFile3 = (data, connection, callback) => {
   );
 };
 
+
 const SelectCSSFile = (data, connection, callback) => {
 
   //console.log('SELECT CSS_Tiedosto,nimi FROM csstiedostot2 WHERE nimi = "' + data + '";');
@@ -192,7 +152,19 @@ const SelectCSSFile = (data, connection, callback) => {
       callback(results);
     },
   );
-};
+};/*UUSI
+const SelectCSSFile = (data, connection, callback) => {
+
+  //console.log('SELECT CSS_Tiedosto,nimi FROM csstiedostot2 WHERE nimi = "' + data + '";');
+  connection.execute('SELECT * FROM csstiedostot4 WHERE nimi = "' + data + '";',
+    (err, results, fields) => {
+      console.log(err);
+      //console.log("CSS RESULTS SelectCSSFile Length: ",results.length);
+      callback(results);
+    },
+  );
+};*/
+
 
 
 const laitaPilkkuJosEiSanoja = (string, value) => {
@@ -333,6 +305,7 @@ const getUniqueIds = (idArr, distincArray, amount) => {
   return stringToBeReturned;
 };
 
+
 const SelectCSSFileByID = (idArr, connection, callback) => {
   let query1 = "SELECT DISTINCT CSS_Id,Muokattu_Tiedosto FROM csstiedostot2";
   // console.log("\x1b[33m", query1);
@@ -354,7 +327,30 @@ const SelectCSSFileByID = (idArr, connection, callback) => {
       });
     },
   );
-}
+}/*
+
+const SelectCSSFileByID = (idArr, connection, callback) => {
+  let query1 = "SELECT DISTINCT CSS_Id,Muokattu_Tiedosto FROM csstiedostot4";
+  // console.log("\x1b[33m", query1);
+  connection.execute(query1,
+    (err, results, fields) => {
+      //  console.log(err);
+      //  console.log("\x1b[32m", "Query1 Successfully executed, ");
+      let amount = results.length;
+      //    console.log(red, "   idArr: ", idArr, reset);
+      let ids = getUniqueIds(idArr, results, amount);
+      //   console.log("ids: " + ids);
+      let query2 = 'SELECT * FROM csstiedostot4 WHERE CSS_Id in (' + ids + ')';
+      //   console.log("\x1b[33m", query2);
+      //   console.log(query2);
+      connection.execute(query2, (err, results2, fields) => {
+        if (err) throw err;
+        //     console.log("results2.length: ", results2.length);
+        callback(results2);
+      });
+    },
+  );
+}*/
 
 
 const tallennaTietokantaanMediaQuerynPosition = (data, connection, callback) => {
@@ -479,10 +475,10 @@ const SelectCSSMediaQueryPositions4 = (data, connection, callback) => {
 
 };
 
-//select CSS_Id from csstiedostot2 where nimi = "http://localhost/wp2/wp-includes/css/dist/block-library/theme.min.css?ver=5.2.4'"
 
+/* UUSI USER IDELLÄ
 const SelectCSSFilesID = (data, connection, callback) => {
-  let query = 'select CSS_Id from csstiedostot2 where nimi ="' + data + '";';
+  let query = 'select CSS_Id from csstiedostot4 where nimi ="' + data + '";';
   connection.execute(query,
     (err, results, fields) => {
       console.log(err);
@@ -493,7 +489,7 @@ const SelectCSSFilesID = (data, connection, callback) => {
       });
     },
   );
-};
+};*/
 
 const SelectCSSMediaQueryPositions5 = (data, connection, callback) => {
   let query1 = 'SELECT min_width,min_height,CSS_File_ID,TextToClearPosition FROM mediaQuerySaannot3 WHERE min_width > ' + data[0] + ' OR min_height > ' + data[1] + ';'
@@ -771,7 +767,10 @@ const cutAllMediaQueriesByCssFileID = (j, id, replaceQuery, Muokattu_Tiedosto, c
 };
 
 
+
+
 module.exports = connection,{
+ // connect:connect,
   select: select,
   selectScreenSize: selectScreenSize,
   selectMediaQuery2: selectMediaQuery2,
