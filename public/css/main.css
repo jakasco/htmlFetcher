@@ -526,3 +526,30 @@ iframe {
     padding-right: 15px;
   }
 }
+
+#console3 {
+  border: solid 1px black;
+  width: 45%;
+  color: green;
+  background-color: khaki;
+  margin-left: 30%;
+}
+
+#custom_width {
+  border: solid 1px black;
+  background-color: khaki;
+  display: flex;
+  justify-content: center;
+}
+
+#CustomizeTitle {
+  color:black;
+} 
+
+#console {
+
+}
+
+#console2 {
+
+}

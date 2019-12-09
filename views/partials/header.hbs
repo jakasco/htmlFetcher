@@ -1,3 +1,4 @@
+<!--
 <!doctype html>
 <html class="no-js" lang="">
 
@@ -9,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <!-- Place favicon.ico in the root directory -->
+   Place favicon.ico in the root directory 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
@@ -112,4 +113,119 @@
         function closeNav() {
             document.getElementById("mySidenav").style.width = "0";
         }
-    </script>
+    </script> -->
+
+<!DOCTYPE html>
+<html class="no-js" lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Infinite Loop - Bootstrap 4.0 HTML Template</title>
+    <link rel="stylesheet" href="/css/all.min.css" />
+    <link rel="stylesheet" href="/css/slick.css">
+    <link rel="stylesheet" href="/css/slick-theme.css">
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/tooplate-infinite-loop.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"
+        media="screen" />
+
+    <!--
+    Tooplate 2117 Infinite Loop
+    https://www.tooplate.com/view/2117-infinite-loop
+    -->
+
+</head>
+
+<body>
+    <!-- Hero section -->
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-md tm-navbar" id="tmNav">
+        <div class="container">
+
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars navbar-toggler-icon"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a id="home" class="nav-link tm-nav-link" href="/">Home</a>
+                    </li>
+                    {{#if isAuthenticated}}
+                    <li class="nav-item">
+                        <a id="profile2" class="nav-link tm-nav-link" href="/profileHomePage">Profile Homepage</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="MobileCustomize" class="nav-link tm-nav-link" href="/mobileCustomize">Mobile Customize</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="profile2" class="nav-link tm-nav-link" href="/profileHomePage">Profile Homepage</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="profile" class="nav-link tm-nav-link" href="/profile">Compress Media</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="logout" class="nav-link tm-nav-link" href="/logout">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="settings" class="nav-link tm-nav-link" href="/resetpw">Settings</a>
+                    </li>
+                    {{else}}
+                    <li class="nav-item">
+                        <a id="register" class="nav-link tm-nav-link" href="/register">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="login" class="nav-link tm-nav-link" href="/login">Login</a>
+                    </li>
+
+                    {{/if}}
+
+
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <script>document.getElementById("home").onclick = function () { MobileCustomize profileHomePage
+            location.href = "http://localhost:9000/";
+        };</script>
+    <script>document.getElementById("register").onclick = function () {
+            location.href = "http://localhost:9000/profileHomePage";
+        };</script>
+            <script>document.getElementById("register").onclick = function () {
+            location.href = "http://localhost:9000/MobileCustomize";
+        };</script>
+            <script>document.getElementById("register").onclick = function () {
+            location.href = "http://localhost:9000/register";
+        };</script>
+    <script>document.getElementById("login").onclick = function () {
+            location.href = "http://localhost:9000/login";
+        };</script>
+    <script>document.getElementById("settings").onclick = function () {
+            location.href = "http://localhost:9000/resetpw";
+        };</script>
+    <script>document.getElementById("profile").onclick = function () {
+            location.href = "http://localhost:9000/profile";
+        };</script>
+            <script>document.getElementById("profile").onclick = function () {
+            location.href = "http://localhost:9000/profile2";
+        };</script>
+    <script>document.getElementById("logout").onclick = function () {
+            location.href = "http://localhost:9000/logout";
+        };</script>
+    <script src="/js/jquery-1.9.1.min.js"></script>
+    <script src="/js/slick.min.js"></script>
+    <script src="/js/jquery.magnific-popup.min.js"></script>
+    <script src="/js/easing.min.js"></script>
+    <script src="/js/jquery.singlePageNav.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/test.js"></script>
+</body>
+
+</html>

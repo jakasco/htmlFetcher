@@ -19,10 +19,10 @@ let active = 0;
 let active3 = 0;
 function hideShowElement(num, height) {
     active = num;
-    document.querySelector("#console6").innerHTML = "Active: "+ active + " active3 " + active3;
+    //document.querySelector("#console6").innerHTML = "Active: "+ active + " active3 " + active3;
     if (active === active3) {
         let navElem2 = $("#Navigation").children()[active3];
-        document.querySelector("#console7").innerHTML = "active === active3 = true";
+    //    document.querySelector("#console7").innerHTML = "active === active3 = true";
       //  $(navElem2).hide();
        // arrOfChildrenElements[num].css("height", 0);
       // $(navElem2).show();
@@ -34,7 +34,7 @@ function hideShowElement(num, height) {
             let navElem = $("#Navigation").children()[i];
             let navButton = $("#navButtons").children()[i];
             if (num == i) {
-                document.querySelector("#console7").innerHTML = "active === active3 = False , height "+height;
+             //   document.querySelector("#console7").innerHTML = "active === active3 = False , height "+height;
                if (arrOfChildrenElements[i + 2] === true) {
                     $(navElem).show();
                     $(navElem).css("background-color", "white");
@@ -84,10 +84,10 @@ const listOfElemTops = [];
 function moveContainer2(activeElem, active2, bool,height) {
     active3 = active2;
     let elem2 = $("#Navigation").children()[active3];
-    console.log("height: " + $(activeElem).height());//activeElem.style.height);
-    console.log("activeElem: ", activeElem);
-    document.querySelector("#console5").innerHTML = " active2: " + active + " active3 " + active3+"  bool: " + bool+ " ,height: "+height;
-    document.querySelector("#console5").innerHTML = " activeElem id: " + activeElem.id + " elem2 " + elem2.id;
+  //  console.log("height: " + $(activeElem).height());//activeElem.style.height);
+ //   console.log("activeElem: ", activeElem);
+ //   document.querySelector("#console5").innerHTML = " active2: " + active + " active3 " + active3+"  bool: " + bool+ " ,height: "+height;
+  //  document.querySelector("#console5").innerHTML = " activeElem id: " + activeElem.id + " elem2 " + elem2.id;
  //   arrOfChildrenElements[activeElem].css("height", height+"px");
    // $(arrOfChildrenElements[activeElem]).show();
   //  arrOfChildrenElements[active3].css("height", height+"px");
