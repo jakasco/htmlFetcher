@@ -28,7 +28,9 @@ var users = require('./routes/users');
 var app = express();
 
 require('dotenv').config();
+//app.use(express.static('./public/temp'));
 app.use(express.static('./public/css')); 
+app.use(express.static('./public/temp')); 
 app.use(express.static('./images'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -165,221 +167,7 @@ console.log(files)
 
 //////////////////////DB kyselyt
 
-const insertToDB = (data, res, next) => {
-  database.insertUser(data, connection, () => {
-    next();
-  });
-};
-
-
-const insertTotallennaTietokantaanMediaQuerynPosition = (data, res, next) => {
-  database.tallennaTietokantaanMediaQuerynPosition(data, connection, () => {
-    next();
-  });
-};
-
-const SelectCSSMediaQueryPositions = (data, req, next) => {
-  database.SelectCSSMediaQueryPositions(data, connection, (results) => {
-    req.custom = results;
-
-    next();
-  });
-};
-
-const insertCssFile = (data, res, next) => {
-  database.insertCssFile(data, connection, () => {
-    next();
-  });
-};
-
-const SelectCSSFile = (data, req, next) => {
-  database.SelectCSSFile(data, connection, (results) => {
-    req.custom = results;
-    next();
-  });
-};
-
-const insertCssFile3 = (data, res, next) => {
-  database.insertCssFile3(data, connection, () => {
-    next();
-  });
-};
-
-const SelectCSSFile3 = (data, req, next) => {
-  database.SelectCSSFile3(data, connection, (results) => {
-    req.custom = results;
-    next();
-  });
-};
-
-const addAutoIncrement = (id, table, tableRows, idName, data, req, next) => {
-  database.addAutoIncrement(id, table, tableRows, idName, data, connection, (results) => {
-    req.custom = results;
-    next();
-  });
-}
-
-const SelectCSSMediaQueryPositions4 = (data, req, next) => {
-  database.SelectCSSMediaQueryPositions4(data, connection, (results) => {
-    req.custom4 = results;
-    next();
-  });
-};
-
-const SelectCSSFilesID = (data, req, next) => {
-  database.SelectCSSFilesID(data, connection, (results) => {
-    req.CssId = results;
-    next();
-  });
-};
-
-const cutAllMediaQueriesByCssFileID = (j,id, FullMq, Muokattu_Tiedosto, cutStart, cutEnd, req, next) => {
-  database.cutAllMediaQueriesByCssFileID(j,id, FullMq,Muokattu_Tiedosto, cutStart, cutEnd, connection, (results) => {
-    req.CutAll.push([id, results]);
-    next();
-  });
-};
-
-
-const SelectCSSFile2 = (data, req, next) => {
-  database.SelectCSSFile(data, connection, (results) => {
-
-    req.custom3 = results;
-    next();
-  });
-};
-
-const SelectCSSFileByID = (idArr, req, next) => {
-
-  database.SelectCSSFileByID(idArr, connection, (results) => {
-    req.custom5 = results;
-
-    next();
-  });
-
-};
-
-const SelectCSSFileByID2 = (idArr, req, next) => {
-
-  database.SelectCSSFileByID(idArr, connection, (results) => {
-    req.custom5 = results;
-
-    next();
-  });
-
-};
-
-const resetCssFiles = (req, next) => {
-
-  database.resetCssFiles(connection, (results) => {
-    req.custom = results;
-
-    next();
-  });
-
-};
-
-const readFile = (name, req) => {
-  fs.readFile('./public/css/' + name, "utf8", function read(err, data) {
-    if (err) {
-      throw err;
-    }
-    let content = data;
-    req.custom7.push(content);
-    return content;
-  });
-  console.log(" req.custom7:", req.custom7.length);
-}
-
-
-const UpdateCSSFile = (cssName, id, data, Muokattu_Tiedosto, req, next) =>
-  database.UpdateCSSFile(id, data, Muokattu_Tiedosto, connection, (results) => {
-    //req.custom6 = results;
-    // req.custom6[id-1].push(results);
-    saveCSSFiles(cssName, results[0].Muokattu_Tiedosto);
-
-    req.custom6[id - 1] = (results[0].Muokattu_Tiedosto);
-    console.log("id: ", id, " req.custom6[" + id + "] ", req.custom6[id - 1].length);
-    next();
-  });
-
-
-
-const UpdateCSSFile2 = (Muokattu_Tiedosto, req, next) =>
-  database.UpdateCSSFile2(Muokattu_Tiedosto, connection, (results) => {
-
-    req.custom8 = results;
-    next();
-  });
-
-const checkIfDatabaseWontWriteTablesMoreThanOnce = (data, req, next) =>
-  database.checkIfDatabaseWontWriteTablesMoreThanOnce(data, connection, (results) => {
-
-    req.custom = results; //0
-    next();
-  });
-
-const insertToDB2 = (data, res, next) => {
-  database.insertIntoMediaQueryTable(data, connection, () => {
-    next();
-  });
-};
-
-const PalautaFrontendiin = (data, req, next) => {
-  database.select(data, connection, (results) => {
-
-    req.custom = results;
-    next();
-  });
-};
-
-const SelectCSSMediaQueryPositions3 = (data, req, next) => {
-  database.SelectCSSMediaQueryPositions3(data, connection, (results) => {
-
-    req.custom.push(results);
-    next();
-  });
-};
-//SelectCSSMediaQueryPositions3_2
-const SelectCSSMediaQueryPositions32 = (data, req, next) => {
-  database.SelectCSSMediaQueryPositions32(data, connection, (results) => {
-
-    req.custom.push(results);
-    next();
-  });
-};
-
-const SelectCSSMediaQueryPositions3_2 = (data, req, next) => {
-  database.SelectCSSMediaQueryPositions3_2(data, connection, (results) => {
-
-    req.custom.push(results);
-    next();
-  });
-};
-
-
-const findScreenSize = (data, req, next) => {
-  database.selectScreenSize(data, connection, (results) => {
-
-    req.custom = results;
-    next();
-  });
-};
-
-
-const findScreenMediaQuery = (data, req, next) => {
-  database.selectMediaQuery(data, connection, (results) => {
-    req.custom = results;
-    next();
-  });
-};
-
-const findScreenMediaQuery2 = (data, req, next) => {
-  database.selectMediaQuery2(data, connection, (results) => {
-    req.custom.push(results);
-    next();
-  });
-};
+/*
 
 app.post('/asd', (req, res, next) => {
 
@@ -1053,11 +841,11 @@ app.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
   /* try{
      console.log(req.custom[0].Position);
      console.log(req.custom[0].CSS_File);
-   }catch(e){}*/
+   }catch(e){}
   // console.log(req.body);
   // console.log(req.CssId[0].CSS_Id);
   res.send(req.custom);
-});
+});*/
 
 
 

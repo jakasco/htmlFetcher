@@ -96,7 +96,7 @@ function refactorArr(arr) {
         return arr2;
     }
 }
-
+/* Pois väliaikaisesti
 const tallennaTietokantaanMediaQuerynPosition2 =
     (evt, cssTiedostoNimi, MediaQuery_Saanto, Position, TextToClearPosition, LastIndexToClearPosition, FullMediaQuery) => {
 
@@ -129,7 +129,7 @@ const tallennaTietokantaanMediaQuerynPosition2 =
             }
 
         });
-    };
+    };*/
 
 let t1 = 0;
 
@@ -370,10 +370,10 @@ function fetchMediaQuery() { //Etsii mediaqueryt css Tiedostoista
                         t1 = t1 + 1;
                     }
                 }).catch(err => {
-                    console.log("Ei voi fetchaa", err);
+                    //console.log("Ei voi fetchaa", err);
                 })
             } catch (e) {
-                console.log("Error ", e);
+                // console.log("Error ", e);
             }
 
         }
@@ -539,17 +539,104 @@ let ArrayOfImages = [];
 let ArrayOfAudio = [];
 let ArrayOfVideos = [];
 
+const removeTempFile = (evt, fileUrl) => {
+    evt.preventDefault();
+    req.body.url
+    const fd = {};
+    fd.url = fileUrl;
+    const asetukset = {
+        method: 'post',
+        body: JSON.stringify(fd),
+        headers: {
+            'Content-type': 'application/json',
+        },
+    };
+    console.log(fd);
+    fetch('/removeTemp', asetukset).then((response) => {
+        return response.json();
+    }).then((json) => {
+        console.log(json[0].success);
+    }).catch(function (e) {
+        console.log(e);
+        document.querySelector("#console3").innerHTML = "Error on Removing Temp Image File";
+        hideShowElement(7, 40);
+        hideShowElement(7, 40);
+    });
+};
+
+function onChange(event, fileUrl) {
+    var reader = new FileReader();
+    reader.readAsDataURL(fileUrl);
+    reader.onload = function (e) {
+        console.log('DataURL:', e.target.result);
+    };
+}
+
+
+const uploadImgToDataBase = (evt, fileUrl) => {
+
+    let base64 = base64img()
+
+    evt.preventDefault();
+    const fd = {};
+    fd.file = fileUrl;
+    
+    const asetukset = {
+        method: 'post',
+        body: fd,
+    };
+    console.log("FD: ", asetukset);
+    fetch('/upload2', asetukset).then((response) => {
+        return response.json();
+    }).then((json) => {
+        console.log(json);
+        console.log(json[0].Base64);
+        removeTempFile(evt, fileUrl);
+    });
+};
+
+const download = (evt, fileUrl, type) => {
+    evt.preventDefault();
+    // console.log("downLoad file from url: ",fileUrl, "type: ",type);
+    const fd = {};
+    fd.url = fileUrl;
+    fd.type = type;
+    const asetukset = {
+        method: 'post',
+        body: JSON.stringify(fd),
+        headers: {
+            'Content-type': 'application/json',
+        },
+    };
+    console.log(fd);
+    fetch('/saveTemp', asetukset).then((response) => {
+        return response.json();
+    }).then((json) => {
+        const fileUrl = json.filename;
+        console.log("fileUrl: "+fileUrl);
+      // uploadImgToDataBase(evt, fileUrl);
+    }).catch(function (e) {
+        console.log(e);
+        checkScreenSizeTextArea.innerHTML = "ERROR";
+        document.querySelector("#console3").innerHTML = "<p>Error on Fetching images<p><p>" + e + "<p>";
+        hideShowElement(7, 250);
+        //   hideShowElement(7, 250);
+    });
+}
+
 function getCSSMedia() { //etsi kaikki css tiedostot lähdekoodista
 
     const regex = /((?:https?:|www\.)[^\s]+)/g; //Etsii kaikki https tiedostot
     let html = div3.innerHTML;
     let m = html.match(regex);
 
-    //console.log(html);
     if (m) {
         m.forEach((match, groupIndex) => {
 
-            const regex2 = /((?:jpg)[^\s]+)/g; //jpg
+            let evt = document.createEvent('Event');
+
+            const regex1 = /((?:svg)[^\s]+)/g; //svg
+            const regex2 = [".jpg", /((?:jpg)[^\s]+)/g]; //jpg
             const regex3 = /((?:png)[^\s]+)/g;//png
             const regex4 = /((?:gif)[^\s]+)/g;//gif
             const regex5 = /((?:mp3)[^\s]+)/g;//mp3
@@ -557,8 +644,9 @@ function getCSSMedia() { //etsi kaikki css tiedostot lähdekoodista
             const regex7 = /((?:avi)[^\s]+)/g;//avi
             const str2 = match;
 
-            if (match.match(regex2) || match.match(regex2) || match.match(regex2)) { //Lisää css tiedostot textareaan
+            if (match.match(regex2[1]) || match.match(regex3) || match.match(regex4)) { //Lisää css tiedostot textareaan
                 ArrayOfImages.push([match]);
+                console.log("Match: ", match);
                 let poistaPilkku = match.slice(0, -1);
                 $("#media").append(`<img
                 src='${poistaPilkku}'
@@ -566,7 +654,9 @@ function getCSSMedia() { //etsi kaikki css tiedostot lähdekoodista
                 >`);
                 //  html.replace(match,match);
                 //  div3.innerHTML = html;
-                download(poistaPilkku, poistaPilkku);
+
+
+                download(evt, poistaPilkku, regex2[0]); //lähetä backendiin
             }
             if (match.match(regex5)) {
                 ArrayOfAudio.push([match]);
@@ -588,47 +678,14 @@ function getCSSMedia() { //etsi kaikki css tiedostot lähdekoodista
             }
         });
     }
-    console.log("ArrayOfImages", ArrayOfImages);
+    //console.log("ArrayOfImages", ArrayOfImages);
 }
 
-  
 
-
-function tallennaMediaTietokantaan(evt) {
-
-	evt.preventDefault();
-	console.log("lähetä lomake 4()");
-	const fd = {};
-	fd.width = $("#fetchatti").width(); //Myöhemmin, databaseen menee inttinä + "px";
-	fd.height = $("#fetchatti").height(); // + "px";
-	const asetukset = {
-		method: 'post',
-		body: JSON.stringify(fd),
-		headers: {
-			'Content-type': 'application/json',
-		},
-	};
-	console.log(asetukset);
-	fetch('/checkScreenSize', asetukset).then((response) => {
-		return response.json();
-	}).then((json) => {
-		console.log("json frontend lomake4: ", json);
-		checkScreenSizeTextArea.innerHTML = json;
-		for (let i = 0; i < json.length; i++) {
-			console.log(json[i]);
-			poistaCSS2(json[i].CSS_File,json[i].NewCss,i);
-		}
-	}).then(() => {
-		console.log("Finished CSS");
-	}).catch(function (e) {
-		console.log(e);
-		checkScreenSizeTextArea.innerHTML = "ERROR";
-	});
-}
 
 function fetchData() {
 
-    hideShowElement(9,100);  //Paneeli näkyviin
+    hideShowElement(9, 100);  //Paneeli näkyviin
 
     document.querySelector("#fetchConsoleSc").innerHTML = "Fetching Source Code...";
     document.querySelector("#fetchConsoleSc").style.backgroundColor = "yellow";
@@ -668,8 +725,8 @@ function fetchData() {
             getCSSMedia();
 
 
-            let e = document.createEvent('Event');
-            tallennaMediaTietokantaan(e);
+            //   let e = document.createEvent('Event');
+            //   tallennaMediaTietokantaan(e);
         })
         .then(() => {
             document.querySelector("#fetchConsoleMf").innerHTML = "Fetching Media Files Finished!";
@@ -677,7 +734,7 @@ function fetchData() {
             document.querySelector("#fetchConsoleAllDone").innerHTML = "All Data Successfully Fetched!";
             document.querySelector("#fetchConsoleAllDone").style.backgroundColor = "green";
             let e = document.createEvent('Event');
-            lahetaLomake4(e);
+            //     lahetaLomake4(e);
         })
         .catch(function (e) {
             console.log(e);

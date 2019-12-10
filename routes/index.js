@@ -9,10 +9,11 @@ const base64Img = require('base64-img');
 const path = require('path');
 
 const multer = require('multer');
-const upload = multer({dest: 'images/'});
+const upload = multer({ dest: 'images/' });
+const temp = multer({ dest: 'public/temp/' });
 const saltRounds = 10;
 
-
+const database = require('../modules/database.js');
 //värit
 
 const reset = "\x1b[0m";
@@ -25,6 +26,122 @@ const blue = "\x1b[34m";
 const BgRed = "\x1b[41m";
 const BgGreen = "\x1b[42m";
 const BgYellow = "\x1b[43m";
+
+///Tietokanta queryt
+const insertToDB = (data, connection, res, next) => {
+  database.insertUser(data, connection, () => {
+    next();
+  });
+};
+
+const insertCssFile = (data, connection, res, next) => {
+  database.insertCssFile(data, connection, () => {
+    next();
+  });
+};
+
+const SelectCSSFile = (data, connection, req, next) => {
+  database.SelectCSSFile(data, connection, (results) => {
+    req.custom = results;
+    next();
+  });
+};
+
+const SelectCSSFilesID = (data, connection, req, next) => {
+  database.SelectCSSFilesID(data, connection, (results) => {
+    req.CssId = results;
+    next();
+  });
+};
+
+const resetCssFiles = (connection, req, next) => {
+  database.resetCssFiles(connection, (results) => {
+    req.custom = results;
+
+    next();
+  });
+};
+
+const insertToDB2 = (data, connection, req, next) => {
+  database.insertIntoMediaQueryTable(data, connection, () => {
+    next();
+  });
+};
+
+const PalautaFrontendiin = (data, connection, req, next) => {
+  database.select(data, connection, (results) => {
+
+    req.custom = results;
+    next();
+  });
+};
+
+const findScreenMediaQuery = (data, connection, req, next) => {
+  database.selectMediaQuery(data, connection, (results) => {
+    req.custom = results;
+    next();
+  });
+};
+const insertToDB2 = (data,,connection, res, next) => {
+  database.insertIntoMediaQueryTable(data, connection, () => {
+    next();
+  });
+};
+
+const PalautaFrontendiin = (data,connection, req, next) => {
+  database.select(data, connection, (results) => {
+
+    req.custom = results;
+    next();
+  });
+};
+
+const SelectCSSFileByID = (idArr,connection, req, next) => {
+  database.SelectCSSFileByID(idArr, connection, (results) => {
+    req.custom5 = results;
+    next();
+  });
+};
+
+const SelectCSSMediaQueryPositions3 = (data,connection, req, next) => {
+  database.SelectCSSMediaQueryPositions3(data, connection, (results) => {
+
+    req.custom.push(results);
+    next();
+  });
+};
+
+const SelectCSSMediaQueryPositions32 = (data,connection, req, next) => {
+  database.SelectCSSMediaQueryPositions32(data, connection, (results) => {
+
+    req.custom.push(results);
+    next();
+  });
+};
+
+const SelectCSSMediaQueryPositions4 = (data,connection, req, next) => {
+  database.SelectCSSMediaQueryPositions4(data, connection, (results) => {
+    req.custom4 = results;
+    next();
+  });
+};
+
+const findScreenMediaQuery = (data,connection, req, next) => {
+  database.selectMediaQuery(data, connection, (results) => {
+    req.custom = results;
+    next();
+  });
+};
+
+
+const findScreenMediaQuery2 = (data,connection, connection, req, next) => {
+  database.selectMediaQuery2(data, connection, (results) => {
+    req.custom.push(results);
+    next();
+  });
+};
+
+
 /* GET home page. */
 
 process.on('uncaughtException', function (err) {
@@ -32,39 +149,39 @@ process.on('uncaughtException', function (err) {
   console.log("Node NOT Exiting...");
 });
 
-router.get('/', function(req, res){
+router.get('/', function (req, res) {
   console.log(req.user);
   console.log(req.isAuthenticated());
   res.render('home', { title: 'Home' });
 });
 
-router.get('/profile',authenticationMiddleware(), function (req, res){
-  res.render('profile',{ title: 'Profile'})
+router.get('/profile', authenticationMiddleware(), function (req, res) {
+  res.render('profile', { title: 'Profile' })
 });
 
-router.get('/profileHomePage',authenticationMiddleware(), function (req, res){
-  res.render('profileHomePage',{ title: 'Moblile Customize'})
-});
-
-
-router.get('/mobileCustomize',authenticationMiddleware(), function (req, res){
-  res.render('mobileCustomize',{ title: 'Moblile Customize'})
+router.get('/profileHomePage', authenticationMiddleware(), function (req, res) {
+  res.render('profileHomePage', { title: 'Moblile Customize' })
 });
 
 
-router.get('/resetpw', authenticationMiddleware(), function(req, res){
-  res.render('resetpw', {title:'Reset password'})
+router.get('/mobileCustomize', authenticationMiddleware(), function (req, res) {
+  res.render('mobileCustomize', { title: 'Moblile Customize' })
 });
 
-router.get('/login', function (req, res){
-  res.render('login',{ title: 'Login'})
+
+router.get('/resetpw', authenticationMiddleware(), function (req, res) {
+  res.render('resetpw', { title: 'Reset password' })
+});
+
+router.get('/login', function (req, res) {
+  res.render('login', { title: 'Login' })
 });
 
 router.post('/login', passport.authenticate(
-    'local', {
-      successRedirect: '/',
-      failureRedirect: '/login'
-    }
+  'local', {
+  successRedirect: '/',
+  failureRedirect: '/login'
+}
 ));
 
 router.get('/logout', (req, res, next) => {
@@ -75,12 +192,11 @@ router.get('/logout', (req, res, next) => {
   })
 })
 
-router.get('/register', function(req, res, next) {
+router.get('/register', function (req, res, next) {
   res.render('register', { title: 'Registration' });
 });
 
-router.post('/register', function(req, res, next)
-{
+router.post('/register', function (req, res, next) {
 
   req.checkBody('username', 'Username field cannot be empty.').notEmpty();
   req.checkBody('username', 'Username must be between 4-15 characters long.').len(4, 15);
@@ -93,7 +209,7 @@ router.post('/register', function(req, res, next)
 
   const errors = req.validationErrors();
 
-  if(errors){
+  if (errors) {
     console.log(`errors: ${JSON.stringify(errors)}`);
 
 
@@ -111,38 +227,38 @@ router.post('/register', function(req, res, next)
 
     const db = require('../db.js');
 
-    bcrypt.hash(password, saltRounds, function(err, hash) {
+    bcrypt.hash(password, saltRounds, function (err, hash) {
       db.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-          [username, email, hash], function(error, results, fields) {
-            if (error) throw error;
+        [username, email, hash], function (error, results, fields) {
+          if (error) throw error;
 
-            db.query('SELECT LAST_INSERT_ID() as user_id',
-                function(error, results, fields) {
-                  if (error) throw error;
+          db.query('SELECT LAST_INSERT_ID() as user_id',
+            function (error, results, fields) {
+              if (error) throw error;
 
-                  const user_id = results[0];
+              const user_id = results[0];
 
-                  console.log(results[0]);
-                  req.login(user_id, function(err) {
-                    res.redirect('/');
-                  });
-                });
-          })
+              console.log(results[0]);
+              req.login(user_id, function (err) {
+                res.redirect('/');
+              });
+            });
+        })
     });
 
   }
 });
 
-passport.serializeUser(function(user_id, done) {
-  done(null,user_id);
+passport.serializeUser(function (user_id, done) {
+  done(null, user_id);
 });
 
-passport.deserializeUser(function(user_id, done) {
+passport.deserializeUser(function (user_id, done) {
 
-    done(null, user_id);
+  done(null, user_id);
 
 });
-function authenticationMiddleware () {
+function authenticationMiddleware() {
   return (req, res, next) => {
     console.log(`req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
 
@@ -150,83 +266,117 @@ function authenticationMiddleware () {
     res.redirect('/login')
   }
 }
-/* BACKUP
-router.post('/upload', function (req, res, next){
-  console.log("/upload POST request toimii");
-  console.log(req.body);
-  next();
-}); */
+
 const kuva = (kuva) => {
   console.log("KUVA", kuva);
-  let data = base64Img.base64Sync('images/'+kuva);
-//  console.log(data);
+  let data = base64Img.base64Sync('images/' + kuva);
+  //  console.log(data);
   return data;
 };
 
-const haeKayttajaId = (user) =>{
+const kuva2 = (kuva) => {
+  let data = base64Img.base64Sync('public/temp/' + kuva);
+  return data;
+};
+
+const haeKayttajaId = (user) => {
   let id = user.user_id;
-  console.log("Käyttäjän id: ",id);
+  console.log("Käyttäjän id: ", id);
   return id;
 };
 
 const http = require('http');
 const fs = require('fs');
 
-const saveTempFile = (fileUrl) => {
-const file = fs.createWriteStream("file.jpg");
-const request = http.get(fileUrl, function(response) {
-  response.pipe(file);
-})
-};
 
-const saveCSSFiles = (name, value) => {
-  const nameOfCss = name;
 
-  const cssPath = path.join(__dirname, '../MultiMediaPlugin', 'public', 'css', nameOfCss);
-  fs.open(cssPath, "w", function (err, file) { //Tallenna uusi CSS File 
-    if (err) throw err;
-    console.log('Saved!');
-  });
-  fs.appendFile(cssPath, value, function (err) { //Lisää CSS tiedoston sisään
-    if (err) throw err;
-    console.log('Saved and Added Content!');
-  });
-};
+router.post('/saveTemp', (req, res, next) => { //Tallenna fetchattu Media väliaikaisesti tiedostona
+  let urlOfImg = req.body.url;
+  let imgDestName = "tempFile2" + req.body.type;
 
-var download = function(url, dest, cb) {
-  var file = fs.createWriteStream(dest);
-  var request = http.get(url, function(response) {
+  const imgPath = path.join(__dirname, '../public', 'temp', imgDestName);
+  req.file = { filename: imgPath };
+  console.log(yellow, "req.file", req.file);
+
+  const file = fs.createWriteStream(imgPath);
+
+  const request = http.get(urlOfImg, function (response) {
+    console.log("save file: ", red, urlOfImg, reset);
+    console.log("to: ", yellow, imgPath, reset);
     response.pipe(file);
-    file.on('finish', function() {
-      file.close(cb);
+    file.on('finish', function () {
+      console.log(blue, "FILE SAVED", reset);
+
+      let id = haeKayttajaId(req.session.passport.user)
+      let kuva_nimi = "tempFile2.jpg";
+      let base64string = kuva2(kuva_nimi);
+      console.log("req.file", req.file);
+
+      let originalname = urlOfImg;
+      let encoding = "";
+      let mimetype = "jpg";
+      let dest = "./public/temp";
+      let path = "";
+      let size = "";
+      const data = [kuva_nimi, base64string, id, originalname, encoding, mimetype, dest, path, size];
+
+      const query2 = 'SELECT originalname FROM kuvat WHERE User_id = ' + id + ' AND kuva_nimi = "tempFile2.jpg" ;';
+
+      const query = 'INSERT INTO kuvat (kuva_Nimi, Base64, User_id, originalname, encoding, mimetype, destination, path, size) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+      const db = require('../db.js');
+
+      function test() { //Jotta SQL query toimii, tee erillinen functio jonka sisällä query on. Kutsu tätä functiota sen alla. Muista Next() db.queryn sisään
+
+        db.query(query2, data, function (error, results2, fields) {
+          console.log(query);
+          if (error) throw error;
+          console.log("results2: ", results2[0].originalname);
+          if (results2[0].originalname !== originalname) {
+            db.query(query, data, function (error, results, fields) {
+              console.log(query);
+              if (error) throw error;
+              next();
+            });
+          } else {
+            console.log(green, "Kuva on jo tietokannassa! ", reset);
+            next(); //Jos kuva on jo tietokannassa, niin next
+          }
+        });
+      }
+      test();
     });
   });
-}
+  request(imgPath, res);
 
-router.post('/saveTemp', (req, res, next) => {
-  const cssPath = path.join(__dirname, '../MultiMediaPlugin', 'public', 'css', nameOfCss);
-  download(req.body[0].url,cssPath)
-  next();
 });
 
-router.use('/saveTemp', (req, res, next) => { 
-  let success = [{
-    fileSaved: true,
-  }]
-  res.send(success);
+router.use('/saveTemp', (req, res, next) => {
+  res.send(req.file);
+});
+
+
+router.post('/removeTemp', (req, res) => {  //poista teidosto temp kansiosta kun se on tallennettu tietokantaan
+  let urlOfImg = req.body.url;
+  req.Removed = [{ success: "File Removed From Temp Folder!" }];
+  fs.unlinkSync(urlOfImg);
+  res.send(req.file);
 });
 
 router.post('/upload', upload.single('kuva'), (req, res, next) => {
-
-  console.log("FILE NAME:",req.file.filename);
+  if (req.body.file !== null || typeof req.body.file !== 'undefined') {
+    console.log(red, "FILE ", req.body, reset);
+  } else {
+    console.log("FILE NAME:", req.file.filename);
+  }
   next();
 });
 router.use('/upload', (req, res, next) => {
-//  console.log("FILE NAME2:",req.file.filename);
+  //  console.log("FILE NAME2:",req.file.filename);
   let id = haeKayttajaId(req.session.passport.user)
   let kuva_nimi = req.file.filename;
   let base64string = kuva(req.file.filename);
-  console.log("req.file",req.file);
+  console.log("req.file", req.file);
 
   let originalname = req.file.originalname;
   let encoding = req.file.encoding;
@@ -237,14 +387,14 @@ router.use('/upload', (req, res, next) => {
 
   //TEE Functio millä haet kuvan kansiosta "./images/+"req.body.filename
 
-  const data = [kuva_nimi,base64string, id, originalname, encoding, mimetype, dest, path, size];
+  const data = [kuva_nimi, base64string, id, originalname, encoding, mimetype, dest, path, size];
   const query = 'INSERT INTO kuvat (kuva_Nimi, Base64, User_id, originalname, encoding, mimetype, destination, path, size) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   const db = require('../db.js');
 
   function test() { //Jotta SQL query toimii, tee erillinen functio jonka sisällä query on. Kutsu tätä functiota sen alla. Muista Next() db.queryn sisään
 
-    db.query(query, data, function(error, results, fields) {
+    db.query(query, data, function (error, results, fields) {
       console.log(query);
       if (error) throw error;
       next();
@@ -257,18 +407,18 @@ router.use('/upload', (req, res, next) => {
   const db = require('../db.js');
   console.log("Päästään Insert DB kohdan yli");
   function test2() {
-    let query2 = 'SELECT Base64 FROM kuvat WHERE User_id = ' + haeKayttajaId(req.session.passport.user)+ ';';
-        console.log(query2);
+    let query2 = 'SELECT Base64 FROM kuvat WHERE User_id = ' + haeKayttajaId(req.session.passport.user) + ';';
+    console.log(query2);
     db.query(query2,
-        function(error, results, fields) {
-          if (error) throw error;
+      function (error, results, fields) {
+        if (error) throw error;
 
-          req.custom = results;
-          next();
+        req.custom = results;
+        next();
 
-        });
+      });
   }
-    test2();
+  test2();
 });
 
 router.use('/upload', (req, res, next) => {
@@ -278,28 +428,27 @@ router.use('/upload', (req, res, next) => {
 });
 
 
-router.post('/resetpw', (req, res, next)=>
-{
+router.post('/resetpw', (req, res, next) => {
   let id = haeKayttajaId(req.session.passport.user);
 
   const password = req.body.password;
 
-  console.log("TOIMIIKOHAH",password);
+  console.log("TOIMIIKOHAH", password);
 
   const db = require('../db.js');
 
-  bcrypt.hash(password, saltRounds, function(err, hash) {
+  bcrypt.hash(password, saltRounds, function (err, hash) {
 
-      let query3 = 'UPDATE users SET password="'+hash+'" WHERE id="'+id+'";';
-      console.log("QUERY3ON:",query3);
-      db.query(query3,
-          function(error, results, fields) {
-            if (error) throw error;
-            req.custom = results;
-            res.redirect('/')
-          });
-        })
-  });
+    let query3 = 'UPDATE users SET password="' + hash + '" WHERE id="' + id + '";';
+    console.log("QUERY3ON:", query3);
+    db.query(query3,
+      function (error, results, fields) {
+        if (error) throw error;
+        req.custom = results;
+        res.redirect('/')
+      });
+  })
+});
 
 
 router.get('/getUserInformation', (req, res, next) => {
@@ -307,25 +456,26 @@ router.get('/getUserInformation', (req, res, next) => {
   let id = haeKayttajaId(req.session.passport.user);
 
   const db = require('../db.js');
-  function haeKuvat() {
-    let query = 'SELECT size FROM kuvat WHERE User_id = ' +id+ ';';
-    db.query(query,
-        function(error, results, fields) {
-          if (error) throw error;
 
-          let sizeArr = [];
-          console.log("results.length:",results.length);
-          for(let i=0; i<results.length; i++){
-            console.log(i+":",results[0]);
-            sizeArr.push(results[i]);
-          }
-          let images = {
-            size: sizeArr,
-          }
-          req.images = images;
-          console.log("req.images:",req.images);
-          next();
-        });
+  function haeKuvat() {
+    let query = 'SELECT size FROM kuvat WHERE User_id = ' + id + ';';
+    db.query(query,
+      function (error, results, fields) {
+        if (error) throw error;
+
+        let sizeArr = [];
+        console.log("results.length:", results.length);
+        for (let i = 0; i < results.length; i++) {
+          console.log(i + ":", results[0]);
+          sizeArr.push(results[i]);
+        }
+        let images = {
+          size: sizeArr,
+        }
+        req.images = images;
+        console.log("req.images:", req.images);
+        next();
+      });
   }
   haeKuvat();
 });
@@ -334,400 +484,158 @@ router.use('/getUserInformation', (req, res, next) => {
   let id = haeKayttajaId(req.session.passport.user);
   const db = require('../db.js');
   function haeKayttajaNimi() {
-    let query = 'SELECT username FROM users WHERE id = ' +id+ ';';
+    let query = 'SELECT username FROM users WHERE id = ' + id + ';';
     db.query(query,
-        function(error, results, fields) {
-          if (error) throw error;
-          let username = results[0].username;
-          req.username = username;
-          console.log("req.username:",req.username);
-          next();
-        });
+      function (error, results, fields) {
+        if (error) throw error;
+        let username = results[0].username;
+        req.username = username;
+        console.log("req.username:", req.username);
+        next();
+      });
   }
   haeKayttajaNimi();
 });
-/*
-router.use('/getUserInformation', (req, res, next) => {
-  const urlPath = path.dirname();
-        console.log(urlPath);
-  switch (req.path) {
-      case '/':
-          res.locals.title = 'Index Test';
-          break;
-      case '/login':
-          res.locals.title = 'Login Test';
-          break;
-      default:
-          res.locals.title = 'No Meta Tag';
-  }
-  next();
-});*/
+
 router.use('/getUserInformation', (req, res, next) => {
 
-  let json = [req.images,req.username];
+  let json = [req.images, req.username];
 
   req.custom = json;
-  console.log("req.custom: ",req.custom);
+  console.log("req.custom: ", req.custom);
   res.send(req.custom);
 });
-////////////////////////////////////////////////////////////////////////////////
-
-//const database = require("../modules/database.js");
-
-//const database = require('../modules/database');
-//const database = require('../modules/database.js');
-//const connection = database.connect();
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-
-const decimalToint = (value) => {
-  return value | 0;
-}
-
-const empxConversion = (value) => {
-
-  let lastTwoCharacters = value.slice(-2); // =em tai px
-  if (lastTwoCharacters == "px") {
-    let px = value.indexOf("px");
-    value = value.slice(0, px);
-    return decimalToint(value); //otetaan pois px, jotta voidaan vertailla kokoa
-  } else if (lastTwoCharacters == "em") {
-    let em = value.indexOf("em");
-    let sizeInEm = value.slice(0, em); //otetaan pois em
-    sizeInEm *= 10; //em = 10x koko
-    return decimalToint(sizeInEm);
-  }
-
-}
-
-const manipulateString2 = (Arr) => {
-  let tempArr = [];
-
-  let MediaQuery = "";
-
-  for (let i = 0; i < Arr.length; i++) {
-    //  console.log("Arr["+i+"] :"+Arr[i]);
-    MediaQuery = Arr[i].replace(/ /g, '').toString(); //ota tyhjat valit poist
-    //  console.log("MediaQuery_Saanto ", MediaQuery);
-    let first = MediaQuery.indexOf(":");  // @media screen and (min-width
-    let n = MediaQuery.indexOf(")");
-
-    let value = MediaQuery.slice((first + 1), (n));
-
-    if (value.endsWith("e")) { //tarkasta ettei lopu em e tai px p
-      value += "m";
-    } else if (value.endsWith("p")) {
-      value += "x";
-    }
-    //   console.log("value: ",value);
-    value = empxConversion(value); //convertoi intiksi
-    tempArr.push(value);
-
-  }
-  //console.log("tempArr: ",tempArr);
-  return tempArr;
-};
-
-const manipulateString4 = (PartOfArray, match) => {
-  //  console.log("  manipulateString4 PartOfArray :", PartOfArray);
-  //
-  // let tempArr = [];
-  let value = "";
-  let MediaQuery = "";
-
-  if (PartOfArray.includes(match)) {
-    MediaQuery = PartOfArray.replace(/ /g, '').toString(); //ota tyhjat valit poist
-    let first = MediaQuery.indexOf(":");  // @media screen and (min-width
-    let n = MediaQuery.indexOf(")");
-
-    value = MediaQuery.slice((first + 1), (n));
-
-    if (value.endsWith("e")) { //tarkasta ettei lopu em e tai px p
-      value += "m";
-    } else if (value.endsWith("p")) {
-      value += "x";
-    }
-    //  console.log("value manipulateString4: ",value);
-    value = empxConversion(value); //convertoi intiksi
-
-    //  tempArr.push(value);
-  }
-  //console.log("tempArr: ",tempArr);
-  // console.log("Value: " + value);
-  return value;
-};
-
-const manipulateString3 = (Arr) => {
-  let mWH = ["min-width", "max-width", "min-height", "max-height"];
-  let tempArr = [];
-  //console.log("ARR ", Arr);
-  for (let i = 0; i < Arr.length; i++) {
-    let m1 = Arr[i].match(mWH[0]); //Arr on ["min-width", "10px"] yms.
-    let m2 = Arr[i].match(mWH[1]);
-    let m3 = Arr[i].match(mWH[2]);
-    let m4 = Arr[i].match(mWH[3]);
-
-    try {
-
-
-      if (m1) {
-        m1.forEach((match) => {
-
-          tempArr.push([mWH[0], manipulateString4(Arr[i], match)]); //push(String)
-        });
-      }
-      if (m2) {
-        m2.forEach((match) => {
-
-          tempArr.push([mWH[1], manipulateString4(Arr[i], match)]);
-        });
-      }
-      if (m3) {
-        m3.forEach((match) => {
-
-          tempArr.push([mWH[2], manipulateString4(Arr[i], match)]);
-        });
-      }
-      if (m4) {
-        m4.forEach((match) => {
-
-          tempArr.push([mWH[3], manipulateString4(Arr[i], match)]);
-        });
-      }
-    } catch (e) {
-      //  console.log("Error in forEach", e);
-    }
-  }
-  return tempArr;
-};
-
-
-const splitMultipleQueries = (MediaQuery, match, arr) => {
-
-  let tempArr1 = [];
-  let tempArr2 = [];
-  let tempArr3 = [];
-  let tempArr4 = [];
-  let tempArr5 = [true]; //true = 2d array
-
-  for (let i = 0; i < arr.length; i++) {
-    let res = MediaQuery.split(arr[i]); //arr[i] on min-height yms.
-    tempArr1.push(res[0]);
-    tempArr2.push(res[1]);
-  }
-  for (let i = 0; i < tempArr2.length; i++) {
-    let bool = true;
-    if (typeof tempArr2[i] === 'undefined') {
-      //null 
-    } else {
-      try {
-
-        let res2 = MediaQuery.split("and"); //arr[i] on min-height yms.
-        tempArr3.push(res2);
-
-        bool = false;
-      } catch (e) {
-        //   console.log(e);
-      }
-      if (bool !== true) {
-        tempArr4.push(tempArr2[i]);
-
-      }
-    }
-  }
-  if (tempArr3.length > 1) { //Jos mediaquery sisältää enemmän sääntöjä kuin 1, esim min-height and min-width niin palautetaan arr3
-
-
-    for (let i = 0; i < tempArr3.length; i++) {
-
-      tempArr5.push(manipulateString3(tempArr3[i]));
-    }
-
-    return tempArr5;
-  } else {
-
-    tempArr2 = [false, match, manipulateString2(tempArr4)[0]];
-
-    return tempArr2;
-  }
-}
-
-
-const findMWH = (arr, match) => {
-
-  for (let i = 0; i < arr.length; i++) { //0 on Boolean
-
-    for (let j = 0; j < arr[i].length; j++) {
-      //   console.log("arr["+i+"]["+j+"]",arr[i][j]);
-      let contain = (arr[i][j][0].indexOf(match) > -1);
-      if (contain === true) {
-        return arr[i][j]; //j+1 on luku, j on min-width
-      }
-    }
-  }
-}
-
-const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
-  console.log(green,"getMultipleConditionsFromMediaQuery",reset);
-
-  let arr = [];
-
-  let arr1 = [];
-  let arr2 = [];
-  let arr3 = [];
-  let arr4 = [];
-
-  let mWH = ["min-width", "max-width", "min-height", "max-height"];
-
-  let m1 = MediaQuery.match(mWH[0]);
-  let m2 = MediaQuery.match(mWH[1]);
-  let m3 = MediaQuery.match(mWH[2]);
-  let m4 = MediaQuery.match(mWH[3]);
-  try {
-    if (m1) {
-      m1.forEach((match) => {
-
-        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
-
-        if (tempArr[0] === true) {
-          let tempString = (findMWH(tempArr, mWH[0]));
-          tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
-        }
-        arr.push(tempArr);
-      });
-    }
-    if (m2) {
-      m2.forEach((match) => {
-        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
-
-        if (tempArr[0] === true) {
-          let tempString = (findMWH(tempArr, mWH[1]));
-          tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
-        }
-        arr.push(tempArr);
-      });
-    }
-    if (m3) {
-      m3.forEach((match) => {
-        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
-
-        if (tempArr[0] === true) {
-          let tempString = (findMWH(tempArr, mWH[2]));
-          tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
-        }
-        arr.push(tempArr);
-      });
-    }
-    if (m4) {
-      m4.forEach((match) => {
-        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
-
-        if (tempArr[0] === true) {
-          let tempString = (findMWH(tempArr, mWH[3]));
-          tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
-        }
-        arr.push(tempArr);
-      });
-    }
-  } catch (e) {
-    //  console.log("Error in forEach", e);
-  }
-
-  //  console.log(arr);
-  return arr;
-}
-
-const modify2dArraytoDatabaseFormat = (arr) => {
-  let temp1dArr = [null, null, null, null];
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i][1][0] === "min-width") {
-      temp1dArr[0] = arr[i][1][1];
-    }
-    if (arr[i][1][0] === "max-width") {
-      temp1dArr[1] = arr[i][1][1];
-    }
-    if (arr[i][1][0] === "min-height") {
-      temp1dArr[2] = arr[i][1][1];
-    }
-    if (arr[i][1][0] === "max-height") {
-      temp1dArr[3] = arr[i][1][1];
-    }
-  }
-  return temp1dArr;
-}
-
-
-const SelectCSSFilesID = (data, req, next) => {
-  const db = require('../db.js');
-   let query = 'select CSS_Id from csstiedostot2 where nimi ="' + data + '";';
-   db.query(query,
-    function(error, results, fields) {
-      if (error) throw error;
-     // console.log("results:", results);
-      req.CssId = results;
-      next();
-    });
-};
-
-
-router.post('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
-  SelectCSSFilesID(req.body.CSS_File, req, next);
-});
-
-router.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
-  console.log("NEXT??");
-  console.log("NEXT??   ", req.body.MediaQuery_Saanto);
-  let MinMaxWidthHeight = getMultipleConditionsFromMediaQuery(req.body.MediaQuery_Saanto);
-  console.log("MinMaxWidthHeight", MinMaxWidthHeight);
-  const data = [
-    req.body.CSS_File,
-    req.CssId[0].CSS_Id,
-    req.body.MediaQuery_Saanto,
-    req.body.Position,
-    req.body.TextToClearPosition,
-    req.body.LastIndexToClearPosition,
-    req.body.FullMediaQuery
-  ];
-
-  if (MinMaxWidthHeight[0][0] === false) { //1d array
-    switch (MinMaxWidthHeight[0][1]) {
-      case "min-width":
-        data.push(MinMaxWidthHeight[0][2], null, null, null);
-        break;
-      case "max-width":
-        data.push(null, MinMaxWidthHeight[0][2], null, null);
-        break;
-      case "min-height":
-        data = pushToArray(null, null, MinMaxWidthHeight[0][2], null);
-        break;
-      case "max-height":
-        data = pushToArray(null, null, null, MinMaxWidthHeight[0][2]);
-        break;
-    }
-  } else {
-    let temp2d = modify2dArraytoDatabaseFormat(MinMaxWidthHeight);
-    for (let i = 0; i < temp2d.length; i++) {
-      data.push(temp2d[i]);
-    }
-
-  } //IF 2d arrayconsole.log(" ");
-  console.log("_______________");
-  console.log(" ");
-  req.custom = data;
-
-  if (data.length < 8) { //Tietokantaan 8 lokeroa
-    data.push(null);
-  }
-  // insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
+////////////////////////////////////////////////////////////
+router.post('/asd', (req, res, next) => {
+
+  const data = ["css",//1
+    req.body.cssData, //2
+    req.body.width, //3
+    req.body.height, //4
+    10, //5
+    10, //6
+    10, //7
+    10]; //8 (8 riviä css taulussa)
+  insertToDB(data, req, next);
   next();
 });
+router.use('/asd', (req, res, next) => {
+  const db = require('../db.js');
+  PalautaFrontendiin("null toistaiseksi", db, req, next);
+});
+router.use('/asd', (req, res, next) => {
 
-router.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
   res.send(req.custom);
 });
 
+const saveCSSFiles = (name, value) => {
+  const nameOfCss = name;
+  const cssPath = path.join(__dirname, '../public', 'css', nameOfCss);
+  fs.open(cssPath, "w", function (err, file) { //Tallenna uusi CSS File 
+    if (err) throw err;
+    console.log('Saved!');
+  });
+
+  fs.appendFile(cssPath, value, function (err) { //Lisää CSS tiedoston sisään
+    if (err) throw err;
+    console.log('Saved and Added Content!');
+  });
+};
+
+const pushToArray = (mediaQuery, minW, maxW, minH, maxH) => {
+  let data = [];
+  data.push(mediaQuery);
+  data.push(minW);
+  data.push(maxW);
+  data.push(minH);
+  data.push(maxH);
+  return data;
+}
+
+//Etsi MEDIA QUERY JOKA SOPII #Fethcatti width:n kokoon
+router.post('/findMediaQuery', (req, res, next) => {
+  const db = require('../db.js');
+  let data = [req.body.width, req.body.height];
+  findScreenMediaQuery(data, db, req, next);
+});
+router.use('/findMediaQuery', (req, res, next) => {
+  const db = require('../db.js');
+  for (let i = 0; i < req.custom.length; i++) {
+    findScreenMediaQuery2(req.custom[i], db, req, next);
+  }
+});
+router.use('/findMediaQuery', (req, res, next) => {
+  res.send(req.custom);
+});
+/////Palauta Muokattu_CSS alkuperäiseksi
+router.post('/resetCssFiles', (req, res, next) => {
+  const db = require('../db.js');
+  resetCssFiles(db, req, next);
+});
+router.use('/resetCssFiles', (req, res, next) => {
+  res.send(req.body);
+});
+
+//Tallenna CSS TIEDOSTO
+router.post('/tallennaCSStiedosto', (req, res, next) => {
+  const db = require('../db.js');
+  SelectCSSFile(req.body.CssArr[0], db, req, next); //req.body.CssArr[0] on CSS_Tiedoston nimi,
+  //Frontendissä käydään looppi missä on kaikki nämä
+});
+
+router.use('/tallennaCSStiedosto', (req, res, next) => {
+  const db = require('../db.js');
+  if (req.custom.length === 0) { //Jos ei ole sisältöä req.customissa, laita sinne
+    let data = [int, req.body.CssArr[0], req.body.CssArr[1]];
+    console.log("insertCssFile");
+    insertCssFile(data, db, req, next); //Lisää CSS Tiedosto ja sen nimi tietokantaan
+  } else {
+    console.log("DONT insertCssFile");
+    next();
+  }
+});
+
+router.use('/tallennaCSStiedosto', (req, res, next) => {
+  const db = require('../db.js');
+  if (req.custom.length === 0) { //Jos ei ole sisältöä req.customissa, laita sinne
+    let fiveLastChar = req.body.CssArr[0].slice(-2);
+    let cssName = fiveLastChar + '.css';//req.body.CssArr[0]+'.css';
+    saveCSSFiles(cssName, db, req.body.CssArr[1]);
+  }
+  res.send(req.body);
+});
+
+
+//Tallenna Kaikki Mediaqueryt tietokantaan
+router.post('/checkScreenSize2', (req, res, next) => {
+  const db = require('../db.js');
+  let data = [];
+
+  let mediaQuery = [' ' + req.body.mediaQuery + ' '];
+  // writeNewCssFile(nameOfCssFile,mediaQuery);
+
+  switch (req.body.widthOrHeight) {
+    case "min-width":
+      data = pushToArray(mediaQuery, req.body.lenght, null, null, null);
+      break;
+    case "max-width":
+      data = pushToArray(mediaQuery, null, req.body.lenght, null, null);
+      break;
+    case "min-height":
+      data = pushToArray(mediaQuery, null, null, req.body.lenght, null);
+      break;
+    case "max-height":
+      data = pushToArray(mediaQuery, null, null, null, req.body.lenght);
+      break;
+  }
+
+  insertToDB2(data, db, req, next);
+});
+
+router.use('/checkScreenSize2', (req, res, next) => {
+  res.send(req.body);
+});
+/////////////////////////////////////////////////////////////////////////////////////// CheckSceenSize
 const checkIfLastRowContainsMediaQuery = (newCss, cutPoint) => {
   // console.log("checkIfLastRowContainsMediaQuery = (newCss: ",newCss);
   let n = newCss.lastIndexOf("@media");
@@ -783,58 +691,7 @@ const modifyCSSFile4 = (CssFileString, mediaQuery) => {
 };
 
 
-const refactorCssFileName = (toBeRenamed, num) => {
-  let fiveLastChar = toBeRenamed.slice(-2);
-  let cssName = fiveLastChar + num + '.css';
-  return cssName;
-}
-
-
-const getUniqueIds = (idArr, distincArray, amount) => {
-  let stringToBeReturned = "";
-  for (let i = 0; i < amount; i++) {
-    if (idArr.includes(distincArray[i].CSS_Id)) { //Jos css tiedoston id sisältää mediaqueruja
-      stringToBeReturned = laitaPilkkuJosEiSanoja(stringToBeReturned, distincArray[i].CSS_Id);
-    }
-  }
-  return stringToBeReturned;
-};
-
-const SelectCSSFileByID = (idArr, req, next) => {
-  const db = require('../db.js');
-  let query1 = "SELECT DISTINCT CSS_Id,Muokattu_Tiedosto FROM csstiedostot2";
-   db.query(query1,
-    function(error, results, fields) {
-      let amount = results.length;
-      let ids = getUniqueIds(idArr, results, amount);
-      let query2 = 'SELECT * FROM csstiedostot2 WHERE CSS_Id in (' + ids + ')';
-      db.query(query2,
-        function(error, results, fields) {
-          if (error) throw err;
-          req.custom5 = results;
-          next();
-    });
-  });
-};
-
-
-
-const SelectCSSMediaQueryPositions4 = (data,query, req, next) => {
-  console.log("query: ",query);
-  const db = require('../db.js');
- console.log("vv");
-  db.query(query,
-    function(error, results, fields) {
-      if (error){console.log("ERROR: ",error)};
-     // console.log("results:", results);
-     req.custom4 = results;
-      next();
-    });
-};
-
-
 router.post('/checkScreenSize', (req, res, next) => {
-  // console.log("req.body: ", req.body);
   console.log("req.body: ", req.body.width);
   const data = [req.body.width, req.body.height];
   console.log("Data App.js ", data);
@@ -843,10 +700,9 @@ router.post('/checkScreenSize', (req, res, next) => {
   req.custom6 = [];
   req.custom7 = [];
   req.CutAll = [];
-  // PalautaFrontendiin(data, req, next);
   next();
 });
-/*
+
 router.use('/checkScreenSize', (req, res, next) => {
   const data = [req.body.width, req.body.height];
   SelectCSSMediaQueryPositions3(data, req, next);
@@ -854,32 +710,17 @@ router.use('/checkScreenSize', (req, res, next) => {
 
 router.use('/checkScreenSize', (req, res, next) => {
   const data = [req.body.width, req.body.height];
-  SelectCSSMedaQueryPositions32(data, req, next);
-});*/
-
-router.use('/checkScreenSize', (req, res, next) => {
-  console.log("next checkScreenSize 2? ");
-  const data = [req.body.width, req.body.height];
-  let query = 'SELECT * FROM mediaQuerySaannot3 WHERE min_width > ' + data[0] + ' OR min_height > ' + data[1] + ';';
-  console.log("QUERY: ",query);
- // SelectCSSMediaQueryPositions4(data,query, req, next);
- const db = require('../db.js');
-function test(){
- 
-  db.query(query,
-    function(error, results, fields) {
-      if (error){console.log("ERROR: ",error)};
-      console.log("results:", results);
-     req.custom4 = results;
-      next();
-    });
-  };
-  test();
+  SelectCSSMediaQueryPositions32(data, req, next);
 });
 
 router.use('/checkScreenSize', (req, res, next) => {
- 
-  console.log("next 3?");
+  const data = [req.body.width, req.body.height];
+  SelectCSSMediaQueryPositions4(data, req, next);
+});
+
+router.use('/checkScreenSize', (req, res, next) => {
+  
+  console.log("");
   console.log("_______________");
   let arrOfId = [];
   let secondArr = [];
@@ -889,6 +730,9 @@ router.use('/checkScreenSize', (req, res, next) => {
     }
     secondArr.push(req.custom4[i].CSS_File_ID);
   }
+  console.log("arrOfId: ", arrOfId);
+  console.log("secondArr: ", secondArr);
+
   SelectCSSFileByID(arrOfId, req, next); //Ota kaikki Idt talteen req.custom[5].CSS_Id
 });
 
@@ -900,137 +744,121 @@ router.use('/checkScreenSize', (req, res, next) => {
   next();
 });
 
-function sliceString(str,start,end,amounttimes){ //cssfile, arr,arr,j
- 
-  console.log(blue,amounttimes,reset);
+function sliceString(str, start, end, amounttimes) { //cssfile, arr,arr,j
+
+  console.log(blue, amounttimes, reset);
   let newStart = start; //arr
   let newEnd = end;
   let amountCut = 0;
   let amountCutArr = [];
-  for(let i=0; i<amounttimes;i++){
-  //  console.log("str PITUUS ",str.length);
-  let subString = str.substr(newStart[i],newEnd[i]);
-  amountCut = (newEnd[i]-newStart[i]);
-  amountCutArr.push(amountCut);
-   str = str.slice(newStart[i],newEnd[i]);
- console.log("amountCut: ",amountCut);
+  for (let i = 0; i < amounttimes; i++) {
+    let subString = str.substr(newStart[i], newEnd[i]);
+    amountCut = (newEnd[i] - newStart[i]);
+    amountCutArr.push(amountCut);
+    str = str.slice(newStart[i], newEnd[i]);
+  }
   return str;
 }
-}
 
-
-function onlyUnique(value, index, self) { 
+function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-const saveCSSFiles = (name, value) => {
-  const nameOfCss = name + ".css";
-  const cssPath = path.join(__dirname, '../public', 'css', nameOfCss);
-  console.log(yellow, "CSS PATH: ", cssPath);
-
-
-  fs.open(cssPath, "w", function (err, file) {
-    if (err) throw err;
-    console.log("file? ", blue, file); //file on int
-    console.log(nameOfCss + ' Saved!');
-  });
-  // console.log(value," <----- Value");
-
-  fs.appendFile(cssPath, value, function (err) { //Lisää CSS tiedoston sisään
-    if (err) throw err;
-    console.log('Saved and Added Content to ' + nameOfCss);
-  });
-};
-
 router.use('/checkScreenSize', (req, res, next) => {
-  
+
   let startArr = [];
   let endArr = [];
 
   let arrOfId = [];
   let secondArr = [];
-for (let i = 0; i < req.custom4.length; i++) {
-  startArr.push([]);
-  endArr.push([]);
- // console.log("SelectCSSFile(req.custom4[" + i + "].CSS_File, req, next);")
-   if (!arrOfId.includes(req.custom4[i].CSS_File_ID)) {
-     arrOfId.push(req.custom4[i].CSS_File_ID);
-   }
-   secondArr.push(req.custom4[i].CSS_File_ID);
-   startArr[i].push([req.custom4[i].CSS_File_ID,req.custom4[i].Position]);
-   endArr[i].push([req.custom4[i].CSS_File_ID,req.custom4[i].Position]);
- }
- let num = 1;
- let resset = false;
- for (let i = 0; i < secondArr.length; i++) {
-   if(resset==true){
-    num = i+1;
-    resset = false;
-    console.log("RESET NUM",num);
-   } 
-  if (startArr[i][0][0] == num) {
-    console.log("SISÄLTÄÄÄ  ",startArr[i][0][0]);
-    secondArr.push([startArr[i][0][0]]);
-  }else{
-    console.log("Ei ",startArr[i][0][0]);
-    resset = true;
+  for (let i = 0; i < req.custom4.length; i++) {
+    startArr.push([]);
+    endArr.push([]);
+    if (!arrOfId.includes(req.custom4[i].CSS_File_ID)) {
+      arrOfId.push(req.custom4[i].CSS_File_ID);
+    }
+    secondArr.push(req.custom4[i].CSS_File_ID);
+    startArr[i].push([req.custom4[i].CSS_File_ID, req.custom4[i].Position]);
+    endArr[i].push([req.custom4[i].CSS_File_ID, req.custom4[i].Position]);
   }
- }
-  console.log("secondArr",secondArr);
+  let num = 1;
+  let resset = false;
+  for (let i = 0; i < secondArr.length; i++) {
+    if (resset == true) {
+      num = i + 1;
+      resset = false;
+      console.log("RESET NUM", num);
+    }
+
+    if (startArr[i][0][0] == num) {
+      console.log("SISÄLTÄÄÄ  ", startArr[i][0][0]);
+      secondArr.push([startArr[i][0][0]]);
+    } else {
+      console.log("Ei ", startArr[i][0][0]);
+      resset = true;
+    }
+  }
+
+  console.log("secondArr", secondArr);
   let lastNum = startArr[0][0][0];
   let pituudet = [];
   let lastNumLength = 0;
   let bool = false;
-  for(let i=0; i<startArr.length; i++){
-    for(let j=0; j<startArr[i].length;j++){
-      console.log("startArr["+i+"]["+j+"]",startArr[i][j][1]);  
+
+  for (let i = 0; i < startArr.length; i++) {
+    if (i < req.custom5.length) {
+      //pituudet.push([i]);
+    }
+    for (let j = 0; j < startArr[i].length; j++) {
+      console.log("startArr[" + i + "][" + j + "]", startArr[i][j][1]);
       lastNumLength = i;
-     
-      if(startArr[i][j][0] > lastNum){
+      if (startArr[i][j][0] > lastNum) {
         lastNumLength -= 1;
         pituudet.push([lastNumLength]);
         lastNum = startArr[i][j][0];
-        lastNumLength = 0; 
+        lastNumLength = 0;
+      }
     }
-  }
   }
   let nums = [];
   let last = 0;
-  for(let p=0; p<startArr.length; p++){
- nums.push(startArr[p][0][0]);
- last = startArr[p][0][0];
+  for (let p = 0; p < startArr.length; p++) {
+    nums.push(startArr[p][0][0]);
+    last = startArr[p][0][0];
   }
 
-  var unique = nums.filter( onlyUnique );
-  console.log("unique unique unique",unique, "  last: ",last);
-  let m = sliceString(req.custom5[0].Muokattu_Tiedosto,startArr,endArr,3);
-  let name = "UUSIIIIII";//+i
- saveCSSFiles(name,m);
+  var unique = nums.filter(onlyUnique);
+  console.log("unique unique unique", unique, "  last: ", last);
+
+  let m = sliceString(req.custom5[0].Muokattu_Tiedosto, startArr, endArr, 3);
+  let name = "uusiCss";//+i
+  saveCSSFiles(name, m);
   let n = req.custom5.length;
   let temp = [];
- 
+
   for (let i = 0; i < n; i++) {
     let Muokattu_Tiedosto2 = req.custom5[i].Muokattu_Tiedosto;
     let pituus = 0;
     let n2 = req.custom4.length;
+
     for (let j = 0; j < n2; j++) {
       temp.push(req.custom4[j].CSS_File_ID);
-      let cutStart= req.custom4[j].Position;
+
+      let cutStart = req.custom4[j].Position;
       let cutEnd = req.custom4[j].LastIndexToClearPosition;
       let fullMq = req.custom4[j].FullMediaQuery;
       let id = req.custom5[i].CSS_Id;
       let Muokattu_Tiedosto = req.custom5[i].Muokattu_Tiedosto
+
       startArr[i].push(req.custom4[j].Position);
       endArr.push(req.custom4[j].LastIndexToClearPosition);
-     pituus++;
+      pituus++;
     }
-  }
     let custom4pituus = req.custom4.length;
-    console.log("pituus",pituus);
-   next();
+    console.log("pituus", pituus);
+  }
+  next();
 });
-
-
 router.use('/checkScreenSize', (req, res, next) => {
 
   let custom4pituus = req.custom4.length;
@@ -1041,7 +869,32 @@ router.use('/checkScreenSize', (req, res, next) => {
       req.custom7.push([j]);
       if (req.custom5[j].CSS_Id === req.custom4[i].CSS_File_ID) {
         try {
+          /*
+                    let cutStart = req.custom4[i].Position;
+                    let cutEnd = req.custom4[i].LastIndexToClearPosition; //FullMediaQuery; voi olla myös
+          */
           let cssName = req.custom4[i].CSS_File; //Css tiedoston nimi
+          /*
+                   diffCssFilesLength.push([j,[cutStart,cutEnd]]);
+              
+        
+            let cut2 = req.custom4[i].FullMediaQuery;
+            cssName = refactorCssFileName(cssName, j);
+           let mq2 =req.custom4[i].MediaQuery_Saanto
+            */
+          //var content = fs.readFileSync('./public/css/' + cssName, 'utf8');
+          //  let cssFile = readFile(cssName,req);
+          //  console.log(req.custom7);
+          // console.log(cssFile," <-- CSS FILE");
+          // let upFile = modifyCSSFile4(content, mq2);
+          // console.log(cssFile);
+          //  saveCSSFiles(cssName, upFile);
+
+          //    saveCSSFiles(cssName, updatedFile);
+          /*    console.log("cssName: ", cssName);
+              console.log("______________________");
+              console.log(" ");
+              console.log("req.CutAll", req.CutAll.length);*/
           req.custom4[i].NewCss = cssName; //Lähetä uusi muokattu CSS filen nimi frontendiin
         } catch (e) { console.log("ERROR ", e) }
       }//jos on oikea id
@@ -1049,5 +902,312 @@ router.use('/checkScreenSize', (req, res, next) => {
   }
   res.send(req.custom4);
 });
+/////////////////////////////////////////////////////////////////////////////////////7
+const decimalToint = (value) => {
+  return value | 0;
+}
+
+const empxConversion = (value) => { //Muuta em intiksi
+  let lastTwoCharacters = value.slice(-2); // =em tai px
+  if (lastTwoCharacters == "px") {
+    let px = value.indexOf("px");
+    value = value.slice(0, px);
+    return decimalToint(value); //otetaan pois px, jotta voidaan vertailla kokoa
+  } else if (lastTwoCharacters == "em") {
+    let em = value.indexOf("em");
+    let sizeInEm = value.slice(0, em); //otetaan pois em
+    sizeInEm *= 10; //em = 10x koko
+    return decimalToint(sizeInEm);
+  }
+}
+
+const manipulateString2 = (Arr) => {
+
+  let tempArr = [];
+
+  let MediaQuery = "";
+
+  for (let i = 0; i < Arr.length; i++) {
+    MediaQuery = Arr[i].replace(/ /g, '').toString(); //ota tyhjat valit poist
+    let first = MediaQuery.indexOf(":");  // @media screen and (min-width
+    let n = MediaQuery.indexOf(")");
+
+    let value = MediaQuery.slice((first + 1), (n));
+
+    if (value.endsWith("e")) { //tarkasta ettei lopu em e tai px p
+      value += "m";
+    } else if (value.endsWith("p")) {
+      value += "x";
+    }
+    value = empxConversion(value); //convertoi intiksi
+    tempArr.push(value);
+
+  }
+  return tempArr;
+};
+
+const manipulateString4 = (PartOfArray, match) => {
+
+  let value = "";
+  let MediaQuery = "";
+
+  if (PartOfArray.includes(match)) {
+    MediaQuery = PartOfArray.replace(/ /g, '').toString(); //ota tyhjat valit poist
+    let first = MediaQuery.indexOf(":");  // @media screen and (min-width
+    let n = MediaQuery.indexOf(")");
+    value = MediaQuery.slice((first + 1), (n));
+    if (value.endsWith("e")) { //tarkasta ettei lopu em e tai px p
+      value += "m";
+    } else if (value.endsWith("p")) {
+      value += "x";
+    }
+    value = empxConversion(value); //convertoi intiksi
+  }
+  return value;
+};
+
+const manipulateString3 = (Arr) => {
+  let mWH = ["min-width", "max-width", "min-height", "max-height"];
+  let tempArr = [];
+  //console.log("ARR ", Arr);
+  for (let i = 0; i < Arr.length; i++) {
+    let m1 = Arr[i].match(mWH[0]); //Arr on ["min-width", "10px"] yms.
+    let m2 = Arr[i].match(mWH[1]);
+    let m3 = Arr[i].match(mWH[2]);
+    let m4 = Arr[i].match(mWH[3]);
+
+    try {
+
+
+      if (m1) {
+        m1.forEach((match) => {
+
+          tempArr.push([mWH[0], manipulateString4(Arr[i], match)]); //push(String)
+        });
+      }
+      if (m2) {
+        m2.forEach((match) => {
+
+          tempArr.push([mWH[1], manipulateString4(Arr[i], match)]);
+        });
+      }
+      if (m3) {
+        m3.forEach((match) => {
+
+          tempArr.push([mWH[2], manipulateString4(Arr[i], match)]);
+        });
+      }
+      if (m4) {
+        m4.forEach((match) => {
+
+          tempArr.push([mWH[3], manipulateString4(Arr[i], match)]);
+        });
+      }
+    } catch (e) {
+      //  console.log("Error in forEach", e);
+    }
+  }
+  return tempArr;
+};
+
+
+
+const splitMultipleQueries = (MediaQuery, match, arr) => {
+
+  let tempArr1 = [];
+  let tempArr2 = [];
+  let tempArr3 = [];
+  let tempArr4 = [];
+  let tempArr5 = [true]; //true = 2d array
+
+  for (let i = 0; i < arr.length; i++) {
+    let res = MediaQuery.split(arr[i]); //arr[i] on min-height yms.
+    tempArr1.push(res[0]);
+    tempArr2.push(res[1]);
+  }
+  for (let i = 0; i < tempArr2.length; i++) {
+    let bool = true;
+    if (typeof tempArr2[i] === 'undefined') {
+      //null 
+    } else {
+      try {
+
+        let res2 = MediaQuery.split("and"); //arr[i] on min-height yms.
+        tempArr3.push(res2);
+
+        bool = false;
+      } catch (e) {
+        //   console.log(e);
+      }
+      if (bool !== true) {
+        tempArr4.push(tempArr2[i]);
+
+      }
+    }
+  }
+  if (tempArr3.length > 1) { //Jos mediaquery sisältää enemmän sääntöjä kuin 1, esim min-height and min-width niin palautetaan arr3
+
+    for (let i = 0; i < tempArr3.length; i++) {
+      tempArr5.push(manipulateString3(tempArr3[i]));
+    }
+    return tempArr5;
+  } else {
+
+    tempArr2 = [false, match, manipulateString2(tempArr4)[0]];
+    return tempArr2;
+  }
+}
+
+const findMWH = (arr, match) => {
+
+  for (let i = 0; i < arr.length; i++) { //0 on Boolean
+    for (let j = 0; j < arr[i].length; j++) {
+      let contain = (arr[i][j][0].indexOf(match) > -1);
+      if (contain === true) {
+        return arr[i][j]; //j+1 on luku, j on min-width
+      }
+    }
+  }
+}
+
+const getMultipleConditionsFromMediaQuery = (MediaQuery) => {
+
+  let arr = [];
+
+  let mWH = ["min-width", "max-width", "min-height", "max-height"];
+
+  let m1 = MediaQuery.match(mWH[0]);
+  let m2 = MediaQuery.match(mWH[1]);
+  let m3 = MediaQuery.match(mWH[2]);
+  let m4 = MediaQuery.match(mWH[3]);
+  try {
+    if (m1) {
+      m1.forEach((match) => {
+
+        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
+
+        if (tempArr[0] === true) {
+          let tempString = (findMWH(tempArr, mWH[0]));
+          tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
+        }
+        arr.push(tempArr);
+      });
+    }
+    if (m2) {
+      m2.forEach((match) => {
+        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
+
+        if (tempArr[0] === true) {
+          let tempString = (findMWH(tempArr, mWH[1]));
+          tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
+        }
+        arr.push(tempArr);
+      });
+    }
+    if (m3) {
+      m3.forEach((match) => {
+        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
+
+        if (tempArr[0] === true) {
+          let tempString = (findMWH(tempArr, mWH[2]));
+          tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
+        }
+        arr.push(tempArr);
+      });
+    }
+    if (m4) {
+      m4.forEach((match) => {
+        let tempArr = splitMultipleQueries(MediaQuery, match, mWH);
+
+        if (tempArr[0] === true) {
+          let tempString = (findMWH(tempArr, mWH[3]));
+          tempArr = [true, tempString]; //Otetaan pois 2d arrayn kopioituminen
+        }
+        arr.push(tempArr);
+      });
+    }
+  } catch (e) { }
+  return arr;
+}
+
+const modify2dArraytoDatabaseFormat = (arr) => {
+  let temp1dArr = [null, null, null, null];
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][1][0] === "min-width") {
+      temp1dArr[0] = arr[i][1][1];
+    }
+    if (arr[i][1][0] === "max-width") {
+      temp1dArr[1] = arr[i][1][1];
+    }
+    if (arr[i][1][0] === "min-height") {
+      temp1dArr[2] = arr[i][1][1];
+    }
+    if (arr[i][1][0] === "max-height") {
+      temp1dArr[3] = arr[i][1][1];
+    }
+  }
+  return temp1dArr;
+}
+
+router.post('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
+  const db = require('../db.js');
+  SelectCSSFilesID(req.body.CSS_File, db, req, next); //req.body.CssArr[0] on CSS_Tiedoston nimi,
+});
+
+router.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
+  let MinMaxWidthHeight = getMultipleConditionsFromMediaQuery(req.body.MediaQuery_Saanto);
+
+  const data = [
+    req.body.CSS_File,
+    req.CssId[0].CSS_Id,
+    req.body.MediaQuery_Saanto,
+    req.body.Position,
+    req.body.TextToClearPosition,
+    req.body.LastIndexToClearPosition,
+    req.body.FullMediaQuery
+  ];
+
+  if (MinMaxWidthHeight[0][0] === false) { //1d array
+    switch (MinMaxWidthHeight[0][1]) {
+      case "min-width":
+        data.push(MinMaxWidthHeight[0][2], null, null, null);
+        break;
+      case "max-width":
+        data.push(null, MinMaxWidthHeight[0][2], null, null);
+        break;
+      case "min-height":
+        data = pushToArray(null, null, MinMaxWidthHeight[0][2], null);
+        break;
+      case "max-height":
+        data = pushToArray(null, null, null, MinMaxWidthHeight[0][2]);
+        break;
+    }
+  } else {
+    let temp2d = modify2dArraytoDatabaseFormat(MinMaxWidthHeight);
+    for (let i = 0; i < temp2d.length; i++) {
+      data.push(temp2d[i]);
+    }
+
+  } //IF 2d
+  console.log("_______________");
+  req.custom = data;
+
+  if (data.length < 8) { //Tietokantaan 8 lokeroa
+    data.push(null);
+  }
+  // insertTotallennaTietokantaanMediaQuerynPosition(data, res, next); //VAIHDA KUN TEHDÄÄN ENEMMÄN KUIN KERRAN
+  next();
+});
+
+
+
+router.use('/tallennaTietokantaanMediaQuerynPosition', (req, res, next) => {
+  try {
+    console.log(req.custom[0].Position);
+    console.log(req.custom[0].CSS_File);
+  } catch (e) { }
+  res.send(req.custom);
+});
+
 
 module.exports = router;

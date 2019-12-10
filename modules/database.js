@@ -39,7 +39,7 @@ const connect = () => {
   };
 
 const checkIfDatabaseWontWriteTablesMoreThanOnce = (name, id) => {
-  connection.execute('Select count(*) from csstiedostot2 where ' + name + ' = @' + name + ' and ' + id + ' = @' + CSS_Id, //IF count = 0 = true
+  connection.query('Select count(*) from csstiedostot2 where ' + name + ' = @' + name + ' and ' + id + ' = @' + CSS_Id, //IF count = 0 = true
     (err, results, fields) => {
       console.log(err);
       console.log("\x1b[43m", "Results checkIfDatabaseWontWriteTablesMoreThanOnce:", "\x1b[0m", results)
@@ -53,7 +53,7 @@ const checkIfDatabaseWontWriteTablesMoreThanOnce = (name, id) => {
 const select = (data, connection, callback) => {
 
   console.log('SELECT * FROM cssTiedostot where width = ' + data[0] + ' and height = ' + data[1] + ';');
-  connection.execute(
+  connection.query(
     'SELECT * FROM cssTiedostot where width = ' + data[0] + ' and height = ' + data[1] + ';',
     (err, results, fields) => {
       console.log(err);
@@ -65,7 +65,7 @@ const select = (data, connection, callback) => {
 
 const selectScreenSize = (data, connection, callback) => {
   // simple query
-  connection.execute(
+  connection.query(
     'SELECT CSS_Tiedosto, Width, Height FROM cssTiedostot where nimi = "css1"',
     (err, results, fields) => {
       console.log(err);
@@ -99,10 +99,11 @@ const convertSizes = (size) => {
 const selectMediaQuery2 = (data, connection, callback) => {
 
   console.log('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width = "' + data + '";');
-  connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
+  
+  connection.query('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
     (err, results, fields) => {
       console.log(err);
-      //    console.log("RESULTS 2:", results);
+          console.log("RESULTS 2:", results);
       callback(results);
     },
   );
@@ -111,7 +112,7 @@ const selectMediaQuery2 = (data, connection, callback) => {
 
 const insertCssFile = (data, connection, callback) => {
   // console.log("Insert user", data)
-  connection.execute(
+  connection.query(
     'INSERT INTO cssTiedostot4 (CSS_Id, User_id, nimi, CSS_Tiedosto) VALUES (?,?,?,?);',
     data,
     (err, results, fields) => {
@@ -128,7 +129,7 @@ const insertCssFile3 = (data, connection, callback) => {
   console.log(blue, "insertCssFile3 Data[0]: ", reset, data[0]);
   console.log(blue, "insertCssFile3 Data[0]: ", reset, data[1]);
   // let query1 = "INSERT INTO cssTiedostot3 (CSS_Id, nimi, CSS_Tiedosto,	Muokattu_Tiedosto) VALUES (?,?,?,?);"
-  connection.execute(
+  connection.query(
     'INSERT INTO cssTiedostot3 (CSS_Id, nimi, CSS_Tiedosto,	Muokattu_Tiedosto) VALUES (?,?,?,?);',
     data,
     (err, results, fields) => {
@@ -144,7 +145,7 @@ const insertCssFile3 = (data, connection, callback) => {
 const SelectCSSFile = (data, connection, callback) => {
 
   //console.log('SELECT CSS_Tiedosto,nimi FROM csstiedostot2 WHERE nimi = "' + data + '";');
-  connection.execute('SELECT CSS_Tiedosto,nimi,CSS_Id FROM csstiedostot2 WHERE nimi = "' + data + '";',
+  connection.query('SELECT CSS_Tiedosto,nimi,CSS_Id FROM csstiedostot2 WHERE nimi = "' + data + '";',
     (err, results, fields) => {
       console.log(err);
       //console.log("CSS RESULTS SelectCSSFile Length: ",results.length);
@@ -242,7 +243,7 @@ const addAutoIncrement = (id, table, tableRows, idName, data, connection, callba
   let sq = "SELECT MAX(" + idName + ") AS tempID from " + table;
   // let query1 = "SELECT (MAX)" + idName + " as tempID FROM " + table + " WHERE " + idName + " = " + id + ";";
   console.log(red, sq, reset);
-  connection.execute(sq,
+  connection.query(sq,
     (err, results, fields) => {
       console.log(err);
       let checkIfIdExist = results[0].tempID;//`results[0].${idName}`;
@@ -251,7 +252,7 @@ const addAutoIncrement = (id, table, tableRows, idName, data, connection, callba
         checkIfIdExist = 1;
         let iq = insertQuery(checkIfIdExist, table, tableRows, null);
 
-        connection.execute(iq, function (err, results2, fields) {
+        connection.query(iq, function (err, results2, fields) {
           if (err) throw err;
           callback(results2);
         });
@@ -262,7 +263,7 @@ const addAutoIncrement = (id, table, tableRows, idName, data, connection, callba
         let iq = insertQuery(newId, table, tableRows, data);
         console.log(data[0]);
         //  let q = "INSERT INTO csstiedostot3 (CSS_Id,nimi,CSS_Tiedosto,Muokattu_Tiedosto) VALUES (6,?,?,?)";
-        connection.execute(iq, function (err, results3, fields) {
+        connection.query(iq, function (err, results3, fields) {
           if (err) throw err;
           console.log(green, " Uusi Autoincrement lisättty!", reset);
           callback(results3);
@@ -274,7 +275,7 @@ const addAutoIncrement = (id, table, tableRows, idName, data, connection, callba
 
 //SELECT CSS_Tiedosto,nimi,CSS_Id,Muokattu_Tiedosto FROM csstiedostot3 WHERE CSS_Id = "' + data + '";',
 const SelectCSSFile3 = (data, connection, callback) => {
-  connection.execute('SELECT CSS_Tiedosto,nimi,CSS_Id,Muokattu_Tiedosto FROM csstiedostot3 WHERE CSS_Id = "' + data + '";',
+  connection.query('SELECT CSS_Tiedosto,nimi,CSS_Id,Muokattu_Tiedosto FROM csstiedostot3 WHERE CSS_Id = "' + data + '";',
     (err, results, fields) => {
       console.log(err);
       callback(results);
@@ -295,7 +296,7 @@ const getUniqueIds = (idArr, distincArray, amount) => {
 const SelectCSSFileByID = (idArr, connection, callback) => {
   let query1 = "SELECT DISTINCT CSS_Id,Muokattu_Tiedosto FROM csstiedostot2";
   // console.log("\x1b[33m", query1);
-  connection.execute(query1,
+  connection.query(query1,
     (err, results, fields) => {
       //  console.log(err);
       //  console.log("\x1b[32m", "Query1 Successfully executed, ");
@@ -306,7 +307,7 @@ const SelectCSSFileByID = (idArr, connection, callback) => {
       let query2 = 'SELECT * FROM csstiedostot2 WHERE CSS_Id in (' + ids + ')';
       //   console.log("\x1b[33m", query2);
       //   console.log(query2);
-      connection.execute(query2, (err, results2, fields) => {
+      connection.query(query2, (err, results2, fields) => {
         if (err) throw err;
         //     console.log("results2.length: ", results2.length);
         callback(results2);
@@ -318,7 +319,7 @@ const SelectCSSFileByID = (idArr, connection, callback) => {
 
 const tallennaTietokantaanMediaQuerynPosition = (data, connection, callback) => {
   console.log("Data :", data);
-  connection.execute(
+  connection.query(
     'INSERT INTO mediaquerysaannot3 (CSS_File, CSS_File_ID, MediaQuery_Saanto, Position, TextToClearPosition, LastIndexToClearPosition, FullMediaQuery,	min_width,	max_width,	min_height,	max_height) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
     data,
     (err, results, fields) => {
@@ -333,7 +334,7 @@ const tallennaTietokantaanMediaQuerynPosition = (data, connection, callback) => 
 const SelectCSSMediaQueryPositions = (data, connection, callback) => {
 
   let query = 'SELECT * FROM mediaQuerySaannot2 WHERE Position = ' + data[0] + ' AND CSS_File = "' + data[1] + '";';
-  connection.execute(query,
+  connection.query(query,
     (err, results, fields) => {
       console.log(err);
       callback(results);
@@ -345,7 +346,7 @@ const SelectCSSMediaQueryPositions = (data, connection, callback) => {
 const UpdateMediaQuery = (data, connection, callback) => {
 
   console.log('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width = "' + data + '";');
-  connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
+  connection.query('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
     (err, results, fields) => {
       console.log(err);
       //   console.log("RESULTS 2:", results);
@@ -357,7 +358,7 @@ const UpdateMediaQuery = (data, connection, callback) => {
 const SelectCSSMediaQueryPositions32 = (data, connection, callback) => {
   let query1 = 'SELECT MAX(min_width) as MW, MAX(min_height) as MH FROM mediaQuerySaannot3 WHERE min_width < ' + data[0] + ' OR min_height < ' + data[1] + ';'
 
-  connection.execute(query1,
+  connection.query(query1,
     (err, results, fields) => {
       console.log(err);
       // console.log(results[0].MW);
@@ -367,13 +368,13 @@ const SelectCSSMediaQueryPositions32 = (data, connection, callback) => {
 
 
       let query2 = 'SELECT MIN(min_width) as MW2 ,MIN(min_height) as MH2 FROM mediaQuerySaannot3 WHERE min_width > ' + data2[0] + ' OR min_height > ' + data2[1] + ';'
-      connection.execute(query2, function (err, results2, fields) {
+      connection.query(query2, function (err, results2, fields) {
         if (err) throw err;
         //    console.log(results2)
         let data3 = [results2[0].MW2, results2[0].MH2];
 
         let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE min_width = ' + data3[0] + ' OR min_height = ' + data3[1] + ';'
-        connection.execute(query3, function (err, results3, fields) {
+        connection.query(query3, function (err, results3, fields) {
           if (err) throw err;
           //      console.log("Results3: ",results3);
           callback(results3);
@@ -388,7 +389,7 @@ const SelectCSSMediaQueryPositions32 = (data, connection, callback) => {
 const SelectCSSMediaQueryPositions3 = (data, connection, callback) => {
   let query1 = 'SELECT MIN(max_width) as MW, MIN(max_height) as MH FROM mediaQuerySaannot3 WHERE max_width > ' + data[0] + ' OR max_height > ' + data[1] + ';'
 
-  connection.execute(query1,
+  connection.query(query1,
     (err, results, fields) => {
       console.log(err);
       //     console.log(results[0].MW);
@@ -398,13 +399,13 @@ const SelectCSSMediaQueryPositions3 = (data, connection, callback) => {
 
 
       let query2 = 'SELECT MAX(max_width) as MW2 ,MAX(max_height) as MH2 FROM mediaQuerySaannot3 WHERE max_width > ' + data2[0] + ' OR max_height > ' + data2[1] + ';'
-      connection.execute(query2, function (err, results2, fields) {
+      connection.query(query2, function (err, results2, fields) {
         if (err) throw err;
         //    console.log(results2)
         let data3 = [results2[0].MW2, results2[0].MH2];
 
         let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width = ' + data3[0] + ' OR max_height = ' + data3[1] + ';'
-        connection.execute(query3, function (err, results3, fields) {
+        connection.query(query3, function (err, results3, fields) {
           if (err) throw err;
           //   console.log("Results3: ",results3);
           callback(results3);
@@ -417,7 +418,7 @@ const SelectCSSMediaQueryPositions3 = (data, connection, callback) => {
 
 const SelectCSSMediaQueryPositions3_2 = (data, connection, callback) => {
   let query = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width < ' + data[0] + ' OR max_height < ' + data[1] + ';';
-  connection.execute(query,
+  connection.query(query,
     (err, results, fields) => {
       //    console.log(err);
       callback(results);
@@ -429,7 +430,7 @@ const SelectCSSMediaQueryPositions3_2 = (data, connection, callback) => {
 const SelectCSSMediaQueryPositions4 = (data, connection, callback) => {
   console.log("SelectCSSMediaQueryPositions4 data: ", data);
   let query = 'SELECT * FROM mediaQuerySaannot3 WHERE min_width > ' + data[0] + ' OR min_height > ' + data[1] + ';'
-  connection.execute(query,
+  connection.query(query,
     (err, results, fields) => {
       ///   console.log(err);
       callback(results);
@@ -442,10 +443,10 @@ const SelectCSSMediaQueryPositions4 = (data, connection, callback) => {
 
 const SelectCSSFilesID = (data, connection, callback) => {
   let query = 'select CSS_Id from csstiedostot2 where nimi ="' + data + '";';
-  connection.execute(query,
+  connection.query(query,
     (err, results, fields) => {
       console.log(err);
-      connection.execute(query3, function (err, results3, fields) {
+      connection.query(query3, function (err, results3, fields) {
         if (err) throw err;
         //   console.log("Results3: ",results3);
         callback(results3);
@@ -457,7 +458,7 @@ const SelectCSSFilesID = (data, connection, callback) => {
 const SelectCSSMediaQueryPositions5 = (data, connection, callback) => {
   let query1 = 'SELECT min_width,min_height,CSS_File_ID,TextToClearPosition FROM mediaQuerySaannot3 WHERE min_width > ' + data[0] + ' OR min_height > ' + data[1] + ';'
 
-  connection.execute(query1,
+  connection.query(query1,
     (err, results, fields) => {
       console.log(err);
       //     console.log(results[0].MW);
@@ -467,13 +468,13 @@ const SelectCSSMediaQueryPositions5 = (data, connection, callback) => {
 
 
       let query2 = 'SELECT MAX(max_width) as MW2 ,MAX(max_height) as MH2 FROM mediaQuerySaannot3 WHERE max_width > ' + data2[0] + ' OR max_height > ' + data2[1] + ';'
-      connection.execute(query2, function (err, results2, fields) {
+      connection.query(query2, function (err, results2, fields) {
         if (err) throw err;
         //    console.log(results2)
         let data3 = [results2[0].MW2, results2[0].MH2];
 
         let query3 = 'SELECT CSS_File,TextToClearPosition FROM mediaQuerySaannot3 WHERE max_width = ' + data3[0] + ' OR max_height = ' + data3[1] + ';'
-        connection.execute(query3, function (err, results3, fields) {
+        connection.query(query3, function (err, results3, fields) {
           if (err) throw err;
           //   console.log("Results3: ",results3);
           callback(results3);
@@ -488,7 +489,7 @@ const SelectCSSMediaQueryPositions5 = (data, connection, callback) => {
 const UpdateMediaQuery = (data, connection, callback) => {
   
   console.log('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width = "' + data + '";');
-  connection.execute('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
+  connection.query('SELECT MediaQuery_Saanto FROM mediaQuerySaannot WHERE Max_width LIKE "%' + data + '%";',
     (err, results, fields) => {
       console.log(err);
    //   console.log("RESULTS 2:", results);
@@ -500,7 +501,7 @@ const UpdateMediaQuery = (data, connection, callback) => {
 
 const resetCssFiles = (connection, callback) => {
   let query = "UPDATE `cssTiedostot2` SET `Muokattu_Tiedosto` =  `CSS_Tiedosto`;";
-  connection.execute(query,
+  connection.query(query,
     (err, results, fields) => {
       console.log(err);
       callback(results);
@@ -513,12 +514,12 @@ const UpdateCSSFile = (id, data, Muokattu_Tiedosto, connection, callback) => {
   let replaceString = Muokattu_Tiedosto.split(data).join("");
   replaceString = replaceString.split('"').join("");
   let query = 'UPDATE csstiedostot2 SET Muokattu_Tiedosto = "' + replaceString + '" WHERE CSS_Id = ' + id + ';';
-  connection.execute(query,
+  connection.query(query,
     (err, results, fields) => {
       console.log(err);
       //    console.log("Results: ",results);
       let query2 = 'SELECT Muokattu_Tiedosto FROM csstiedostot2 WHERE CSS_Id = ' + id + ';';
-      connection.execute(query2, function (err, results3, fields) {
+      connection.query(query2, function (err, results3, fields) {
         if (err) throw err;
 
         // console.log(results3);
@@ -533,7 +534,7 @@ const UpdateCSSFile = (id, data, Muokattu_Tiedosto, connection, callback) => {
 const UpdateCSSFile = (id, data, connection, callback) => {
   let re = new RegExp(data, 'g');
   let query = 'SELECT Muokattu_Tiedosto FROM csstiedostot2 WHERE CSS_Id = ' + id + ';';
-  connection.execute(query,
+  connection.query(query,
     (err, results, fields) => {
       console.log(err);
      
@@ -552,11 +553,11 @@ const UpdateCSSFile = (id, data, connection, callback) => {
       console.log(blue,id," <- ID. stringOfMuokattuTiedosto update: ",stringOfMuokattuTiedosto.length,red," replaceString: ",replaceString.length,reset);
       let query2 = 'UPDATE csstiedostot2 SET Muokattu_Tiedosto = "'+replaceString+'";';
     //   console.log(query2, "<-- query2");
-      connection.execute(query2, function (err, results2, fields) {
+      connection.query(query2, function (err, results2, fields) {
         if (err) throw err;
      //   console.log(yellow,"query2 done ",results2);
         
-        connection.execute(query, function (err, results3, fields) {
+        connection.query(query, function (err, results3, fields) {
           if (err) throw err;
       //    console.log(results3[0].Muokattu_Tiedosto);
           console.log(red,"After update: ",results3[0].Muokattu_Tiedosto.length,reset);
@@ -570,7 +571,7 @@ const UpdateCSSFile = (id, data, connection, callback) => {
 const SelectCSSFileByID2 = (id, connection, callback) => {
 
   //console.log('SELECT CSS_Tiedosto,nimi FROM csstiedostot2 WHERE nimi = "' + data + '";');
-  connection.execute('SELECT CSS_Tiedosto,Muokattu_Tiedosto FROM csstiedostot2 WHERE CSS_Id = ' + id + '";"',
+  connection.query('SELECT CSS_Tiedosto,Muokattu_Tiedosto FROM csstiedostot2 WHERE CSS_Id = ' + id + '";"',
     (err, results, fields) => {
       console.log(err);
       //console.log("CSS RESULTS SelectCSSFile Length: ",results.length);
@@ -581,7 +582,7 @@ const SelectCSSFileByID2 = (id, connection, callback) => {
 
 const UpdateCSSFile2 = (Muokattu_Tiedosto, connection, callback) => {
   let query = 'UPDATE csstiedostot2 SET Muokattu_Tiedosto = ' + Muokattu_Tiedosto + ';';
-  connection.execute(query,
+  connection.query(query,
     (err, results, fields) => {
       console.log(err);
       console.log(red, "Muokattu_Tiedosto UPDATED", reset);
@@ -597,7 +598,7 @@ const cutAllMediaQueriesByCssFileID = (id, connection, callback) => {
   console.log(red,"QUERY:",reset);
   console.log(green,query,reset);
   console.log("");
-  connection.execute(query,
+  connection.query(query,
      (err, results, fields) => {
        console.log(red,"ERROR AT cutAllMediaQueriesByCssFileID,",reset);
        console.log(err);
@@ -671,7 +672,7 @@ const cutAllMediaQueriesByCssFileID = (j, id, replaceQuery, Muokattu_Tiedosto, c
   //  console.log(red,"QUERY:",reset);
   // console.log(green,query2.length,reset);
   // console.log("");
-  connection.execute(query,
+  connection.query(query,
     (err, results, fields) => {
       //   console.log(green,query2,reset);
       if (err) {
@@ -709,11 +710,11 @@ const cutAllMediaQueriesByCssFileID = (j, id, replaceQuery, Muokattu_Tiedosto, c
         finalContent = finalContent.split('"').join("");
         let query2 = 'UPDATE cssTiedostot2 SET Muokattu_Tiedosto = "' + finalContent + '" WHERE CSS_Id = ' + id + ';';
       
-        connection.execute(query2, function (err, results3, fields) {
+        connection.query(query2, function (err, results3, fields) {
           if (err) throw err;
           //   console.log("Results3: ",results3);
           let query3 = 'SELECT Muokattu_Tiedosto FROM csstiedostot2  WHERE CSS_Id = ' + id + ';';
-          connection.execute(query3, function (err, results3, fields) {
+          connection.query(query3, function (err, results3, fields) {
             if (err) throw err;
             //   console.log("Results3: ",results3);
             let rep = results3[0].Muokattu_Tiedosto.replace(replaceQuery, "POISTETTU");
