@@ -79,44 +79,26 @@ const lahetaLomake3 = (evt) => {
 	});
 };
 
-function poistaCSS2(cssFileName, newCssFile, num) {
-	console.log("Poista CSS 2,cssFileName: ",cssFileName," , replace: ",newCssFile, "   num: ",num);
+function poistaCSS2(cssFileName, newCssFile, num) { //Poista vanha CSS ja laita uusi tilalle
+	if(typeof newCssFile !== 'undefined'){
+		checkScreenSizeTextArea.innerHTML += "<p>Css tiedosto vaihdettu: "+newCssFile+"</p>";
+		console.log("Poista CSS 2,cssFileName: ", cssFileName, " , replace: ", newCssFile, "   num: ", num);
 
-	let html = div3.innerHTML;
-	let fiveLastChar = cssFileName.slice(-2);
-	let cssName = fiveLastChar +num+ '.css';//req.body.CssArr[0]+'.css';
-//	console.log("cssName: ",cssName);
-	
-	cssName = cssFileName.replace("'", ""); //ylimääräinen pilkku pois lopusta
-	var ret = html.replace(cssName, 'css/' + newCssFile); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
-	
-	//console.log(cssFileName+ " , 'css/' "+ newCssFile);
-	
-	div3.innerHTML = ret; //divin sisään wp content
-	console.log(div3.innerHTML);
-	cssTallennusInput.value = ret;
+		let html = div3.innerHTML;
+		let fiveLastChar = cssFileName.slice(-2);
+		let cssName = fiveLastChar + num + '.css';//req.body.CssArr[0]+'.css';
 
-}
+		cssName = cssFileName.replace("'", ""); //ylimääräinen pilkku pois lopusta
+		let ret = html.replace(cssName, 'css/tempCss/' + newCssFile); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
 
-function laitaCSS(){
-	let html = div3.innerHTML;
-
-	let css1 = "1.css";
-	let css2 = "2.css";
-	let css3 = "3.css";
-	let c1 = "http://localhost/wp2/wp-includes/css/dist/block-library/style.min.css?ver=5.2.4'";
-	let c2 = "http://localhost/wp2/wp-includes/css/dist/block-library/theme.min.css?ver=5.2.4'";
-	let c3 = "http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4'";
-	cssName = cssFileName.replace("'", ""); //ylimääräinen pilkku pois lopusta
-	var ret = html.replace(cssName, 'css/' + newCssFile); //POISTA CSS TIEDOSTO //http://localhost/wp2/wp-content/themes/twentyseventeen/style.css?ver=5.2.4
-
-	div3.innerHTML = ret; //divin sisään wp content
-	console.log(div3.innerHTML);
-	cssTallennusInput.value = ret;
+		div3.innerHTML = ret; //divin sisään wp content
+		cssTallennusInput.value = ret;
+	}
 }
 
 
-function laitaTakaisinCSS3(OldCSS,New_CSS_File) {
+
+function laitaTakaisinCSS3(OldCSS, New_CSS_File) {
 
 	var str = div3.innerHTML;
 	console.log(str.includes("<link"));
@@ -134,7 +116,7 @@ function laitaTakaisinCSS3(OldCSS,New_CSS_File) {
 	}
 
 	//LAITA TAKAISIN ENNEN METATIETOJEN LOPPUA: splitInHeadTag[pituus-2]
-	let newCSSLink = '<link rel="stylesheet" id="twentyseventeen-style-css" href="css/'+New_CSS_File+'" type="text/css" media="all"></link>';
+	let newCSSLink = '<link rel="stylesheet" href="css/tempCss/' + New_CSS_File + '" type="text/css" media="all"></link>';
 	let tempLastString = splitInHeadTag[pituus - 1]; //ota väliaikainen viimeinen arraysta
 	splitInHeadTag[pituus - 1] = newCSSLink; //laita sen tilalle uusi css linkki
 	splitInHeadTag.push(tempLastString); //laajenna arrayta ja laita väliaikinen viimeiseksi uudestaan
@@ -147,7 +129,7 @@ function laitaTakaisinCSS3(OldCSS,New_CSS_File) {
 
 const checkScreenSizeTextArea = document.querySelector("#checkScreenSizeTextArea");
 
-function lahetaLomake4(evt) {
+function lahetaLomake4(evt) {   //Tarkastetaan näytönkoko
 
 	evt.preventDefault();
 	console.log("lähetä lomake 4()");
@@ -166,13 +148,27 @@ function lahetaLomake4(evt) {
 		return response.json();
 	}).then((json) => {
 		console.log("json frontend lomake4: ", json);
-		checkScreenSizeTextArea.innerHTML = json;
 		for (let i = 0; i < json.length; i++) {
-			console.log(json[i]);
-			poistaCSS2(json[i].CSS_File,json[i].NewCss,i);
+			try {
+				console.log(json[i]);
+				poistaCSS2(json[i].CSS_File, json[i].NewCss, i);
+			} catch (e) {
+				console.log(e);
+			}
 		}
-	}).then(() => {
+
+	}).then(() => {				//Laita muokkaus työkalu
 		console.log("Finished CSS");
+		let tempArr = [];
+
+		for (let i = 0; i < $("#fetchatti div").children().length; i++) {
+
+			addEditingToolToElement($("#fetchatti div").children()[i], tempArr, i);
+
+			let twoDimensionalArray = [[$("#fetchatti div").children()[i]], [true], [true], [null], [true], [false]];
+
+			fullArr.push(twoDimensionalArray);
+		}
 	}).catch(function (e) {
 		console.log(e);
 		checkScreenSizeTextArea.innerHTML = "ERROR";
@@ -199,32 +195,18 @@ function resetCssFiles(evt) {
 		return response.json();
 	}).then((json) => {
 		console.log("json frontend resetCSS: ", json);
-		
+
 	}).then(() => {
 		console.log("Finished CSS")
 	});
 };
 testiSql4.addEventListener("click", function (e) { resetCssFiles(e); });
 
-testiSql2.addEventListener("click", function (e) {hideShowElement(10,100);  lahetaLomake4(e); });
+testiSql2.addEventListener("click", function (e) { hideShowElement(10, 100); lahetaLomake4(e); });
 
 function addEditingToolToElement(element, arr, num) {
-	
 
-	
-	let className2 = $(element).attr('class'); //className2 = se kohta mihin clikataan 
-	  // $(element).css("pointer-events","none"); //ei voi klikata, $("#ElementName").css("pointer-events","auto"); voi klikata
-   element.addEventListener("onclick",function() { changeColor();
-    //});
-    
-    $("#ulList2").append(`<li>
-    ${res[i]}
-        </li></br>`);
-        
-   console.log("element: ",element);
-   });
 	$(element).click(function (e) { //KUN painetaan Elementtiä
-		alert("CLicked!");
 		arr.push(element);
 		let className = $(element).attr('class');
 
@@ -246,7 +228,6 @@ function addEditingToolToElement(element, arr, num) {
 			//		console.log("FALSE!!", fullArr[num][1][0]);
 		}
 	});
-
 
 }
 

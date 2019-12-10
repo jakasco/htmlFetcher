@@ -520,7 +520,6 @@ function laitaTakaisinCSS() { //testaus funktio
     console.log("CSS Files Changed");
 }
 
-
 function findBodyWord(htmlContent) {
 
     let first = htmlContent.search("<body>");
@@ -572,7 +571,6 @@ function onChange(event, fileUrl) {
     };
 }
 
-
 const uploadImgToDataBase = (evt, fileUrl) => {
 
     let base64 = base64img()
@@ -580,7 +578,7 @@ const uploadImgToDataBase = (evt, fileUrl) => {
     evt.preventDefault();
     const fd = {};
     fd.file = fileUrl;
-    
+
     const asetukset = {
         method: 'post',
         body: fd,
@@ -613,13 +611,13 @@ const download = (evt, fileUrl, type) => {
         return response.json();
     }).then((json) => {
         const fileUrl = json.filename;
-        console.log("fileUrl: "+fileUrl);
-      // uploadImgToDataBase(evt, fileUrl);
+        console.log("fileUrl: " + fileUrl);
+        // uploadImgToDataBase(evt, fileUrl);
     }).catch(function (e) {
         console.log(e);
         checkScreenSizeTextArea.innerHTML = "ERROR";
         document.querySelector("#console3").innerHTML = "<p>Error on Fetching images<p><p>" + e + "<p>";
-        hideShowElement(7, 250);
+        //   hideShowElement(7, 250);
         //   hideShowElement(7, 250);
     });
 }
@@ -652,9 +650,6 @@ function getCSSMedia() { //etsi kaikki css tiedostot lähdekoodista
                 src='${poistaPilkku}'
                 width="130px" height="130px"
                 >`);
-                //  html.replace(match,match);
-                //  div3.innerHTML = html;
-
 
                 download(evt, poistaPilkku, regex2[0]); //lähetä backendiin
             }
@@ -681,12 +676,38 @@ function getCSSMedia() { //etsi kaikki css tiedostot lähdekoodista
     //console.log("ArrayOfImages", ArrayOfImages);
 }
 
+const saveSourceCode = (evt, html) => {
+    evt.preventDefault();
+    let cssFiles = 0;
+    if (typeof ArrayOfCSSFiles !== 'undefined') {
+        cssFiles = ArrayOfCSSFiles.length;
+    };
+
+    const fd = {};
+    fd.html = html;
+    fd.cssFiles = cssFiles;
+    const asetukset = {
+        method: 'post',
+        body: JSON.stringify(fd),
+        headers: {
+            'Content-type': 'application/json',
+        },
+    };
+    console.log(fd);
+    fetch('/saveSourceCode', asetukset).then((response) => {
+        return response.json();
+    }).then((json) => {
+        console.log(json);
+    }).catch(function (e) {
+        console.log(e);
+    });
+}
 
 
 function fetchData() {
-
+    let e = document.createEvent('Event');
     hideShowElement(9, 100);  //Paneeli näkyviin
-
+      let html2 = "";//tietokantaan menevä
     document.querySelector("#fetchConsoleSc").innerHTML = "Fetching Source Code...";
     document.querySelector("#fetchConsoleSc").style.backgroundColor = "yellow";
     console.log("fetch data");
@@ -695,11 +716,10 @@ function fetchData() {
             return response.text()
         })
         .then(function (html) {
-            let parser = new DOMParser();
-            console.log("--------------------------------------------------");
             div3.innerHTML = html; //divin sisään wp content
             let lineBreaksToElements = html.replace(/(\S+\s*){1,2}/g, "$&\n"); //VAIHDA TÄHÄN ret
             div2.textContent = lineBreaksToElements;
+            html2 = lineBreaksToElements;
             findBodyWord(html);
             $("#console3").css("background-color", "white");
         })
@@ -723,18 +743,18 @@ function fetchData() {
             document.querySelector("#fetchConsoleMf").innerHTML = "Fetching Media Files...";
             document.querySelector("#fetchConsoleMf").style.backgroundColor = "yellow";
             getCSSMedia();
-
-
-            //   let e = document.createEvent('Event');
-            //   tallennaMediaTietokantaan(e);
         })
         .then(() => {
             document.querySelector("#fetchConsoleMf").innerHTML = "Fetching Media Files Finished!";
             document.querySelector("#fetchConsoleMf").style.backgroundColor = "green";
             document.querySelector("#fetchConsoleAllDone").innerHTML = "All Data Successfully Fetched!";
             document.querySelector("#fetchConsoleAllDone").style.backgroundColor = "green";
-            let e = document.createEvent('Event');
-            //     lahetaLomake4(e);
+            saveSourceCode(e, html2); //Tallenna tietokantaan lähdekoodi
+
+        })
+        .then(() => {
+            lahetaLomake4(e); //Tarkasta näytön koko
+            //    hideShowElement(10, 100);
         })
         .catch(function (e) {
             console.log(e);
